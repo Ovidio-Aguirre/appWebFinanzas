@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { ensureUserExists } from "@/lib/prisma/bootstrap";
 import { prisma } from "@/lib/prisma";
+import { toErrorMessage } from "@/lib/errors";
 import {
   CreateAccountSchema,
   type CreateAccountInput,
@@ -191,9 +192,7 @@ export async function createCategoryAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al crear la categoría.",
+        toErrorMessage(error, "Error al crear la categoría."),
     };
   }
 }
@@ -223,9 +222,7 @@ export async function createQuickTransactionAction(
     };
   } catch (error) {
     const message =
-      error instanceof Error
-        ? error.message
-        : "Error inesperado al registrar la transacción.";
+      toErrorMessage(error, "Error inesperado al registrar la transacción.");
     return { success: false, message };
   }
 }
@@ -251,9 +248,7 @@ export async function toggleReconciledAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "No se pudo actualizar la conciliación.",
+        toErrorMessage(error, "No se pudo actualizar la conciliación."),
     };
   }
 }
@@ -286,9 +281,7 @@ export async function createAccountAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al crear la cuenta financiera.",
+        toErrorMessage(error, "Error al crear la cuenta financiera."),
     };
   }
 }
@@ -323,9 +316,7 @@ export async function createRecurringRuleAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al guardar la regla recurrente.",
+        toErrorMessage(error, "Error al guardar la regla recurrente."),
     };
   }
 }
@@ -349,9 +340,7 @@ export async function executeRecurringRuleAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al ejecutar la programación recurrente.",
+        toErrorMessage(error, "Error al ejecutar la programación recurrente."),
     };
   }
 }
@@ -374,9 +363,7 @@ export async function toggleRecurringAutoPostAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "No se pudo cambiar la preferencia de autoregistro.",
+        toErrorMessage(error, "No se pudo cambiar la preferencia de autoregistro."),
     };
   }
 }
@@ -410,9 +397,7 @@ export async function createLoanWithScheduleAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al generar el financiamiento y su tabla de amortización.",
+        toErrorMessage(error, "Error al generar el financiamiento y su tabla de amortización."),
     };
   }
 }
@@ -446,9 +431,7 @@ export async function payLoanInstallmentAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "No se pudo procesar el pago de la cuota.",
+        toErrorMessage(error, "No se pudo procesar el pago de la cuota."),
     };
   }
 }
@@ -482,9 +465,7 @@ export async function createSavingsGoalAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al crear la bóveda de ahorro.",
+        toErrorMessage(error, "Error al crear la bóveda de ahorro."),
     };
   }
 }
@@ -517,9 +498,7 @@ export async function contributeToSavingsGoalAction(
     return {
       success: false,
       message:
-        error instanceof Error
-          ? error.message
-          : "Error al transferir fondos a la bóveda.",
+        toErrorMessage(error, "Error al transferir fondos a la bóveda."),
     };
   }
 }

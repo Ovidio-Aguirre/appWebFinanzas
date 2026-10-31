@@ -1,4 +1,5 @@
 import { prisma, toNumber } from "@/lib/prisma";
+import { DomainError } from "@/lib/errors";
 import type {
   ContributeToSavingsGoalInput,
   CreateSavingsGoalInput,
@@ -112,7 +113,7 @@ export async function contributeToSavingsGoalACID(
     });
 
     if (!goal) {
-      throw new Error("No se encontró la bóveda de ahorro seleccionada.");
+      throw new DomainError("No se encontró la bóveda de ahorro seleccionada.");
     }
 
     const originAccount = await tx.account.findFirst({
@@ -120,14 +121,14 @@ export async function contributeToSavingsGoalACID(
     });
 
     if (!originAccount) {
-      throw new Error("No se encontró la cuenta corriente de origen.");
+      throw new DomainError("No se encontró la cuenta corriente de origen.");
     }
 
     const amount = input.amount;
 
     // A4: solo metas activas pueden recibir aportes.
     if (goal.status !== "ACTIVE") {
-      throw new Error("La meta de ahorro no está disponible para aportes.");
+      throw new DomainError("La meta de ahorro no está disponible para aportes.");
     }
 
     // A1: descontar origen de forma atómica (condición en la propia UPDATE).
@@ -140,7 +141,7 @@ export async function contributeToSavingsGoalACID(
       data: { currentBalance: { decrement: amount } },
     });
     if (debited.count === 0) {
-      throw new Error(
+      throw new DomainError(
         `Saldo insuficiente en ${originAccount.name} para transferir $${amount.toFixed(
           2
         )}.`

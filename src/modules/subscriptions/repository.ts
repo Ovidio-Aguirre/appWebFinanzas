@@ -1,5 +1,6 @@
 import { prisma, toNumber } from "@/lib/prisma";
 import { calculateNextExecutionDate } from "@/lib/utils";
+import { DomainError } from "@/lib/errors";
 import type {
   CreateRecurringRuleInput,
   SerializedRecurringRule,
@@ -51,14 +52,14 @@ export async function createRecurringRuleInDb(
     where: { id: input.accountId, userId },
   });
   if (!account) {
-    throw new Error("La cuenta seleccionada no existe o no te pertenece.");
+    throw new DomainError("La cuenta seleccionada no existe o no te pertenece.");
   }
 
   const category = await prisma.category.findUnique({
     where: { id: input.categoryId },
   });
   if (!category) {
-    throw new Error("La categoría seleccionada no existe.");
+    throw new DomainError("La categoría seleccionada no existe.");
   }
 
   const created = await prisma.recurringRule.create({
@@ -123,7 +124,7 @@ export async function executeRecurringRuleACID(
     });
 
     if (!rule) {
-      throw new Error("No se encontró la regla recurrente especificada.");
+      throw new DomainError("No se encontró la regla recurrente especificada.");
     }
 
     const amount = toNumber(rule.amount);
@@ -158,7 +159,7 @@ export async function executeRecurringRuleACID(
       },
     });
     if (claimed.count === 0) {
-      throw new Error("Esta regla ya fue ejecutada. Recarga la página.");
+      throw new DomainError("Esta regla ya fue ejecutada. Recarga la página.");
     }
 
     // Actualizar saldo de la cuenta asociada (A1: operaciones atómicas).
@@ -185,7 +186,7 @@ export async function executeRecurringRuleACID(
         data: { currentBalance: { decrement: amount } },
       });
       if (debited.count === 0) {
-        throw new Error(
+        throw new DomainError(
           `Saldo insuficiente en ${rule.account.name} para ejecutar ${rule.title}.`
         );
       }

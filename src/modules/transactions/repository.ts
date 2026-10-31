@@ -1,5 +1,6 @@
 import { prisma, toNumber } from "@/lib/prisma";
 import { startOfMonth, endOfMonth } from "date-fns";
+import { DomainError } from "@/lib/errors";
 import type {
   QuickCaptureTransactionInput,
   SerializedTransaction,
@@ -200,7 +201,7 @@ export async function recordTransactionACID(
     });
 
     if (!originAccount) {
-      throw new Error("La cuenta de origen seleccionada no existe.");
+      throw new DomainError("La cuenta de origen seleccionada no existe.");
     }
 
     const originBalance = toNumber(originAccount.currentBalance);
@@ -215,7 +216,7 @@ export async function recordTransactionACID(
         const creditLimit = toNumber(originAccount.creditLimit);
         const newDebt = originBalance + amount;
         if (creditLimit > 0 && newDebt > creditLimit) {
-          throw new Error(
+          throw new DomainError(
             `Esta compra excede el disponible de la tarjeta (${originAccount.name}).`
           );
         }
@@ -242,7 +243,7 @@ export async function recordTransactionACID(
           data: { currentBalance: { decrement: amount } },
         });
         if (debited.count === 0) {
-          throw new Error(
+          throw new DomainError(
             `Saldo insuficiente en ${originAccount.name} para cubrir este gasto.`
           );
         }
@@ -262,7 +263,7 @@ export async function recordTransactionACID(
       input.transactionType === "LOAN_PAYMENT"
     ) {
       if (!input.destinationAccountId) {
-        throw new Error("Debes indicar la tarjeta o deuda a pagar.");
+        throw new DomainError("Debes indicar la tarjeta o deuda a pagar.");
       }
 
       const destinationAccount = await tx.account.findFirst({
@@ -270,12 +271,12 @@ export async function recordTransactionACID(
       });
 
       if (!destinationAccount) {
-        throw new Error("La cuenta o tarjeta destino no existe.");
+        throw new DomainError("La cuenta o tarjeta destino no existe.");
       }
 
       // C2: el destino del pago debe ser un pasivo (tarjeta o préstamo).
       if (!LIABILITY_TYPES.has(destinationAccount.type)) {
-        throw new Error(
+        throw new DomainError(
           "El destino del pago debe ser una tarjeta de crédito o un préstamo."
         );
       }
@@ -284,7 +285,7 @@ export async function recordTransactionACID(
 
       // C2: rechazar sobrepago para que el dinero no desaparezca.
       if (amount > currentDebt) {
-        throw new Error(
+        throw new DomainError(
           `El monto excede la deuda actual de ${destinationAccount.name} ($${currentDebt.toFixed(
             2
           )}). Ajusta el pago.`
@@ -297,7 +298,7 @@ export async function recordTransactionACID(
         data: { currentBalance: { decrement: amount } },
       });
       if (debited.count === 0) {
-        throw new Error(
+        throw new DomainError(
           `Saldo insuficiente en ${originAccount.name} para realizar el pago.`
         );
       }
@@ -320,7 +321,7 @@ export async function recordTransactionACID(
       });
     } else if (input.transactionType === "TRANSFER") {
       if (!input.destinationAccountId) {
-        throw new Error("Selecciona la cuenta destino para la transferencia.");
+        throw new DomainError("Selecciona la cuenta destino para la transferencia.");
       }
 
       const destinationAccount = await tx.account.findFirst({
@@ -328,7 +329,7 @@ export async function recordTransactionACID(
       });
 
       if (!destinationAccount) {
-        throw new Error("La cuenta destino no existe.");
+        throw new DomainError("La cuenta destino no existe.");
       }
 
       // C3: las transferencias solo se permiten entre cuentas de activo.
@@ -336,7 +337,7 @@ export async function recordTransactionACID(
         !ASSET_TYPES.has(originAccount.type) ||
         !ASSET_TYPES.has(destinationAccount.type)
       ) {
-        throw new Error(
+        throw new DomainError(
           "Las transferencias solo se permiten entre cuentas de activo (efectivo, débito o ahorro)."
         );
       }
@@ -347,7 +348,7 @@ export async function recordTransactionACID(
         data: { currentBalance: { decrement: amount } },
       });
       if (debited.count === 0) {
-        throw new Error(
+        throw new DomainError(
           `Saldo insuficiente en ${originAccount.name} para transferir.`
         );
       }
@@ -371,7 +372,7 @@ export async function recordTransactionACID(
       });
 
       if (!msiTx?.currentInstallment) {
-        throw new Error("La compra a tasa cero seleccionada no es válida.");
+        throw new DomainError("La compra a tasa cero seleccionada no es válida.");
       }
 
       await tx.transaction.update({

@@ -1,5 +1,6 @@
 import { prisma, toNumber } from "@/lib/prisma";
 import { generateAmortizationSchedule } from "@/lib/utils";
+import { DomainError } from "@/lib/errors";
 import type {
   CreateLoanWithAmortizationInput,
   PayLoanInstallmentInput,
@@ -142,11 +143,11 @@ export async function payLoanInstallmentACID(
     });
 
     if (!installment || installment.account.userId !== userId) {
-      throw new Error("No se encontró la cuota seleccionada.");
+      throw new DomainError("No se encontró la cuota seleccionada.");
     }
 
     if (installment.status === "PAID") {
-      throw new Error("Esta cuota ya fue pagada anteriormente.");
+      throw new DomainError("Esta cuota ya fue pagada anteriormente.");
     }
 
     const originAccount = await tx.account.findFirst({
@@ -154,7 +155,7 @@ export async function payLoanInstallmentACID(
     });
 
     if (!originAccount) {
-      throw new Error("La cuenta de origen seleccionada no es válida.");
+      throw new DomainError("La cuenta de origen seleccionada no es válida.");
     }
 
     const totalInstallmentAmount = toNumber(installment.amount);
@@ -170,7 +171,7 @@ export async function payLoanInstallmentACID(
       data: { currentBalance: { decrement: totalInstallmentAmount } },
     });
     if (debited.count === 0) {
-      throw new Error(
+      throw new DomainError(
         `Saldo insuficiente en ${originAccount.name} para cubrir la cuota de $${totalInstallmentAmount.toFixed(
           2
         )}.`
