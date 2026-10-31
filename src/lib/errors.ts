@@ -1,3 +1,6 @@
+import { randomUUID } from "node:crypto";
+import { logger, serializeError } from "@/lib/logger";
+
 /**
  * Errores de dominio: mensajes seguros para mostrar al usuario.
  * Los errores inesperados (infraestructura, Prisma, etc.) NO deben
@@ -23,6 +26,8 @@ export function toErrorMessage(error: unknown, fallback: string): string {
   if (error instanceof DomainError) {
     return error.message;
   }
-  console.error("[unhandled]", error);
-  return fallback;
+  // Referencia corta para correlacionar el mensaje del usuario con el log del servidor.
+  const ref = randomUUID().slice(0, 8);
+  logger.error("unhandled_error", { ref, error: serializeError(error) });
+  return `${fallback} (ref: ${ref})`;
 }

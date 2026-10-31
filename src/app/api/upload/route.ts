@@ -3,6 +3,7 @@ import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 import { requireUser } from "@/lib/auth";
+import { logger, serializeError } from "@/lib/logger";
 
 /**
  * Detecta el tipo de imagen real a partir de sus magic bytes.
@@ -117,7 +118,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       provider: "local-vault",
     });
   } catch (error) {
-    console.error("[Receipt Upload Error]:", error);
+    logger.error("receipt_upload_failed", { error: serializeError(error) });
     return NextResponse.json(
       { error: "Error interno al almacenar el comprobante." },
       { status: 500 }

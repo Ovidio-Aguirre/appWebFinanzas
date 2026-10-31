@@ -2,6 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 export async function middleware(request: NextRequest) {
+  const response = await handle(request);
+  // Request ID para correlacionar peticiones con los logs.
+  response.headers.set("x-request-id", crypto.randomUUID());
+  return response;
+}
+
+async function handle(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const user = await verifySessionToken(
     request.cookies.get(SESSION_COOKIE)?.value,

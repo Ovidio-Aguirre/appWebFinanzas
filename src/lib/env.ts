@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 /**
  * Esquema de variables de entorno. Se valida al arrancar para fallar
@@ -31,7 +32,7 @@ function loadEnv() {
     if (process.env.NODE_ENV === "production") {
       throw new Error(`Configuración de entorno inválida: ${details}`);
     }
-    console.warn(`[env] Advertencia de configuración: ${details}`);
+    logger.warn("env_invalid", { details });
   }
 
   return {

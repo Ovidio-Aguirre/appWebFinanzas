@@ -2,6 +2,7 @@
 
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { logger } from "@/lib/logger";
 import { safeEqual, verifyPassword } from "@/lib/password";
 import {
   SESSION_COOKIE,
@@ -48,7 +49,7 @@ export async function loginAction(
   const passwordHash = process.env.AUTH_PASSWORD_HASH;
   const secret = process.env.AUTH_SECRET;
   if (!expectedUser || !passwordHash || !secret) {
-    console.error("[auth] Faltan AUTH_USERNAME / AUTH_PASSWORD_HASH / AUTH_SECRET");
+    logger.error("auth_not_configured");
     return { error: "El inicio de sesión no está configurado." };
   }
 
@@ -63,10 +64,12 @@ export async function loginAction(
   const passOk = verifyPassword(password, passwordHash);
   if (!(userOk && passOk)) {
     registerFailure(ip);
+    logger.warn("login_failed", { ip, username });
     return { error: "Usuario o contraseña incorrectos." };
   }
 
   attempts.delete(ip);
+  logger.info("login_ok", { ip, username: expectedUser });
   const store = await cookies();
   store.set(SESSION_COOKIE, await createSessionToken(expectedUser, secret), {
     httpOnly: true,
