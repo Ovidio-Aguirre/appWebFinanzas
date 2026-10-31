@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { env } from "@/lib/env";
 
 /**
  * Usuario único de la app. Configurable por variable de entorno para no
@@ -6,8 +7,7 @@ import { prisma } from "@/lib/prisma";
  * mecanismo de usuario fijo por una sesión real (Auth.js / Clerk), ver
  * `requireUser()` en `src/lib/auth.ts`.
  */
-export const DEFAULT_USER_EMAIL =
-  process.env.SINGLE_USER_EMAIL ?? "usuario@finanzapro.app";
+export const DEFAULT_USER_EMAIL = env.SINGLE_USER_EMAIL;
 
 /**
  * Garantiza que exista un usuario base en la base de datos.
