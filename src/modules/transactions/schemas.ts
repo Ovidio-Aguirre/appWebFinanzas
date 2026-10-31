@@ -26,6 +26,7 @@ export const QuickCaptureTransactionSchema = z
     transactionType: TransactionTypeEnum,
     accountId: z.string().min(1, "Selecciona la cuenta de origen"),
     destinationAccountId: z.string().optional().or(z.literal("")),
+    msiTransactionId: z.string().optional().or(z.literal("")),
     categoryId: z.string().min(1, "Selecciona una categoría"),
     receiptUrl: z.string().optional().or(z.literal("")),
     installmentsCount: z.coerce.number().int().min(1).max(48).default(1),

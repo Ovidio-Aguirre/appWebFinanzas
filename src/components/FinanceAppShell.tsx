@@ -43,6 +43,15 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
   const [preselectedDestinationId, setPreselectedDestinationId] = useState<
     string | undefined
   >(undefined);
+  const [preselectedAccountId, setPreselectedAccountId] = useState<
+    string | undefined
+  >(undefined);
+  const [defaultAmount, setDefaultAmount] = useState<number | undefined>(
+    undefined
+  );
+  const [defaultTitle, setDefaultTitle] = useState<string | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -59,10 +68,14 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
 
   const handleOpenQuickCapture = (
     type: TransactionTypeValue = "PURCHASE",
-    destinationAccountId?: string
+    destinationAccountId?: string,
+    preset?: { accountId?: string; amount?: number; title?: string }
   ) => {
     setQuickCaptureType(type);
     setPreselectedDestinationId(destinationAccountId);
+    setPreselectedAccountId(preset?.accountId);
+    setDefaultAmount(preset?.amount);
+    setDefaultTitle(preset?.title);
     setQuickCaptureOpen(true);
   };
 
@@ -211,8 +224,12 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
         onClose={() => setQuickCaptureOpen(false)}
         accounts={initialData.accounts}
         categories={initialData.categories}
+        transactions={initialData.transactions}
         initialTransactionType={quickCaptureType}
         preselectedDestinationAccountId={preselectedDestinationId}
+        preselectedAccountId={preselectedAccountId}
+        defaultAmount={defaultAmount}
+        defaultTitle={defaultTitle}
       />
     </div>
   );

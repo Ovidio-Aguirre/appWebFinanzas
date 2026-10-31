@@ -6,6 +6,7 @@ import {
   ArrowRightLeft,
   ArrowUpRight,
   CreditCard,
+  Globe,
   Landmark,
   PieChart,
   Receipt,
@@ -26,7 +27,8 @@ interface ExecutiveDashboardProps {
   accounts: SerializedAccount[];
   onOpenQuickCapture: (
     type: TransactionTypeValue,
-    destinationAccountId?: string
+    destinationAccountId?: string,
+    preset?: { accountId?: string; amount?: number; title?: string }
   ) => void;
   onNavigateTab: (tab: string) => void;
 }
@@ -39,6 +41,15 @@ export function ExecutiveDashboard({
   onNavigateTab,
 }: ExecutiveDashboardProps) {
   const creditCards = accounts.filter((a) => a.type === "CREDIT_CARD");
+  const payrollAccount = accounts.find((a) => a.type === "DEBIT");
+  const remittanceAccount = accounts.find((a) => a.type === "CASH");
+  const liquidAccounts = accounts
+    .filter(
+      (a) =>
+        a.type === "CASH" || a.type === "DEBIT" || a.type === "SAVINGS_VAULT"
+    )
+    .sort((a, b) => b.currentBalance - a.currentBalance);
+  const PAYROLL_NET_DEFAULT = 224.38; // salario quincenal neto estimado
 
   // Construcción de segmentos SVG para el Donut Chart de Gastos por Categoría
   let cumulativePercent = 0;
@@ -55,8 +66,8 @@ export function ExecutiveDashboard({
 
   return (
     <div className="space-y-6">
-      {/* Acciones Rápidas Mobile-First (3 botones principales del Módulo A) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Acciones Rápidas Mobile-First (botones principales del Módulo A) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <button
           type="button"
           onClick={() => onOpenQuickCapture("PURCHASE")}
@@ -95,19 +106,48 @@ export function ExecutiveDashboard({
 
         <button
           type="button"
-          onClick={() => onOpenQuickCapture("SALARY_INCOME")}
+          onClick={() =>
+            onOpenQuickCapture("REMITTANCE_INCOME", undefined, {
+              accountId: remittanceAccount?.id,
+              title: "Remesa Recibida",
+            })
+          }
           className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-emerald-500/60 transition shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
-              Flujo de Entrada
+              Registrar Remesa
             </span>
             <p className="text-sm font-bold text-white mt-0.5">
-              Ingreso (Salario / Remesa)
+              Ingreso de Remesa Semanal
             </p>
           </div>
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 group-hover:scale-105 transition">
-            <ArrowDownLeft className="h-5 w-5" />
+            <Globe className="h-5 w-5" />
+          </div>
+        </button>
+
+        <button
+          type="button"
+          onClick={() =>
+            onOpenQuickCapture("SALARY_INCOME", undefined, {
+              accountId: payrollAccount?.id,
+              amount: PAYROLL_NET_DEFAULT,
+              title: "Pago de Nómina",
+            })
+          }
+          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-teal-500/60 transition shadow-lg"
+        >
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-teal-400">
+              Pago de Nómina
+            </span>
+            <p className="text-sm font-bold text-white mt-0.5">
+              Registrar Salario Quincenal
+            </p>
+          </div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 group-hover:scale-105 transition">
+            <Wallet className="h-5 w-5" />
           </div>
         </button>
       </div>
@@ -242,6 +282,56 @@ export function ExecutiveDashboard({
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Disponible por Cuenta (Liquidez detallada) */}
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl">
+        <div className="flex items-center gap-2 mb-4">
+          <Wallet className="h-4 w-4 text-emerald-400" />
+          <h3 className="text-sm font-bold text-white">
+            Disponible por Cuenta
+          </h3>
+          <span className="text-xs text-slate-400">
+            (Efectivo, Débito y Ahorro)
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {liquidAccounts.map((acc) => (
+            <div
+              key={acc.id}
+              className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5 flex items-center justify-between gap-3"
+            >
+              <div className="min-w-0">
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                    acc.type === "CASH"
+                      ? "text-emerald-400"
+                      : acc.type === "DEBIT"
+                      ? "text-sky-400"
+                      : "text-teal-400"
+                  }`}
+                >
+                  {acc.type === "CASH"
+                    ? "Efectivo"
+                    : acc.type === "DEBIT"
+                    ? "Débito"
+                    : "Ahorro"}
+                </span>
+                <p className="text-sm font-bold text-white truncate">
+                  {acc.name}
+                </p>
+                <p className="text-xs text-slate-400 truncate">
+                  {acc.institution || "—"}
+                </p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-base font-extrabold text-emerald-400 tabular-nums">
+                  {formatCurrency(acc.currentBalance, acc.currency)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   CreditCard,
   FileImage,
+  Layers,
   Loader2,
   Receipt,
   Sparkles,
@@ -20,6 +21,7 @@ import { toast } from "sonner";
 import {
   QuickCaptureTransactionSchema,
   type QuickCaptureTransactionInput,
+  type SerializedTransaction,
   type TransactionTypeValue,
 } from "@/modules/transactions/schemas";
 import type { SerializedAccount } from "@/modules/accounts/schemas";
@@ -42,8 +44,12 @@ interface QuickCaptureModalProps {
   onClose: () => void;
   accounts: SerializedAccount[];
   categories: SerializedCategory[];
+  transactions: SerializedTransaction[];
   initialTransactionType?: TransactionTypeValue;
   preselectedDestinationAccountId?: string;
+  preselectedAccountId?: string;
+  defaultAmount?: number;
+  defaultTitle?: string;
 }
 
 export function QuickCaptureModal({
@@ -51,8 +57,12 @@ export function QuickCaptureModal({
   onClose,
   accounts,
   categories,
+  transactions,
   initialTransactionType = "PURCHASE",
   preselectedDestinationAccountId,
+  preselectedAccountId,
+  defaultAmount,
+  defaultTitle,
 }: QuickCaptureModalProps) {
   const [actionMode, setActionMode] = useState<ActionMode>("EXPENSE");
   const [compressedReceipt, setCompressedReceipt] =
@@ -95,6 +105,7 @@ export function QuickCaptureModal({
       transactionType: initialTransactionType,
       accountId: expenseOriginAccounts[0]?.id ?? "",
       destinationAccountId: preselectedDestinationAccountId ?? "",
+      msiTransactionId: "",
       categoryId: categories[0]?.id ?? "",
       receiptUrl: "",
       installmentsCount: 1,
@@ -107,6 +118,15 @@ export function QuickCaptureModal({
   const selectedOriginAccountId = watch("accountId");
   const selectedOriginAccount = accounts.find(
     (a) => a.id === selectedOriginAccountId
+  );
+  const selectedDestinationAccountId = watch("destinationAccountId");
+
+  // Compras a tasa cero (MSI) pendientes de la tarjeta destino seleccionada
+  const pendingMsiTransactions = transactions.filter(
+    (tx) =>
+      tx.accountId === selectedDestinationAccountId &&
+      tx.installmentsCount > 1 &&
+      tx.currentInstallment < tx.installmentsCount
   );
 
   useEffect(() => {
@@ -134,9 +154,14 @@ export function QuickCaptureModal({
     ) {
       setActionMode("INCOME");
       setValue("transactionType", initialTransactionType);
-      setValue("accountId", liquidAccounts[0]?.id ?? "");
+      setValue(
+        "accountId",
+        preselectedAccountId ?? liquidAccounts[0]?.id ?? ""
+      );
       const incomeCat = categories.find((c) => c.type === "INCOME");
       if (incomeCat) setValue("categoryId", incomeCat.id);
+      if (defaultAmount !== undefined) setValue("amount", defaultAmount);
+      if (defaultTitle !== undefined) setValue("title", defaultTitle);
     } else {
       setActionMode("EXPENSE");
       setValue("transactionType", "PURCHASE");
@@ -144,7 +169,14 @@ export function QuickCaptureModal({
       const expenseCat = categories.find((c) => c.type === "EXPENSE");
       if (expenseCat) setValue("categoryId", expenseCat.id);
     }
-  }, [open, initialTransactionType, preselectedDestinationAccountId]);
+  }, [
+    open,
+    initialTransactionType,
+    preselectedDestinationAccountId,
+    preselectedAccountId,
+    defaultAmount,
+    defaultTitle,
+  ]);
 
   const handleModeSwitch = (mode: ActionMode) => {
     setActionMode(mode);
@@ -551,6 +583,34 @@ export function QuickCaptureModal({
               </div>
             )}
           </div>
+
+          {/* Si paga tarjeta con compras a tasa cero: asignar cuota específica */}
+          {selectedTransactionType === "CARD_PAYMENT" &&
+            pendingMsiTransactions.length > 0 && (
+              <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-3.5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-indigo-400 shrink-0" />
+                  <label className="text-xs font-semibold text-indigo-200">
+                    Asignar pago a una compra a Tasa Cero (opcional)
+                  </label>
+                </div>
+                <select
+                  {...register("msiTransactionId")}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
+                >
+                  <option value="">
+                    Pago general (sin asignar cuota específica)
+                  </option>
+                  {pendingMsiTransactions.map((tx) => (
+                    <option key={tx.id} value={tx.id}>
+                      {tx.title} — cuota {tx.currentInstallment}/
+                      {tx.installmentsCount} (restan{" "}
+                      {tx.installmentsCount - tx.currentInstallment})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
           {/* Si es compra con Tarjeta de Crédito: Selector de Cuotas / MSI */}
           {actionMode === "EXPENSE" &&

@@ -146,6 +146,7 @@ model Transaction {
   destinationAccountId String?         // Para transferencias, ahorro o pagos de tarjeta/préstamo
   loanInstallmentId    String?         @unique // Si corresponde al pago de una cuota específica
   savingsGoalId        String?         // Si corresponde a un aporte a una meta de ahorro
+  msiTransactionId     String?         // Si el pago corresponde a una cuota de una compra a tasa cero específica
 
   title                String
   description          String?
@@ -167,6 +168,8 @@ model Transaction {
   category             Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   loanInstallment      LoanInstallment? @relation(fields: [loanInstallmentId], references: [id], onDelete: SetNull)
   savingsGoal          SavingsGoal?    @relation(fields: [savingsGoalId], references: [id], onDelete: SetNull)
+  msiTransaction       Transaction?    @relation("MsiInstallmentPayment", fields: [msiTransactionId], references: [id], onDelete: SetNull)
+  msiPayments          Transaction[]   @relation("MsiInstallmentPayment")
 
   @@index([userId, date(sort: Desc)])
   @@index([accountId, date(sort: Desc)])
@@ -174,6 +177,7 @@ model Transaction {
   @@index([categoryId])
   @@index([transactionType])
   @@index([date])
+  @@index([msiTransactionId])
 }
 
 model RecurringRule {

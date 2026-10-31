@@ -51,7 +51,8 @@ export function CreditCardsModule({
 
   const creditCards = accounts.filter((a) => a.type === "CREDIT_CARD");
   const liquidAccounts = accounts.filter(
-    (a) => a.type === "CASH" || a.type === "DEBIT"
+    (a) =>
+      a.type === "CASH" || a.type === "DEBIT" || a.type === "SAVINGS_VAULT"
   );
 
   const {
@@ -341,11 +342,11 @@ export function CreditCardsModule({
         })}
       </div>
 
-      {/* Cuentas de Efectivo y Débito */}
+      {/* Cuentas de Efectivo, Débito y Ahorro */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 space-y-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
           <Wallet className="h-4 w-4 text-emerald-400" />
-          Cuentas de Efectivo y Débito (Liquidez Disponible)
+          Cuentas Líquidas (Efectivo, Débito y Ahorro)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {liquidAccounts.map((acc) => (
@@ -354,8 +355,20 @@ export function CreditCardsModule({
               className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 flex items-center justify-between"
             >
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-                  {acc.type === "CASH" ? "Efectivo" : "Cuenta Débito"}
+                <span
+                  className={`text-[10px] font-bold uppercase tracking-wider ${
+                    acc.type === "CASH"
+                      ? "text-emerald-400"
+                      : acc.type === "DEBIT"
+                      ? "text-sky-400"
+                      : "text-teal-400"
+                  }`}
+                >
+                  {acc.type === "CASH"
+                    ? "Efectivo"
+                    : acc.type === "DEBIT"
+                    ? "Cuenta Débito"
+                    : "Cuenta de Ahorro"}
                 </span>
                 <p className="text-sm font-bold text-white mt-0.5">
                   {acc.name}

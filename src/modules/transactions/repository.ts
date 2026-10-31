@@ -277,12 +277,32 @@ export async function recordTransactionACID(
       });
     }
 
+    // Si el pago corresponde a una cuota de una compra a tasa cero específica,
+    // avanzar el contador de cuotas pagadas de esa compra (MSI).
+    if (input.msiTransactionId) {
+      const msiTx = await tx.transaction.findUnique({
+        where: { id: input.msiTransactionId },
+      });
+      if (msiTx?.installmentsCount && msiTx.currentInstallment) {
+        await tx.transaction.update({
+          where: { id: msiTx.id },
+          data: {
+            currentInstallment: Math.min(
+              msiTx.installmentsCount,
+              msiTx.currentInstallment + 1
+            ),
+          },
+        });
+      }
+    }
+
     // Crear el registro de transacción unificado
     const created = await tx.transaction.create({
       data: {
         userId,
         accountId: originAccount.id,
         destinationAccountId: input.destinationAccountId || null,
+        msiTransactionId: input.msiTransactionId || null,
         categoryId: input.categoryId,
         title: input.title,
         description: input.description || null,
