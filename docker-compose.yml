@@ -5,10 +5,10 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: webfinanzas
-      POSTGRES_PASSWORD: webfinanzas_secret_2026
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-webfinanzas_secret_2026}
       POSTGRES_DB: webfinanzas_db
     ports:
-      - "5442:5432"
+      - "127.0.0.1:5442:5432"
     volumes:
       - webfinanzas_pgdata:/var/lib/postgresql/data
     healthcheck:

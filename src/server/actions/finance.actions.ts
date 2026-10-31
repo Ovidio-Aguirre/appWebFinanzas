@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { startOfMonth, endOfMonth } from "date-fns";
 import { ensureUserExists } from "@/lib/prisma/bootstrap";
 import { prisma } from "@/lib/prisma";
 import {
@@ -24,6 +25,7 @@ import {
 import {
   calculateMonthlyCashflow,
   getTransactionsByUser,
+  getTransactionsInRange,
   recordTransactionACID,
   toggleTransactionReconciledInDb,
   type MonthlyCashflowSummary,
@@ -113,7 +115,15 @@ export async function getFinancialWorkspaceData(): Promise<FinancialWorkspaceSna
     ]);
 
   const netWorth = calculateNetWorthBreakdown(accounts);
-  const monthlyCashflow = calculateMonthlyCashflow(transactions);
+
+  // Flujo de caja sobre todas las transacciones del mes (no limitado a 100).
+  const now = new Date();
+  const monthTransactions = await getTransactionsInRange(
+    user.id,
+    startOfMonth(now),
+    endOfMonth(now)
+  );
+  const monthlyCashflow = calculateMonthlyCashflow(monthTransactions);
 
   return {
     user: {

@@ -36,18 +36,36 @@ export function getDaysUntilDayOfMonth(
   targetDay: number | null | undefined,
   referenceDate: Date = new Date()
 ): { daysRemaining: number; nextDate: Date } {
-  const safeDay = Math.min(Math.max(targetDay ?? 1, 1), 28);
+  const day = Math.min(Math.max(targetDay ?? 1, 1), 31);
   const today = startOfDay(referenceDate);
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
+  const nextDate = nextOccurrenceOfDay(day, today);
+  const daysRemaining = differenceInCalendarDays(nextDate, today);
+  return { daysRemaining, nextDate };
+}
 
-  let candidate = new Date(currentYear, currentMonth, safeDay);
-  if (candidate < today) {
-    candidate = new Date(currentYear, currentMonth + 1, safeDay);
+/**
+ * Devuelve la próxima ocurrencia de un día del mes (1-31) a partir de `from`.
+ * Si el mes no tiene ese día (p. ej. 31 en febrero), devuelve el último día del mes.
+ */
+function nextOccurrenceOfDay(day: number, from: Date): Date {
+  const year = from.getFullYear();
+  const month = from.getMonth();
+
+  let candidate = new Date(year, month, day);
+  if (candidate.getDate() < day) {
+    // El mes no tiene ese día → último día del mes actual.
+    candidate = new Date(year, month + 1, 0);
   }
 
-  const daysRemaining = differenceInCalendarDays(candidate, today);
-  return { daysRemaining, nextDate: candidate };
+  if (candidate < from) {
+    // Ya pasó → intentar el mes siguiente.
+    candidate = new Date(year, month + 1, day);
+    if (candidate.getDate() < day) {
+      candidate = new Date(year, month + 2, 0);
+    }
+  }
+
+  return candidate;
 }
 
 /**

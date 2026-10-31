@@ -53,6 +53,53 @@ export async function getTransactionsByUser(
   }));
 }
 
+/**
+ * Obtiene las transacciones de un rango de fechas (p. ej. el mes en curso) sin
+ * el límite de 100 filas, para calcular el flujo de caja de forma completa.
+ */
+export async function getTransactionsInRange(
+  userId: string,
+  start: Date,
+  end: Date
+): Promise<SerializedTransaction[]> {
+  const rows = await prisma.transaction.findMany({
+    where: { userId, date: { gte: start, lte: end } },
+    include: {
+      account: { select: { name: true, type: true } },
+      destinationAccount: { select: { name: true } },
+      category: {
+        select: { name: true, icon: true, color: true, type: true },
+      },
+    },
+    orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+  });
+
+  return rows.map((tx) => ({
+    id: tx.id,
+    userId: tx.userId,
+    accountId: tx.accountId,
+    accountName: tx.account.name,
+    accountType: tx.account.type,
+    destinationAccountId: tx.destinationAccountId,
+    destinationAccountName: tx.destinationAccount?.name ?? null,
+    categoryId: tx.categoryId,
+    categoryName: tx.category.name,
+    categoryIcon: tx.category.icon,
+    categoryColor: tx.category.color,
+    categoryType: tx.category.type,
+    title: tx.title,
+    description: tx.description,
+    amount: toNumber(tx.amount),
+    date: tx.date.toISOString(),
+    transactionType: tx.transactionType,
+    receiptUrl: tx.receiptUrl,
+    installmentsCount: tx.installmentsCount ?? 1,
+    currentInstallment: tx.currentInstallment ?? 1,
+    isRecurring: tx.isRecurring,
+    isReconciled: tx.isReconciled,
+  }));
+}
+
 export interface MonthlyCashflowSummary {
   totalIncome: number;
   totalExpenses: number;

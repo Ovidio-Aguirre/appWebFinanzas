@@ -21,7 +21,9 @@ export const QuickCaptureTransactionSchema = z
     description: z.string().max(240).optional().or(z.literal("")),
     amount: z.coerce
       .number()
-      .positive("El monto debe ser mayor a $0.00"),
+      .finite("El monto debe ser un número válido")
+      .positive("El monto debe ser mayor a $0.00")
+      .max(100_000_000, "El monto excede el límite permitido"),
     date: z.string().min(1, "La fecha es obligatoria"),
     transactionType: TransactionTypeEnum,
     accountId: z.string().min(1, "Selecciona la cuenta de origen"),
