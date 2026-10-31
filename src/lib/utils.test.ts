@@ -68,3 +68,29 @@ describe("generateAmortizationSchedule", () => {
     expect(schedule[0]!.amount).toBeCloseTo(100, 2);
   });
 });
+
+import { advanceRecurringDate, calendarDate } from "./utils";
+
+describe("advanceRecurringDate", () => {
+  const d = (s: string) => new Date(s + "T00:00:00Z");
+  it("fin de mes (ancla 31) no se desplaza", () => {
+    let x = d("2026-10-31");
+    const out: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      x = advanceRecurringDate(x, "MONTHLY", 31);
+      out.push(x.toISOString().slice(0, 10));
+    }
+    expect(out).toEqual(["2026-11-30", "2026-12-31", "2027-01-31", "2027-02-28"]);
+  });
+  it("día fijo 1 y 26", () => {
+    expect(advanceRecurringDate(d("2026-11-01"), "MONTHLY", 1).toISOString().slice(0, 10)).toBe("2026-12-01");
+    expect(advanceRecurringDate(d("2026-12-26"), "MONTHLY", 26).toISOString().slice(0, 10)).toBe("2027-01-26");
+  });
+});
+
+describe("calendarDate", () => {
+  it("medianoche UTC conserva el día de calendario local", () => {
+    const c = calendarDate("2026-11-01T00:00:00.000Z");
+    expect([c.getFullYear(), c.getMonth(), c.getDate()]).toEqual([2026, 10, 1]);
+  });
+});

@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: finanzapro
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD}
+      POSTGRES_DB: finanzapro
+    volumes:
+      - finanzapro_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finanzapro -d finanzapro"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    image: finanzapro-app:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://finanzapro:${POSTGRES_PASSWORD}@db:5432/finanzapro?schema=public
+      STORAGE_PROVIDER: local
+      SINGLE_USER_EMAIL: ${SINGLE_USER_EMAIL:-usuario@finanzapro.app}
+      AUTH_USERNAME: ${AUTH_USERNAME}
+      AUTH_PASSWORD_HASH: ${AUTH_PASSWORD_HASH}
+      AUTH_SECRET: ${AUTH_SECRET}
+    volumes:
+      - finanzapro_uploads:/app/public/uploads
+    ports:
+      - "127.0.0.1:3050:3050"
+
+volumes:
+  finanzapro_pgdata:
+  finanzapro_uploads:

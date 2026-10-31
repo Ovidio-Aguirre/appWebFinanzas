@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.github
+.env
+.env.*
+!.env.example
+.playwright-mcp
+*.tsbuildinfo
+public/uploads/receipts/*
+PROJECT_MEMORY.md
+AUDITORIA_TECNICA.md

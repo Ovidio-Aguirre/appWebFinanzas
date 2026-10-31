@@ -23,7 +23,7 @@ import {
   createLoanWithScheduleAction,
   payLoanInstallmentAction,
 } from "@/server/actions/finance.actions";
-import { formatCurrency, formatShortDate } from "@/lib/utils";
+import { formatCurrency, formatShortDate, todayLocalIso } from "@/lib/utils";
 
 interface LoansModuleProps {
   loans: SerializedLoanAccount[];
@@ -45,7 +45,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
     (a) => a.type === "DEBIT" || a.type === "CASH"
   );
 
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = todayLocalIso();
 
   const {
     register,

@@ -1,5 +1,5 @@
 import { prisma, toNumber } from "@/lib/prisma";
-import { calculateNextExecutionDate } from "@/lib/utils";
+import { advanceRecurringDate } from "@/lib/utils";
 import { DomainError } from "@/lib/errors";
 import type {
   CreateRecurringRuleInput,
@@ -139,10 +139,17 @@ export async function executeRecurringRuleACID(
         : "BILL_PAYMENT";
 
     const now = new Date();
-    const nextDate = calculateNextExecutionDate(
-      rule.nextExecutionDate > now ? rule.nextExecutionDate : now,
-      rule.frequency
+    // Avanza desde la fecha programada (no desde "ahora") anclado al día original
+    // de la regla; si se ejecuta tarde, salta periodos hasta quedar en el futuro.
+    const anchorDay = rule.startDate.getUTCDate();
+    let nextDate = advanceRecurringDate(
+      rule.nextExecutionDate,
+      rule.frequency,
+      anchorDay
     );
+    while (nextDate <= now) {
+      nextDate = advanceRecurringDate(nextDate, rule.frequency, anchorDay);
+    }
 
     // A3: bloqueo optimista. Reclama la ejecución avanzando nextExecutionDate
     // solo si nadie más lo hizo ya (comparando el valor previo).

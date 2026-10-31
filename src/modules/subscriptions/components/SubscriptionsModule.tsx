@@ -33,7 +33,12 @@ import {
   executeRecurringRuleAction,
   toggleRecurringAutoPostAction,
 } from "@/server/actions/finance.actions";
-import { formatCurrency, formatShortDate } from "@/lib/utils";
+import {
+  calendarDate,
+  formatCurrency,
+  formatShortDate,
+  todayLocalIso,
+} from "@/lib/utils";
 
 interface SubscriptionsModuleProps {
   rules: SerializedRecurringRule[];
@@ -124,7 +129,7 @@ export function SubscriptionsModule({
       return acc + r.amount * mult;
     }, 0);
 
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = todayLocalIso();
 
   const {
     register,
@@ -270,7 +275,7 @@ export function SubscriptionsModule({
         <div className="divide-y divide-slate-200">
           {rules.map((rule) => {
             const meta = RULE_TYPE_LABELS[rule.ruleType];
-            const nextDate = startOfDay(new Date(rule.nextExecutionDate));
+            const nextDate = startOfDay(calendarDate(rule.nextExecutionDate));
             const daysLeft = differenceInCalendarDays(nextDate, today);
             const isSoon = daysLeft >= 0 && daysLeft <= 5;
             const isDueTodayOrPast = daysLeft <= 0;

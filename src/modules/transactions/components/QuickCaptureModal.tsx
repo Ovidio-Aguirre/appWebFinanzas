@@ -35,7 +35,7 @@ import {
   uploadCompressedReceipt,
   type CompressedReceiptResult,
 } from "@/lib/storage/receipt-storage";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, todayLocalIso } from "@/lib/utils";
 
 type ActionMode = "EXPENSE" | "DEBT_PAYMENT" | "INCOME";
 
@@ -86,7 +86,7 @@ export function QuickCaptureModal({
       a.type === "DEBIT"
   );
 
-  const todayIso = new Date().toISOString().slice(0, 10);
+  const todayIso = todayLocalIso();
 
   const {
     register,

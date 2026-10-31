@@ -19,8 +19,35 @@ export function formatCurrency(
   }).format(amount);
 }
 
+/**
+ * Las fechas "de calendario" (vencimientos, fechas de movimiento) se guardan como
+ * medianoche UTC. Mostrarlas con la zona local las corre un día atrás (UTC-6).
+ * Esta función devuelve un Date local con el MISMO día de calendario guardado.
+ * Los instantes con hora real (no medianoche UTC) se dejan tal cual.
+ */
+export function calendarDate(dateInput: string | Date): Date {
+  const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  if (
+    d.getUTCHours() === 0 &&
+    d.getUTCMinutes() === 0 &&
+    d.getUTCSeconds() === 0 &&
+    d.getUTCMilliseconds() === 0
+  ) {
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  }
+  return d;
+}
+
+/** Fecha de hoy en formato YYYY-MM-DD según la zona horaria LOCAL (no UTC). */
+export function todayLocalIso(now: Date = new Date()): string {
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const d = String(now.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function formatShortDate(dateInput: string | Date): string {
-  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  const date = calendarDate(dateInput);
   return new Intl.DateTimeFormat("es-MX", {
     day: "2-digit",
     month: "short",
@@ -85,6 +112,37 @@ export function calculateNextExecutionDate(
     case "YEARLY":
       return addYears(currentDate, 1);
   }
+}
+
+/**
+ * Avanza una fecha de regla recurrente un periodo, en UTC y anclada al día
+ * original (p. ej. ancla 31 = "fin de mes": 28/29 feb, 30 abr, 31 may…),
+ * evitando el desplazamiento acumulado de addMonths (31→30→30…).
+ */
+export function advanceRecurringDate(
+  date: Date,
+  frequency: "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "YEARLY",
+  anchorDay: number = date.getUTCDate()
+): Date {
+  if (frequency === "WEEKLY" || frequency === "BIWEEKLY") {
+    const days = frequency === "WEEKLY" ? 7 : 14;
+    return new Date(date.getTime() + days * 86_400_000);
+  }
+  const monthsToAdd = frequency === "MONTHLY" ? 1 : 12;
+  const targetMonth = date.getUTCMonth() + monthsToAdd;
+  const year = date.getUTCFullYear() + Math.floor(targetMonth / 12);
+  const month = ((targetMonth % 12) + 12) % 12;
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(
+    Date.UTC(
+      year,
+      month,
+      Math.min(anchorDay, daysInMonth),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds()
+    )
+  );
 }
 
 export interface AmortizationRow {
