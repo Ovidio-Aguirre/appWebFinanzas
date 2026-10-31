@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: webfinanzas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: webfinanzas
+      POSTGRES_PASSWORD: webfinanzas_secret_2026
+      POSTGRES_DB: webfinanzas_db
+    ports:
+      - "5442:5432"
+    volumes:
+      - webfinanzas_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U webfinanzas -d webfinanzas_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  webfinanzas_pgdata:

@@ -1,0 +1,51 @@
+{
+  "name": "FinanzaPro — Control Patrimonial, Tarjetas y Metas",
+  "short_name": "FinanzaPro",
+  "description": "PWA de gestión de finanzas personales, tarjetas de crédito, amortización de deudas, suscripciones, comprobantes y bóvedas de ahorro.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#0d9488",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Registrar Compra / Gasto",
+      "short_name": "Nueva Compra",
+      "description": "Captura rápida de gasto con foto de ticket",
+      "url": "/?quickCapture=PURCHASE",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Pagar Tarjeta o Cuota",
+      "short_name": "Pagar Deuda",
+      "description": "Transferir pago a tarjeta de crédito o préstamo",
+      "url": "/?quickCapture=CARD_PAYMENT",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Suscripciones y Calendario",
+      "short_name": "Recurrentes",
+      "description": "Ver próximos cobros e ingresos recurrentes",
+      "url": "/?tab=subscriptions",
+      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml" }]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+import { prisma, toNumber } from "@/lib/prisma";
+import { calculateNextExecutionDate } from "@/lib/utils";
+import type {
+  CreateRecurringRuleInput,
+  SerializedRecurringRule,
+} from "./schemas";
+
+export async function getRecurringRulesByUser(
+  userId: string
+): Promise<SerializedRecurringRule[]> {
+  const rules = await prisma.recurringRule.findMany({
+    where: { userId },
+    include: {
+      account: { select: { name: true, type: true } },
+      category: { select: { name: true, icon: true, color: true } },
+    },
+    orderBy: [{ active: "desc" }, { nextExecutionDate: "asc" }],
+  });
+
+  return rules.map((r) => ({
+    id: r.id,
+    userId: r.userId,
+    accountId: r.accountId,
+    accountName: r.account.name,
+    accountType: r.account.type,
+    categoryId: r.categoryId,
+    categoryName: r.category.name,
+    categoryIcon: r.category.icon,
+    categoryColor: r.category.color,
+    title: r.title,
+    provider: r.provider,
+    amount: toNumber(r.amount),
+    frequency: r.frequency,
+    startDate: r.startDate.toISOString(),
+    nextExecutionDate: r.nextExecutionDate.toISOString(),
+    lastExecutedDate: r.lastExecutedDate
+      ? r.lastExecutedDate.toISOString()
+      : null,
+    autoPost: r.autoPost,
+    active: r.active,
+    ruleType: r.ruleType,
+  }));
+}
+
+export async function createRecurringRuleInDb(
+  userId: string,
+  input: CreateRecurringRuleInput
+): Promise<SerializedRecurringRule> {
+  const created = await prisma.recurringRule.create({
+    data: {
+      userId,
+      accountId: input.accountId,
+      categoryId: input.categoryId,
+      title: input.title,
+      provider: input.provider || null,
+      amount: input.amount,
+      frequency: input.frequency,
+      ruleType: input.ruleType,
+      startDate: new Date(input.startDate),
+      nextExecutionDate: new Date(input.nextExecutionDate),
+      autoPost: input.autoPost,
+      active: true,
+    },
+    include: {
+      account: { select: { name: true, type: true } },
+      category: { select: { name: true, icon: true, color: true } },
+    },
+  });
+
+  return {
+    id: created.id,
+    userId: created.userId,
+    accountId: created.accountId,
+    accountName: created.account.name,
+    accountType: created.account.type,
+    categoryId: created.categoryId,
+    categoryName: created.category.name,
+    categoryIcon: created.category.icon,
+    categoryColor: created.category.color,
+    title: created.title,
+    provider: created.provider,
+    amount: toNumber(created.amount),
+    frequency: created.frequency,
+    startDate: created.startDate.toISOString(),
+    nextExecutionDate: created.nextExecutionDate.toISOString(),
+    lastExecutedDate: created.lastExecutedDate
+      ? created.lastExecutedDate.toISOString()
+      : null,
+    autoPost: created.autoPost,
+    active: created.active,
+    ruleType: created.ruleType,
+  };
+}
+
+/**
+ * Ejecuta una regla recurrente (Suscripción, Nómina, Remesa o Cuota Fija)
+ * en una transacción ACID: genera la Transaction, actualiza el saldo de la cuenta
+ * y avanza nextExecutionDate según la frecuencia configurada.
+ */
+export async function executeRecurringRuleACID(
+  userId: string,
+  ruleId: string
+): Promise<{ nextExecutionDate: string }> {
+  return prisma.$transaction(async (tx) => {
+    const rule = await tx.recurringRule.findFirst({
+      where: { id: ruleId, userId },
+      include: { account: true },
+    });
+
+    if (!rule) {
+      throw new Error("No se encontró la regla recurrente especificada.");
+    }
+
+    const amount = toNumber(rule.amount);
+    const isIncome =
+      rule.ruleType === "PAYROLL" || rule.ruleType === "REMITTANCE";
+
+    const transactionType =
+      rule.ruleType === "PAYROLL"
+        ? "SALARY_INCOME"
+        : rule.ruleType === "REMITTANCE"
+        ? "REMITTANCE_INCOME"
+        : "BILL_PAYMENT";
+
+    // Actualizar saldo de la cuenta asociada
+    if (isIncome) {
+      await tx.account.update({
+        where: { id: rule.accountId },
+        data: { currentBalance: { increment: amount } },
+      });
+    } else if (rule.account.type === "CREDIT_CARD") {
+      await tx.account.update({
+        where: { id: rule.accountId },
+        data: {
+          currentBalance: { increment: amount },
+          noInterestPayment: { increment: amount },
+        },
+      });
+    } else {
+      const currentBal = toNumber(rule.account.currentBalance);
+      if (currentBal < amount) {
+        throw new Error(
+          `Saldo insuficiente en ${rule.account.name} para ejecutar ${rule.title}.`
+        );
+      }
+      await tx.account.update({
+        where: { id: rule.accountId },
+        data: { currentBalance: { decrement: amount } },
+      });
+    }
+
+    // Crear la transacción correspondiente
+    const now = new Date();
+    await tx.transaction.create({
+      data: {
+        userId,
+        accountId: rule.accountId,
+        categoryId: rule.categoryId,
+        title: `${rule.title} (Ejecución Recurrente)`,
+        description: `Generado desde programación ${rule.frequency}`,
+        amount,
+        date: now,
+        transactionType,
+        isRecurring: true,
+        isReconciled: rule.autoPost,
+      },
+    });
+
+    // Avanzar nextExecutionDate
+    const nextDate = calculateNextExecutionDate(
+      rule.nextExecutionDate > now ? rule.nextExecutionDate : now,
+      rule.frequency
+    );
+
+    const updatedRule = await tx.recurringRule.update({
+      where: { id: rule.id },
+      data: {
+        lastExecutedDate: now,
+        nextExecutionDate: nextDate,
+      },
+    });
+
+    return {
+      nextExecutionDate: updatedRule.nextExecutionDate.toISOString(),
+    };
+  });
+}
+
+export async function toggleRecurringRuleAutoPostInDb(
+  userId: string,
+  ruleId: string,
+  autoPost: boolean
+): Promise<void> {
+  await prisma.recurringRule.updateMany({
+    where: { id: ruleId, userId },
+    data: { autoPost },
+  });
+}
