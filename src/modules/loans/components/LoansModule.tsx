@@ -24,6 +24,8 @@ import {
   payLoanInstallmentAction,
 } from "@/server/actions/finance.actions";
 import { formatCurrency, formatShortDate, todayLocalIso } from "@/lib/utils";
+import { RowActions } from "@/components/ui/crud";
+import { DeleteLoanDialog, EditLoanDialog } from "@/components/crud/EditDialogs";
 
 interface LoansModuleProps {
   loans: SerializedLoanAccount[];
@@ -32,6 +34,8 @@ interface LoansModuleProps {
 
 export function LoansModule({ loans, accounts }: LoansModuleProps) {
   const [showNewLoanModal, setShowNewLoanModal] = useState(false);
+  const [editingLoan, setEditingLoan] = useState<SerializedLoanAccount | null>(null);
+  const [deletingLoan, setDeletingLoan] = useState<SerializedLoanAccount | null>(null);
   const [selectedOriginAccountId, setSelectedOriginAccountId] = useState<string>(
     () =>
       accounts.find((a) => a.type === "DEBIT" || a.type === "CASH")?.id ?? ""
@@ -164,9 +168,16 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     {loan.institution || "Entidad Financiera"}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mt-1">
-                  {loan.name}
-                </h3>
+                <div className="mt-1 flex items-center gap-1">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    {loan.name}
+                  </h3>
+                  <RowActions
+                    label={loan.name}
+                    onEdit={() => setEditingLoan(loan)}
+                    onDelete={() => setDeletingLoan(loan)}
+                  />
+                </div>
                 <p className="text-xs text-slate-500 mt-0.5">
                   Monto Inicial: {formatCurrency(loan.originalPrincipal)} • Tasa
                   Anual: {loan.interestRate}% • Plazo: {loan.termMonths} meses
@@ -291,6 +302,9 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
       })}
 
       {/* Modal para Registrar Nuevo Préstamo con Amortización */}
+      <EditLoanDialog loan={editingLoan} onClose={() => setEditingLoan(null)} />
+      <DeleteLoanDialog loan={deletingLoan} onClose={() => setDeletingLoan(null)} />
+
       {showNewLoanModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"

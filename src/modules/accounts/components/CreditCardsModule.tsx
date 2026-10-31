@@ -27,6 +27,11 @@ import type {
   TransactionTypeValue,
 } from "@/modules/transactions/schemas";
 import { createAccountAction } from "@/server/actions/finance.actions";
+import { RowActions } from "@/components/ui/crud";
+import {
+  DeleteAccountDialog,
+  EditAccountDialog,
+} from "@/components/crud/EditDialogs";
 import {
   formatCurrency,
   formatShortDate,
@@ -48,6 +53,8 @@ export function CreditCardsModule({
   onOpenQuickCapture,
 }: CreditCardsModuleProps) {
   const [showNewAccountModal, setShowNewAccountModal] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<SerializedAccount | null>(null);
+  const [deletingAccount, setDeletingAccount] = useState<SerializedAccount | null>(null);
 
   const creditCards = accounts.filter((a) => a.type === "CREDIT_CARD");
   const liquidAccounts = accounts.filter(
@@ -153,7 +160,7 @@ export function CreditCardsModule({
               <div
                 className="relative p-5 border-b border-slate-200 overflow-hidden"
                 style={{
-                  background: `linear-gradient(135deg, ${card.color}40 0%, rgba(15,23,42,0.92) 55%, rgba(15,23,42,0.97) 100%)`,
+                  background: `linear-gradient(135deg, ${card.color}38 0%, #ffffff 65%)`,
                 }}
               >
                 <div
@@ -175,6 +182,7 @@ export function CreditCardsModule({
                     </h3>
                   </div>
 
+                  <div className="flex items-center gap-1">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold border ${
                       utilizationPercent > 70
@@ -186,6 +194,12 @@ export function CreditCardsModule({
                   >
                     Uso: {utilizationPercent}%
                   </span>
+                  <RowActions
+                    label={card.name}
+                    onEdit={() => setEditingAccount(card)}
+                    onDelete={() => setDeletingAccount(card)}
+                  />
+                  </div>
                 </div>
 
                 {/* Saldo Consumido vs Línea Disponible */}
@@ -393,6 +407,12 @@ export function CreditCardsModule({
                 <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
                   <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Activa
                 </span>
+                <RowActions
+                  className="justify-end"
+                  label={acc.name}
+                  onEdit={() => setEditingAccount(acc)}
+                  onDelete={() => setDeletingAccount(acc)}
+                />
               </div>
             </div>
           ))}
@@ -400,6 +420,9 @@ export function CreditCardsModule({
       </div>
 
       {/* Modal para Crear Nueva Tarjeta o Cuenta */}
+      <EditAccountDialog account={editingAccount} onClose={() => setEditingAccount(null)} />
+      <DeleteAccountDialog account={deletingAccount} onClose={() => setDeletingAccount(null)} />
+
       {showNewAccountModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"

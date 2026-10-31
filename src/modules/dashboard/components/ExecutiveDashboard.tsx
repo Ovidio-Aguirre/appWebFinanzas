@@ -162,7 +162,7 @@ export function ExecutiveDashboard({
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Patrimonio Líquido Real
               </span>
-              <span className="text-xs text-slate-500 font-mono">
+              <span className="hidden text-xs text-slate-500 font-mono md:inline">
                 (Efectivo + Débito + Bóvedas) − (Tarjetas + Préstamos)
               </span>
             </div>
@@ -177,8 +177,13 @@ export function ExecutiveDashboard({
               >
                 {formatCurrency(netWorth.realLiquidNetWorth)}
               </h2>
-              <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
-                <TrendingUp className="h-3.5 w-3.5" /> Solvencia Positiva
+              <span
+                className={`text-xs font-semibold flex items-center gap-1 ${
+                  netWorth.realLiquidNetWorth >= 0 ? "text-emerald-600" : "text-rose-600"
+                }`}
+              >
+                <TrendingUp className="h-3.5 w-3.5" />
+                {netWorth.realLiquidNetWorth >= 0 ? "Solvencia positiva" : "Deuda mayor que activos"}
               </span>
             </div>
           </div>

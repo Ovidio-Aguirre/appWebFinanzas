@@ -28,6 +28,8 @@ import {
   createSavingsGoalAction,
 } from "@/server/actions/finance.actions";
 import { formatCurrency, formatShortDate } from "@/lib/utils";
+import { RowActions } from "@/components/ui/crud";
+import { DeleteGoalDialog, EditGoalDialog } from "@/components/crud/EditDialogs";
 
 interface SavingsModuleProps {
   savingsGoals: SerializedSavingsGoal[];
@@ -36,6 +38,8 @@ interface SavingsModuleProps {
 
 export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
   const [showNewGoalModal, setShowNewGoalModal] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<SerializedSavingsGoal | null>(null);
+  const [deletingGoal, setDeletingGoal] = useState<SerializedSavingsGoal | null>(null);
   const [transferGoal, setTransferGoal] =
     useState<SerializedSavingsGoal | null>(null);
 
@@ -169,6 +173,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                     </div>
                   </div>
 
+                  <div className="flex items-center gap-0.5">
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold border ${
                       isCompleted
@@ -178,6 +183,12 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   >
                     {goal.progressPercent}%
                   </span>
+                  <RowActions
+                    label={goal.name}
+                    onEdit={() => setEditingGoal(goal)}
+                    onDelete={() => setDeletingGoal(goal)}
+                  />
+                  </div>
                 </div>
 
                 {/* Monto ahorrado vs objetivo */}
@@ -346,6 +357,9 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
       )}
 
       {/* Modal para Crear Nueva Bóveda de Ahorro */}
+      <EditGoalDialog goal={editingGoal} onClose={() => setEditingGoal(null)} />
+      <DeleteGoalDialog goal={deletingGoal} accounts={accounts} onClose={() => setDeletingGoal(null)} />
+
       {showNewGoalModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"

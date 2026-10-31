@@ -33,6 +33,10 @@ import {
   executeRecurringRuleAction,
   toggleRecurringAutoPostAction,
 } from "@/server/actions/finance.actions";
+import { Pause } from "lucide-react";
+import { RowActions, runAction } from "@/components/ui/crud";
+import { setRecurringRuleActiveAction } from "@/server/actions/crud.actions";
+import { DeleteRuleDialog, EditRuleDialog } from "@/components/crud/EditDialogs";
 import {
   calendarDate,
   formatCurrency,
@@ -85,6 +89,8 @@ export function SubscriptionsModule({
   categories,
 }: SubscriptionsModuleProps) {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editingRule, setEditingRule] = useState<SerializedRecurringRule | null>(null);
+  const [deletingRule, setDeletingRule] = useState<SerializedRecurringRule | null>(null);
   const [executingId, setExecutingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [creatingCategory, setCreatingCategory] = useState(false);
@@ -375,7 +381,7 @@ export function SubscriptionsModule({
 
                   <button
                     type="button"
-                    disabled={isPending && executingId === rule.id}
+                    disabled={!rule.active || (isPending && executingId === rule.id)}
                     onClick={() => handleConfirmExecution(rule.id)}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-teal-500 hover:text-slate-950 border border-slate-200 px-3.5 py-2 text-xs font-bold text-slate-700 transition"
                   >
@@ -386,12 +392,44 @@ export function SubscriptionsModule({
                     )}
                     <span>Confirmar ejecución</span>
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void runAction(() =>
+                        setRecurringRuleActiveAction(rule.id, !rule.active)
+                      )
+                    }
+                    aria-label={rule.active ? `Pausar ${rule.title}` : `Reactivar ${rule.title}`}
+                    title={rule.active ? "Pausar" : "Reactivar"}
+                    className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 ${
+                      rule.active
+                        ? "text-slate-500 hover:bg-amber-50 hover:text-amber-600"
+                        : "bg-amber-100 text-amber-700"
+                    }`}
+                  >
+                    {rule.active ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  </button>
+
+                  <RowActions
+                    label={rule.title}
+                    onEdit={() => setEditingRule(rule)}
+                    onDelete={() => setDeletingRule(rule)}
+                  />
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+
+      <EditRuleDialog
+        rule={editingRule}
+        accounts={accounts}
+        categories={categories}
+        onClose={() => setEditingRule(null)}
+      />
+      <DeleteRuleDialog rule={deletingRule} onClose={() => setDeletingRule(null)} />
 
       {/* Modal para Registrar Regla Recurrente */}
       {showCreateModal && (

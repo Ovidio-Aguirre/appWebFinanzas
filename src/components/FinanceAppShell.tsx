@@ -11,8 +11,10 @@ import {
   Receipt,
   ShieldCheck,
   LogOut,
+  Tags,
 } from "lucide-react";
 import { logoutAction } from "@/server/actions/auth.actions";
+import { CategoriesManager } from "@/components/crud/EditDialogs";
 import type { FinancialWorkspaceSnapshot } from "@/server/actions/finance.actions";
 import type { TransactionTypeValue } from "@/modules/transactions/schemas";
 import { PwaRegistrationAndBanner } from "@/components/pwa/PwaRegistrationAndBanner";
@@ -40,6 +42,7 @@ const NAVIGATION_TABS = [
 export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
   const [quickCaptureOpen, setQuickCaptureOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [quickCaptureType, setQuickCaptureType] =
     useState<TransactionTypeValue>("PURCHASE");
   const [preselectedDestinationId, setPreselectedDestinationId] = useState<
@@ -117,6 +120,15 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
               <span className="hidden sm:inline">Captura Rápida</span>
               <span className="sm:hidden">Registrar</span>
             </button>
+            <button
+              type="button"
+              onClick={() => setCategoriesOpen(true)}
+              title="Administrar categorías"
+              aria-label="Administrar categorías"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+            >
+              <Tags className="h-4 w-4" />
+            </button>
             <form action={logoutAction}>
               <button
                 type="submit"
@@ -140,6 +152,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
+                aria-current={isActive ? "page" : undefined}
                 className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
                   isActive
                     ? "bg-teal-100 text-teal-600 ring-1 ring-teal-500/30 shadow-inner"
@@ -169,6 +182,8 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
         {activeTab === "transactions" && (
           <TransactionsLedger
             transactions={initialData.transactions}
+            accounts={initialData.accounts}
+            categories={initialData.categories}
             onOpenQuickCapture={handleOpenQuickCapture}
           />
         )}
@@ -218,6 +233,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
+                aria-current={isActive ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-1 text-[10px] font-semibold transition-colors ${
                   isActive ? "text-teal-600" : "text-slate-500"
                 }`}
@@ -235,6 +251,12 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
           })}
         </div>
       </nav>
+
+      <CategoriesManager
+        open={categoriesOpen}
+        categories={initialData.categories}
+        onClose={() => setCategoriesOpen(false)}
+      />
 
       {/* Modal Flotante de Captura Rápida (Módulo A) */}
       <QuickCaptureModal

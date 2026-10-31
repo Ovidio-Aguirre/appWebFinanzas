@@ -20,9 +20,18 @@ import type {
 } from "@/modules/transactions/schemas";
 import { toggleReconciledAction } from "@/server/actions/finance.actions";
 import { formatCurrency, formatShortDate } from "@/lib/utils";
+import type { SerializedAccount } from "@/modules/accounts/schemas";
+import type { SerializedCategory } from "@/server/actions/finance.actions";
+import { RowActions } from "@/components/ui/crud";
+import {
+  DeleteTransactionDialog,
+  EditTransactionDialog,
+} from "@/components/crud/EditDialogs";
 
 interface TransactionsLedgerProps {
   transactions: SerializedTransaction[];
+  accounts: SerializedAccount[];
+  categories: SerializedCategory[];
   onOpenQuickCapture: (type?: TransactionTypeValue) => void;
 }
 
@@ -69,8 +78,12 @@ const TRANSACTION_TYPE_LABELS: Record<
 
 export function TransactionsLedger({
   transactions,
+  accounts,
+  categories,
   onOpenQuickCapture,
 }: TransactionsLedgerProps) {
+  const [editingTx, setEditingTx] = useState<SerializedTransaction | null>(null);
+  const [deletingTx, setDeletingTx] = useState<SerializedTransaction | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [activeReceipt, setActiveReceipt] =
@@ -264,6 +277,12 @@ export function TransactionsLedger({
                       {meta.sign}
                       {formatCurrency(tx.amount)}
                     </div>
+
+                    <RowActions
+                      label={tx.title}
+                      onEdit={() => setEditingTx(tx)}
+                      onDelete={() => setDeletingTx(tx)}
+                    />
                   </div>
                 </div>
               );
@@ -271,6 +290,14 @@ export function TransactionsLedger({
           </div>
         )}
       </div>
+
+      <EditTransactionDialog
+        tx={editingTx}
+        accounts={accounts}
+        categories={categories}
+        onClose={() => setEditingTx(null)}
+      />
+      <DeleteTransactionDialog tx={deletingTx} onClose={() => setDeletingTx(null)} />
 
       {/* Modal Visor de Ticket / Comprobante Digitalizado */}
       {activeReceipt && (

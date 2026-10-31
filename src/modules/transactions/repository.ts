@@ -1,3 +1,4 @@
+import type { Prisma } from "@prisma/client";
 import { prisma, toNumber } from "@/lib/prisma";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { DomainError } from "@/lib/errors";
@@ -187,15 +188,14 @@ export function calculateMonthlyCashflow(
   };
 }
 
-/**
- * Registra una transacción en una operación ACID (prisma.$transaction)
- * actualizando de forma atómica los saldos de cuenta origen y destino.
- */
-export async function recordTransactionACID(
+type Tx = Prisma.TransactionClient;
+
+/** Aplica los efectos de un movimiento sobre los saldos (validando reglas de negocio). */
+export async function applyTransactionEffects(
+  tx: Tx,
   userId: string,
   input: QuickCaptureTransactionInput
-): Promise<SerializedTransaction> {
-  return prisma.$transaction(async (tx) => {
+): Promise<void> {
     const originAccount = await tx.account.findFirst({
       where: { id: input.accountId, userId },
     });
@@ -393,18 +393,30 @@ export async function recordTransactionACID(
         },
       });
     }
+}
+
+/**
+ * Registra una transacción en una operación ACID (prisma.$transaction)
+ * actualizando de forma atómica los saldos de cuenta origen y destino.
+ */
+export async function recordTransactionACID(
+  userId: string,
+  input: QuickCaptureTransactionInput
+): Promise<SerializedTransaction> {
+  return prisma.$transaction(async (tx) => {
+    await applyTransactionEffects(tx, userId, input);
 
     // Crear el registro de transacción unificado
     const created = await tx.transaction.create({
       data: {
         userId,
-        accountId: originAccount.id,
+        accountId: input.accountId,
         destinationAccountId: input.destinationAccountId || null,
         msiTransactionId: input.msiTransactionId || null,
         categoryId: input.categoryId,
         title: input.title,
         description: input.description || null,
-        amount,
+        amount: input.amount,
         date: new Date(input.date),
         transactionType: input.transactionType,
         receiptUrl: input.receiptUrl || null,
