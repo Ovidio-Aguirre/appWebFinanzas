@@ -23,6 +23,7 @@ import { formatCurrency, formatShortDate } from "@/lib/utils";
 import type { SerializedAccount } from "@/modules/accounts/schemas";
 import type { SerializedCategory } from "@/server/actions/finance.actions";
 import { RowActions } from "@/components/ui/crud";
+import { TransactionSummaryDialog } from "@/components/crud/TransactionSummaryDialog";
 import {
   DeleteTransactionDialog,
   EditTransactionDialog,
@@ -82,6 +83,7 @@ export function TransactionsLedger({
   categories,
   onOpenQuickCapture,
 }: TransactionsLedgerProps) {
+  const [summaryTx, setSummaryTx] = useState<SerializedTransaction | null>(null);
   const [editingTx, setEditingTx] = useState<SerializedTransaction | null>(null);
   const [deletingTx, setDeletingTx] = useState<SerializedTransaction | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -174,7 +176,19 @@ export function TransactionsLedger({
                   key={tx.id}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-slate-100 transition"
                 >
-                  <div className="flex items-start gap-3">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Ver resumen de ${tx.title}`}
+                    onClick={() => setSummaryTx(tx)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSummaryTx(tx);
+                      }
+                    }}
+                    className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+                  >
                     <div
                       className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${
                         isPositive
@@ -291,6 +305,12 @@ export function TransactionsLedger({
         )}
       </div>
 
+      <TransactionSummaryDialog
+        tx={summaryTx}
+        onClose={() => setSummaryTx(null)}
+        onEdit={setEditingTx}
+        onDelete={setDeletingTx}
+      />
       <EditTransactionDialog
         tx={editingTx}
         accounts={accounts}

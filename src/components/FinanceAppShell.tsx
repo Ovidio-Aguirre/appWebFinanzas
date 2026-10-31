@@ -31,12 +31,12 @@ interface FinanceAppShellProps {
 }
 
 const NAVIGATION_TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "transactions", label: "Movimientos", icon: Receipt },
-  { id: "cards", label: "Tarjetas y Cuentas", icon: CreditCard },
-  { id: "subscriptions", label: "Recurrentes", icon: CalendarClock },
-  { id: "loans", label: "Préstamos", icon: Landmark },
-  { id: "savings", label: "Bóvedas", icon: PiggyBank },
+  { id: "dashboard", label: "Dashboard", short: "Inicio", icon: LayoutDashboard },
+  { id: "transactions", label: "Movimientos", short: "Movs.", icon: Receipt },
+  { id: "cards", label: "Tarjetas y Cuentas", short: "Cuentas", icon: CreditCard },
+  { id: "subscriptions", label: "Recurrentes", short: "Fijos", icon: CalendarClock },
+  { id: "loans", label: "Préstamos", short: "Deudas", icon: Landmark },
+  { id: "savings", label: "Bóvedas", short: "Bóvedas", icon: PiggyBank },
 ] as const;
 
 export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
@@ -88,7 +88,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
     <div className="min-h-screen text-slate-900 pb-24 md:pb-12">
       {/* Top Navbar */}
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/75 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
           <div className="flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 text-slate-950 shadow-lg shadow-teal-500/30 ring-1 ring-white/10">
               <ShieldCheck className="h-6 w-6" />
@@ -102,13 +102,13 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                   PWA
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500">
+              <p className="hidden text-[11px] text-slate-500 sm:block">
                 {initialData.user.name} • Portafolio Multicuenta
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
             <PwaRegistrationAndBanner />
 
             <button
@@ -245,7 +245,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                 >
                   <Icon className="h-4 w-4" />
                 </span>
-                <span className="truncate max-w-[56px]">{tab.label}</span>
+                <span className="truncate max-w-[56px]">{tab.short}</span>
               </button>
             );
           })}
