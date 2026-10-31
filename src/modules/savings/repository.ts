@@ -123,10 +123,23 @@ export async function contributeToSavingsGoalACID(
       throw new Error("No se encontró la cuenta corriente de origen.");
     }
 
-    const originBalance = toNumber(originAccount.currentBalance);
     const amount = input.amount;
 
-    if (originBalance < amount) {
+    // A4: solo metas activas pueden recibir aportes.
+    if (goal.status !== "ACTIVE") {
+      throw new Error("La meta de ahorro no está disponible para aportes.");
+    }
+
+    // A1: descontar origen de forma atómica (condición en la propia UPDATE).
+    const debited = await tx.account.updateMany({
+      where: {
+        id: originAccount.id,
+        userId,
+        currentBalance: { gte: amount },
+      },
+      data: { currentBalance: { decrement: amount } },
+    });
+    if (debited.count === 0) {
       throw new Error(
         `Saldo insuficiente en ${originAccount.name} para transferir $${amount.toFixed(
           2
@@ -134,59 +147,62 @@ export async function contributeToSavingsGoalACID(
       );
     }
 
-    // 1. Descontar saldo de cuenta origen
-    await tx.account.update({
-      where: { id: originAccount.id },
-      data: { currentBalance: { decrement: amount } },
-    });
-
-    // 2. Incrementar saldo en la cuenta SAVINGS_VAULT asociada (o crear una si no tenía)
+    // 2. Acreditar en la bóveda SAVINGS_VAULT. Si no existe, crearla:
+    //    nunca dejar el dinero sin acreditar (A4).
     let vaultAccountId = goal.vaultAccountId;
-    if (vaultAccountId) {
+    if (!vaultAccountId) {
+      const createdVault = await tx.account.create({
+        data: {
+          userId,
+          name: `Bóveda: ${goal.name}`,
+          institution: "FinanzaPro Vault",
+          type: "SAVINGS_VAULT",
+          currency: "USD",
+          currentBalance: amount,
+          color: goal.color,
+        },
+      });
+      vaultAccountId = createdVault.id;
+      await tx.savingsGoal.update({
+        where: { id: goal.id },
+        data: { vaultAccountId: createdVault.id },
+      });
+    } else {
       await tx.account.update({
         where: { id: vaultAccountId },
         data: { currentBalance: { increment: amount } },
       });
-    } else {
-      const mainVault = await tx.account.findFirst({
-        where: { userId, type: "SAVINGS_VAULT" },
-      });
-      if (mainVault) {
-        vaultAccountId = mainVault.id;
-        await tx.account.update({
-          where: { id: mainVault.id },
-          data: { currentBalance: { increment: amount } },
-        });
-      }
     }
 
-    // 3. Actualizar progreso de la meta de ahorro
-    const newCurrent = toNumber(goal.currentAmount) + amount;
-    const target = toNumber(goal.targetAmount);
-    const nextStatus = newCurrent >= target ? "COMPLETED" : goal.status;
-
+    // 3. Actualizar progreso con increment (nunca valor absoluto).
     await tx.savingsGoal.update({
       where: { id: goal.id },
-      data: {
-        currentAmount: newCurrent,
-        status: nextStatus,
-      },
+      data: { currentAmount: { increment: amount } },
     });
 
-    // 4. Obtener categoría para el aporte
-    let category = await tx.category.findFirst({
-      where: { type: "INVESTMENT" },
+    const refreshed = await tx.savingsGoal.findUniqueOrThrow({
+      where: { id: goal.id },
     });
-    if (!category) {
-      category = await tx.category.create({
-        data: {
-          name: "Ahorro e Inversión",
-          icon: "PiggyBank",
-          color: "#0d9488",
-          type: "INVESTMENT",
-        },
+    if (toNumber(refreshed.currentAmount) >= toNumber(refreshed.targetAmount)) {
+      await tx.savingsGoal.update({
+        where: { id: goal.id },
+        data: { status: "COMPLETED" },
       });
     }
+
+    // 4. Obtener o crear categoría de ahorro por clave única (no arbitraria).
+    const category = await tx.category.upsert({
+      where: {
+        name_type: { name: "Ahorro e Inversión", type: "INVESTMENT" },
+      },
+      update: {},
+      create: {
+        name: "Ahorro e Inversión",
+        icon: "PiggyBank",
+        color: "#0d9488",
+        type: "INVESTMENT",
+      },
+    });
 
     // 5. Registrar transacción de transferencia a bóveda
     await tx.transaction.create({

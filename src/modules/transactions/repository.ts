@@ -5,6 +5,11 @@ import type {
   SerializedTransaction,
 } from "./schemas";
 
+// Cuentas de activo (dinero a favor del usuario): pueden transferirse entre sí.
+const ASSET_TYPES = new Set(["CASH", "DEBIT", "SAVINGS_VAULT"]);
+// Cuentas de pasivo (deuda): solo pueden recibir pagos, nunca transferencias.
+const LIABILITY_TYPES = new Set(["CREDIT_CARD", "LOAN_LIABILITY"]);
+
 export async function getTransactionsByUser(
   userId: string,
   limit = 60
@@ -167,7 +172,6 @@ export async function recordTransactionACID(
             `Esta compra excede el disponible de la tarjeta (${originAccount.name}).`
           );
         }
-        const currentNoInterest = toNumber(originAccount.noInterestPayment);
         const installmentAddition =
           input.installmentsCount > 1
             ? amount / input.installmentsCount
@@ -177,21 +181,24 @@ export async function recordTransactionACID(
           where: { id: originAccount.id },
           data: {
             currentBalance: { increment: amount },
-            noInterestPayment: currentNoInterest + installmentAddition,
+            noInterestPayment: { increment: installmentAddition },
           },
         });
       } else {
-        if (originBalance < amount) {
+        // A1: validar y descontar en una sola operación atómica.
+        const debited = await tx.account.updateMany({
+          where: {
+            id: originAccount.id,
+            userId,
+            currentBalance: { gte: amount },
+          },
+          data: { currentBalance: { decrement: amount } },
+        });
+        if (debited.count === 0) {
           throw new Error(
             `Saldo insuficiente en ${originAccount.name} para cubrir este gasto.`
           );
         }
-        await tx.account.update({
-          where: { id: originAccount.id },
-          data: {
-            currentBalance: { decrement: amount },
-          },
-        });
       }
     } else if (
       input.transactionType === "SALARY_INCOME" ||
@@ -211,12 +218,6 @@ export async function recordTransactionACID(
         throw new Error("Debes indicar la tarjeta o deuda a pagar.");
       }
 
-      if (originBalance < amount) {
-        throw new Error(
-          `Saldo insuficiente en ${originAccount.name} para realizar el pago.`
-        );
-      }
-
       const destinationAccount = await tx.account.findFirst({
         where: { id: input.destinationAccountId, userId },
       });
@@ -225,37 +226,54 @@ export async function recordTransactionACID(
         throw new Error("La cuenta o tarjeta destino no existe.");
       }
 
-      const currentDebt = toNumber(destinationAccount.currentBalance);
-      const updatedDebt = Math.max(0, currentDebt - amount);
-      const currentNoInterest = toNumber(destinationAccount.noInterestPayment);
-      const updatedNoInterest = Math.max(0, currentNoInterest - amount);
+      // C2: el destino del pago debe ser un pasivo (tarjeta o préstamo).
+      if (!LIABILITY_TYPES.has(destinationAccount.type)) {
+        throw new Error(
+          "El destino del pago debe ser una tarjeta de crédito o un préstamo."
+        );
+      }
 
-      // Descontar saldo de cuenta líquida origen
-      await tx.account.update({
-        where: { id: originAccount.id },
+      const currentDebt = toNumber(destinationAccount.currentBalance);
+
+      // C2: rechazar sobrepago para que el dinero no desaparezca.
+      if (amount > currentDebt) {
+        throw new Error(
+          `El monto excede la deuda actual de ${destinationAccount.name} ($${currentDebt.toFixed(
+            2
+          )}). Ajusta el pago.`
+        );
+      }
+
+      // A1: descontar el origen de forma atómica (condición en la propia UPDATE).
+      const debited = await tx.account.updateMany({
+        where: { id: originAccount.id, userId, currentBalance: { gte: amount } },
         data: { currentBalance: { decrement: amount } },
       });
+      if (debited.count === 0) {
+        throw new Error(
+          `Saldo insuficiente en ${originAccount.name} para realizar el pago.`
+        );
+      }
 
-      // Reducir pasivo de tarjeta o préstamo destino
+      const currentNoInterest = toNumber(destinationAccount.noInterestPayment);
+
+      // Reducir pasivo con decrement (nunca escritura de valor absoluto).
       await tx.account.update({
         where: { id: destinationAccount.id },
         data: {
-          currentBalance: updatedDebt,
-          noInterestPayment:
-            destinationAccount.type === "CREDIT_CARD"
-              ? updatedNoInterest
-              : destinationAccount.noInterestPayment,
+          currentBalance: { decrement: amount },
+          ...(destinationAccount.type === "CREDIT_CARD"
+            ? {
+                noInterestPayment: {
+                  decrement: Math.min(amount, currentNoInterest),
+                },
+              }
+            : {}),
         },
       });
     } else if (input.transactionType === "TRANSFER") {
       if (!input.destinationAccountId) {
         throw new Error("Selecciona la cuenta destino para la transferencia.");
-      }
-
-      if (originBalance < amount) {
-        throw new Error(
-          `Saldo insuficiente en ${originAccount.name} para transferir.`
-        );
       }
 
       const destinationAccount = await tx.account.findFirst({
@@ -266,10 +284,26 @@ export async function recordTransactionACID(
         throw new Error("La cuenta destino no existe.");
       }
 
-      await tx.account.update({
-        where: { id: originAccount.id },
+      // C3: las transferencias solo se permiten entre cuentas de activo.
+      if (
+        !ASSET_TYPES.has(originAccount.type) ||
+        !ASSET_TYPES.has(destinationAccount.type)
+      ) {
+        throw new Error(
+          "Las transferencias solo se permiten entre cuentas de activo (efectivo, débito o ahorro)."
+        );
+      }
+
+      // A1: descontar origen de forma atómica.
+      const debited = await tx.account.updateMany({
+        where: { id: originAccount.id, userId, currentBalance: { gte: amount } },
         data: { currentBalance: { decrement: amount } },
       });
+      if (debited.count === 0) {
+        throw new Error(
+          `Saldo insuficiente en ${originAccount.name} para transferir.`
+        );
+      }
 
       await tx.account.update({
         where: { id: destinationAccount.id },
@@ -279,21 +313,29 @@ export async function recordTransactionACID(
 
     // Si el pago corresponde a una cuota de una compra a tasa cero específica,
     // avanzar el contador de cuotas pagadas de esa compra (MSI).
+    // A2: validar propiedad (userId) y que efectivamente sea una compra MSI.
     if (input.msiTransactionId) {
-      const msiTx = await tx.transaction.findUnique({
-        where: { id: input.msiTransactionId },
+      const msiTx = await tx.transaction.findFirst({
+        where: {
+          id: input.msiTransactionId,
+          userId,
+          installmentsCount: { gt: 1 },
+        },
       });
-      if (msiTx?.installmentsCount && msiTx.currentInstallment) {
-        await tx.transaction.update({
-          where: { id: msiTx.id },
-          data: {
-            currentInstallment: Math.min(
-              msiTx.installmentsCount,
-              msiTx.currentInstallment + 1
-            ),
-          },
-        });
+
+      if (!msiTx?.currentInstallment) {
+        throw new Error("La compra a tasa cero seleccionada no es válida.");
       }
+
+      await tx.transaction.update({
+        where: { id: msiTx.id },
+        data: {
+          currentInstallment: Math.min(
+            msiTx.installmentsCount ?? msiTx.currentInstallment,
+            msiTx.currentInstallment + 1
+          ),
+        },
+      });
     }
 
     // Crear el registro de transacción unificado

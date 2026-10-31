@@ -159,9 +159,17 @@ export async function payLoanInstallmentACID(
 
     const totalInstallmentAmount = toNumber(installment.amount);
     const capitalPart = toNumber(installment.capitalAmount);
-    const originBalance = toNumber(originAccount.currentBalance);
 
-    if (originBalance < totalInstallmentAmount) {
+    // A1: descontar el monto total de la cuenta origen de forma atómica.
+    const debited = await tx.account.updateMany({
+      where: {
+        id: originAccount.id,
+        userId,
+        currentBalance: { gte: totalInstallmentAmount },
+      },
+      data: { currentBalance: { decrement: totalInstallmentAmount } },
+    });
+    if (debited.count === 0) {
       throw new Error(
         `Saldo insuficiente en ${originAccount.name} para cubrir la cuota de $${totalInstallmentAmount.toFixed(
           2
@@ -169,22 +177,10 @@ export async function payLoanInstallmentACID(
       );
     }
 
-    const currentLoanDebt = toNumber(installment.account.currentBalance);
-    const updatedLoanDebt = Math.max(
-      0,
-      Number((currentLoanDebt - capitalPart).toFixed(2))
-    );
-
-    // 1. Descontar monto total de la cuenta origen
-    await tx.account.update({
-      where: { id: originAccount.id },
-      data: { currentBalance: { decrement: totalInstallmentAmount } },
-    });
-
-    // 2. Descontar el capital amortizado del pasivo del préstamo
+    // 2. Descontar el capital amortizado del pasivo (decrement, no valor absoluto).
     await tx.account.update({
       where: { id: installment.accountId },
-      data: { currentBalance: updatedLoanDebt },
+      data: { currentBalance: { decrement: capitalPart } },
     });
 
     // 3. Marcar cuota como PAID
@@ -197,21 +193,19 @@ export async function payLoanInstallmentACID(
       },
     });
 
-    // 4. Obtener o crear categoría de Pago de Préstamo
-    let loanCategory = await tx.category.findFirst({
-      where: { type: "TRANSFER" },
+    // 4. Obtener o crear categoría de Pago de Préstamo por clave única (no arbitraria).
+    const loanCategory = await tx.category.upsert({
+      where: {
+        name_type: { name: "Amortización de Deuda", type: "TRANSFER" },
+      },
+      update: {},
+      create: {
+        name: "Amortización de Deuda",
+        icon: "Landmark",
+        color: "#0f766e",
+        type: "TRANSFER",
+      },
     });
-
-    if (!loanCategory) {
-      loanCategory = await tx.category.create({
-        data: {
-          name: "Amortización de Deuda",
-          icon: "Landmark",
-          color: "#0f766e",
-          type: "TRANSFER",
-        },
-      });
-    }
 
     // 5. Generar transacción asociada
     await tx.transaction.create({

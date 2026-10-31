@@ -46,6 +46,21 @@ export async function createRecurringRuleInDb(
   userId: string,
   input: CreateRecurringRuleInput
 ): Promise<SerializedRecurringRule> {
+  // A2: validar que la cuenta pertenezca al usuario y la categoría exista.
+  const account = await prisma.account.findFirst({
+    where: { id: input.accountId, userId },
+  });
+  if (!account) {
+    throw new Error("La cuenta seleccionada no existe o no te pertenece.");
+  }
+
+  const category = await prisma.category.findUnique({
+    where: { id: input.categoryId },
+  });
+  if (!category) {
+    throw new Error("La categoría seleccionada no existe.");
+  }
+
   const created = await prisma.recurringRule.create({
     data: {
       userId,
@@ -122,7 +137,31 @@ export async function executeRecurringRuleACID(
         ? "REMITTANCE_INCOME"
         : "BILL_PAYMENT";
 
-    // Actualizar saldo de la cuenta asociada
+    const now = new Date();
+    const nextDate = calculateNextExecutionDate(
+      rule.nextExecutionDate > now ? rule.nextExecutionDate : now,
+      rule.frequency
+    );
+
+    // A3: bloqueo optimista. Reclama la ejecución avanzando nextExecutionDate
+    // solo si nadie más lo hizo ya (comparando el valor previo).
+    const claimed = await tx.recurringRule.updateMany({
+      where: {
+        id: rule.id,
+        userId,
+        active: true,
+        nextExecutionDate: rule.nextExecutionDate,
+      },
+      data: {
+        lastExecutedDate: now,
+        nextExecutionDate: nextDate,
+      },
+    });
+    if (claimed.count === 0) {
+      throw new Error("Esta regla ya fue ejecutada. Recarga la página.");
+    }
+
+    // Actualizar saldo de la cuenta asociada (A1: operaciones atómicas).
     if (isIncome) {
       await tx.account.update({
         where: { id: rule.accountId },
@@ -137,20 +176,22 @@ export async function executeRecurringRuleACID(
         },
       });
     } else {
-      const currentBal = toNumber(rule.account.currentBalance);
-      if (currentBal < amount) {
+      const debited = await tx.account.updateMany({
+        where: {
+          id: rule.accountId,
+          userId,
+          currentBalance: { gte: amount },
+        },
+        data: { currentBalance: { decrement: amount } },
+      });
+      if (debited.count === 0) {
         throw new Error(
           `Saldo insuficiente en ${rule.account.name} para ejecutar ${rule.title}.`
         );
       }
-      await tx.account.update({
-        where: { id: rule.accountId },
-        data: { currentBalance: { decrement: amount } },
-      });
     }
 
     // Crear la transacción correspondiente
-    const now = new Date();
     await tx.transaction.create({
       data: {
         userId,
@@ -166,22 +207,8 @@ export async function executeRecurringRuleACID(
       },
     });
 
-    // Avanzar nextExecutionDate
-    const nextDate = calculateNextExecutionDate(
-      rule.nextExecutionDate > now ? rule.nextExecutionDate : now,
-      rule.frequency
-    );
-
-    const updatedRule = await tx.recurringRule.update({
-      where: { id: rule.id },
-      data: {
-        lastExecutedDate: now,
-        nextExecutionDate: nextDate,
-      },
-    });
-
     return {
-      nextExecutionDate: updatedRule.nextExecutionDate.toISOString(),
+      nextExecutionDate: nextDate.toISOString(),
     };
   });
 }
