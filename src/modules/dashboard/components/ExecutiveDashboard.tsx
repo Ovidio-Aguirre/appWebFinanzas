@@ -71,17 +71,17 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("PURCHASE")}
-          className="group flex items-center justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-rose-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-rose-300 bg-gradient-to-br from-rose-500/15 via-slate-50 to-slate-50 p-4 text-left hover:border-rose-400 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600">
               Captura con Ticket
             </span>
-            <p className="text-sm font-bold text-white mt-0.5">
+            <p className="text-sm font-bold text-slate-900 mt-0.5">
               Registrar Compra / Gasto
             </p>
           </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/20 text-rose-300 group-hover:scale-105 transition">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-600 group-hover:scale-105 transition">
             <Receipt className="h-5 w-5" />
           </div>
         </button>
@@ -89,17 +89,17 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("CARD_PAYMENT")}
-          className="group flex items-center justify-between rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-sky-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-sky-300 bg-gradient-to-br from-sky-500/15 via-slate-50 to-slate-50 p-4 text-left hover:border-sky-400 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-sky-600">
               Liquidación ACID
             </span>
-            <p className="text-sm font-bold text-white mt-0.5">
+            <p className="text-sm font-bold text-slate-900 mt-0.5">
               Pagar Tarjeta / Cuota
             </p>
           </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/20 text-sky-300 group-hover:scale-105 transition">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-600 group-hover:scale-105 transition">
             <ArrowRightLeft className="h-5 w-5" />
           </div>
         </button>
@@ -112,17 +112,17 @@ export function ExecutiveDashboard({
               title: "Remesa Recibida",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-emerald-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-emerald-300 bg-gradient-to-br from-emerald-500/15 via-slate-50 to-slate-50 p-4 text-left hover:border-emerald-400 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">
               Registrar Remesa
             </span>
-            <p className="text-sm font-bold text-white mt-0.5">
+            <p className="text-sm font-bold text-slate-900 mt-0.5">
               Ingreso de Remesa Semanal
             </p>
           </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 group-hover:scale-105 transition">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 group-hover:scale-105 transition">
             <Globe className="h-5 w-5" />
           </div>
         </button>
@@ -136,17 +136,17 @@ export function ExecutiveDashboard({
               title: "Pago de Nómina",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-teal-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-teal-300 bg-gradient-to-br from-teal-500/15 via-slate-50 to-slate-50 p-4 text-left hover:border-teal-400 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-teal-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-teal-600">
               Pago de Nómina
             </span>
-            <p className="text-sm font-bold text-white mt-0.5">
+            <p className="text-sm font-bold text-slate-900 mt-0.5">
               Registrar Salario Quincenal
             </p>
           </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 group-hover:scale-105 transition">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-100 text-teal-600 group-hover:scale-105 transition">
             <Wallet className="h-5 w-5" />
           </div>
         </button>
@@ -155,14 +155,14 @@ export function ExecutiveDashboard({
       {/* KPI Principal: Patrimonio Líquido Real y Flujo de Caja del Mes */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Tarjeta de Patrimonio Líquido Real (7 columnas) */}
-        <div className="lg:col-span-7 rounded-2xl border border-teal-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-teal-950/40 p-6 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-7 rounded-2xl border border-teal-200 bg-gradient-to-br from-white via-white to-emerald-50 p-6 shadow-xl shadow-emerald-500/5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-500/15 border border-teal-500/30 px-3 py-1 text-xs font-semibold text-teal-300">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-100 border border-teal-300 px-3 py-1 text-xs font-semibold text-teal-600">
                 <ShieldCheck className="h-3.5 w-3.5" />
                 Patrimonio Líquido Real
               </span>
-              <span className="text-xs text-slate-400 font-mono">
+              <span className="text-xs text-slate-500 font-mono">
                 (Efectivo + Débito + Bóvedas) − (Tarjetas + Préstamos)
               </span>
             </div>
@@ -171,61 +171,61 @@ export function ExecutiveDashboard({
               <h2
                 className={`font-display text-4xl sm:text-5xl font-bold tracking-tight tabular-nums ${
                   netWorth.realLiquidNetWorth >= 0
-                    ? "text-white"
-                    : "text-rose-400"
+                    ? "text-slate-900"
+                    : "text-rose-600"
                 }`}
               >
                 {formatCurrency(netWorth.realLiquidNetWorth)}
               </h2>
-              <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+              <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
                 <TrendingUp className="h-3.5 w-3.5" /> Solvencia Positiva
               </span>
             </div>
           </div>
 
           {/* Desglose de la Ecuación Patrimonial */}
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-4 border-t border-white/10">
-            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
-              <span className="text-[10px] uppercase text-slate-400 block">
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-4 border-t border-slate-200">
+            <div className="rounded-xl bg-slate-100 border border-slate-200 p-2.5">
+              <span className="text-[10px] uppercase text-slate-500 block">
                 Efectivo
               </span>
-              <span className="text-xs font-bold text-emerald-400 tabular-nums">
+              <span className="text-xs font-bold text-emerald-600 tabular-nums">
                 {formatCurrency(netWorth.cashTotal)}
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
-              <span className="text-[10px] uppercase text-slate-400 block">
+            <div className="rounded-xl bg-slate-100 border border-slate-200 p-2.5">
+              <span className="text-[10px] uppercase text-slate-500 block">
                 Débito
               </span>
-              <span className="text-xs font-bold text-emerald-400 tabular-nums">
+              <span className="text-xs font-bold text-emerald-600 tabular-nums">
                 {formatCurrency(netWorth.debitTotal)}
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
-              <span className="text-[10px] uppercase text-slate-400 block">
+            <div className="rounded-xl bg-slate-100 border border-slate-200 p-2.5">
+              <span className="text-[10px] uppercase text-slate-500 block">
                 Bóvedas
               </span>
-              <span className="text-xs font-bold text-teal-400 tabular-nums">
+              <span className="text-xs font-bold text-teal-600 tabular-nums">
                 {formatCurrency(netWorth.savingsVaultTotal)}
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/45 border border-rose-950/60 p-2.5">
-              <span className="text-[10px] uppercase text-slate-400 block">
+            <div className="rounded-xl bg-slate-100 border border-rose-200 p-2.5">
+              <span className="text-[10px] uppercase text-slate-500 block">
                 Deuda TC
               </span>
-              <span className="text-xs font-bold text-rose-400 tabular-nums">
+              <span className="text-xs font-bold text-rose-600 tabular-nums">
                 -{formatCurrency(netWorth.creditCardDebtTotal)}
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/45 border border-rose-950/60 p-2.5 col-span-2 sm:col-span-1">
-              <span className="text-[10px] uppercase text-slate-400 block">
+            <div className="rounded-xl bg-slate-100 border border-rose-200 p-2.5 col-span-2 sm:col-span-1">
+              <span className="text-[10px] uppercase text-slate-500 block">
                 Préstamos
               </span>
-              <span className="text-xs font-bold text-rose-400 tabular-nums">
+              <span className="text-xs font-bold text-rose-600 tabular-nums">
                 -{formatCurrency(netWorth.loanLiabilityTotal)}
               </span>
             </div>
@@ -233,26 +233,26 @@ export function ExecutiveDashboard({
         </div>
 
         {/* Flujo de Caja del Mes en Curso (5 columnas) */}
-        <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Flujo de Caja del Mes en Curso
               </span>
-              <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
+              <span className="rounded-full bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 text-xs font-bold text-emerald-600">
                 Tasa Ahorro: {monthlyCashflow.savingsRatePercent}%
               </span>
             </div>
 
             <div className="mt-3">
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 Balance Neto (Ingresos − Compras/Gastos)
               </p>
               <p
                 className={`text-2xl sm:text-3xl font-extrabold mt-0.5 tabular-nums ${
                   monthlyCashflow.netCashflow >= 0
-                    ? "text-emerald-400"
-                    : "text-rose-400"
+                    ? "text-emerald-600"
+                    : "text-rose-600"
                 }`}
               >
                 {monthlyCashflow.netCashflow >= 0 ? "+" : ""}
@@ -261,23 +261,23 @@ export function ExecutiveDashboard({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-white/10">
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-emerald-300">
+          <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-slate-200">
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-50 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-emerald-600">
                 <ArrowDownLeft className="h-4 w-4" />
                 <span>Ingresos del Mes</span>
               </div>
-              <p className="text-base font-extrabold text-white mt-1 tabular-nums">
+              <p className="text-base font-extrabold text-slate-900 mt-1 tabular-nums">
                 {formatCurrency(monthlyCashflow.totalIncome)}
               </p>
             </div>
 
-            <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-rose-300">
+            <div className="rounded-xl border border-rose-500/20 bg-rose-50 p-3">
+              <div className="flex items-center gap-1.5 text-xs text-rose-600">
                 <ArrowUpRight className="h-4 w-4" />
                 <span>Compras y Gastos</span>
               </div>
-              <p className="text-base font-extrabold text-white mt-1 tabular-nums">
+              <p className="text-base font-extrabold text-slate-900 mt-1 tabular-nums">
                 {formatCurrency(monthlyCashflow.totalExpenses)}
               </p>
             </div>
@@ -286,13 +286,13 @@ export function ExecutiveDashboard({
       </div>
 
       {/* Disponible por Cuenta (Liquidez detallada) */}
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 shadow-xl">
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
         <div className="flex items-center gap-2 mb-4">
-          <Wallet className="h-4 w-4 text-emerald-400" />
-          <h3 className="text-sm font-bold text-white">
+          <Wallet className="h-4 w-4 text-emerald-600" />
+          <h3 className="text-sm font-bold text-slate-900">
             Disponible por Cuenta
           </h3>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500">
             (Efectivo, Débito y Ahorro)
           </span>
         </div>
@@ -300,16 +300,16 @@ export function ExecutiveDashboard({
           {liquidAccounts.map((acc) => (
             <div
               key={acc.id}
-              className="rounded-xl border border-white/10 bg-slate-950/45 p-3.5 flex items-center justify-between gap-3"
+              className="rounded-xl border border-slate-200 bg-slate-100 p-3.5 flex items-center justify-between gap-3"
             >
               <div className="min-w-0">
                 <span
                   className={`text-[10px] font-bold uppercase tracking-wider ${
                     acc.type === "CASH"
-                      ? "text-emerald-400"
+                      ? "text-emerald-600"
                       : acc.type === "DEBIT"
-                      ? "text-sky-400"
-                      : "text-teal-400"
+                      ? "text-sky-600"
+                      : "text-teal-600"
                   }`}
                 >
                   {acc.type === "CASH"
@@ -318,15 +318,15 @@ export function ExecutiveDashboard({
                     ? "Débito"
                     : "Ahorro"}
                 </span>
-                <p className="text-sm font-bold text-white truncate">
+                <p className="text-sm font-bold text-slate-900 truncate">
                   {acc.name}
                 </p>
-                <p className="text-xs text-slate-400 truncate">
+                <p className="text-xs text-slate-500 truncate">
                   {acc.institution || "—"}
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-base font-extrabold text-emerald-400 tabular-nums">
+                <p className="text-base font-extrabold text-emerald-600 tabular-nums">
                   {formatCurrency(acc.currentBalance, acc.currency)}
                 </p>
               </div>
@@ -338,26 +338,26 @@ export function ExecutiveDashboard({
       {/* Gráficos: Desglose de Gastos por Categoría & Estado de Utilización de Crédito */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico de Desglose de Gastos por Categoría */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
-              <PieChart className="h-5 w-5 text-teal-400" />
+              <PieChart className="h-5 w-5 text-teal-600" />
               <div>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-base font-bold text-slate-900">
                   Desglose de Gastos por Categoría
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Distribución porcentual de compras y pagos de servicios
                 </p>
               </div>
             </div>
-            <span className="text-xs font-bold text-slate-300">
+            <span className="text-xs font-bold text-slate-600">
               Total: {formatCurrency(monthlyCashflow.totalExpenses)}
             </span>
           </div>
 
           {monthlyCashflow.categoryBreakdown.length === 0 ? (
-            <div className="py-12 text-center text-xs text-slate-400">
+            <div className="py-12 text-center text-xs text-slate-500">
               Aún no hay gastos registrados en el mes en curso.
             </div>
           ) : (
@@ -392,10 +392,10 @@ export function ExecutiveDashboard({
                   ))}
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-[10px] uppercase text-slate-400 font-semibold">
+                  <span className="text-[10px] uppercase text-slate-500 font-semibold">
                     Gastos Mes
                   </span>
-                  <span className="text-sm font-extrabold text-white tabular-nums">
+                  <span className="text-sm font-extrabold text-slate-900 tabular-nums">
                     {formatCurrency(monthlyCashflow.totalExpenses)}
                   </span>
                 </div>
@@ -411,20 +411,20 @@ export function ExecutiveDashboard({
                           className="h-2.5 w-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: cat.color }}
                         />
-                        <span className="font-medium text-slate-200">
+                        <span className="font-medium text-slate-700">
                           {cat.name}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 tabular-nums">
-                        <span className="font-bold text-white">
+                        <span className="font-bold text-slate-900">
                           {formatCurrency(cat.amount)}
                         </span>
-                        <span className="text-[11px] text-slate-400 w-9 text-right">
+                        <span className="text-[11px] text-slate-500 w-9 text-right">
                           ({cat.percentage}%)
                         </span>
                       </div>
                     </div>
-                    <div className="h-1.5 w-full rounded-full bg-slate-950 overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-white overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -441,16 +441,16 @@ export function ExecutiveDashboard({
         </div>
 
         {/* Estado de Utilización de Crédito y Alertas de Corte/Pago */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl flex flex-col justify-between">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-teal-400" />
+                <CreditCard className="h-5 w-5 text-teal-600" />
                 <div>
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-base font-bold text-slate-900">
                     Estado de Utilización de Crédito
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Recomendación financiera: mantener uso por debajo del 30%
                   </p>
                 </div>
@@ -459,10 +459,10 @@ export function ExecutiveDashboard({
               <span
                 className={`rounded-full px-3 py-1 text-xs font-extrabold border ${
                   netWorth.overallCreditUtilizationPercent > 50
-                    ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                    ? "bg-rose-100 text-rose-600 border-rose-300"
                     : netWorth.overallCreditUtilizationPercent > 30
-                    ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                    : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                    ? "bg-amber-100 text-amber-600 border-amber-300"
+                    : "bg-emerald-100 text-emerald-600 border-emerald-300"
                 }`}
               >
                 Global: {netWorth.overallCreditUtilizationPercent}%
@@ -470,22 +470,22 @@ export function ExecutiveDashboard({
             </div>
 
             {/* Barra Global de Uso de Crédito */}
-            <div className="rounded-xl border border-white/10 bg-slate-950/45 p-4 mb-4">
+            <div className="rounded-xl border border-slate-200 bg-slate-100 p-4 mb-4">
               <div className="flex justify-between text-xs mb-1.5">
-                <span className="text-slate-400">
+                <span className="text-slate-500">
                   Deuda Total TC:{" "}
-                  <strong className="text-rose-400">
+                  <strong className="text-rose-600">
                     {formatCurrency(netWorth.creditCardDebtTotal)}
                   </strong>
                 </span>
-                <span className="text-slate-400">
+                <span className="text-slate-500">
                   Línea Total:{" "}
-                  <strong className="text-white">
+                  <strong className="text-slate-900">
                     {formatCurrency(netWorth.totalCreditLimit)}
                   </strong>
                 </span>
               </div>
-              <div className="h-3 w-full rounded-full bg-slate-900 overflow-hidden border border-white/10">
+              <div className="h-3 w-full rounded-full bg-slate-200 overflow-hidden border border-slate-200">
                 <div
                   className="h-full bg-gradient-to-r from-teal-500 via-sky-500 to-rose-500 transition-all duration-500"
                   style={{
@@ -508,19 +508,19 @@ export function ExecutiveDashboard({
                 return (
                   <div
                     key={card.id}
-                    className="rounded-xl border border-white/10 bg-slate-950/50 p-3.5 flex items-center justify-between gap-4"
+                    className="rounded-xl border border-slate-200 bg-slate-100 p-3.5 flex items-center justify-between gap-4"
                   >
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">
+                        <span className="text-xs font-bold text-slate-900">
                           {card.name}
                         </span>
-                        <span className="text-xs font-semibold text-slate-300 tabular-nums">
+                        <span className="text-xs font-semibold text-slate-600 tabular-nums">
                           {formatCurrency(card.currentBalance)} /{" "}
                           {formatCurrency(limit)} ({pct}%)
                         </span>
                       </div>
-                      <div className="h-2 w-full rounded-full bg-slate-900 overflow-hidden">
+                      <div className="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
                         <div
                           className={`h-full rounded-full ${
                             pct > 60
@@ -532,10 +532,10 @@ export function ExecutiveDashboard({
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 pt-0.5">
                         <span>
                           Pago sin intereses:{" "}
-                          <strong className="text-amber-300">
+                          <strong className="text-amber-600">
                             {formatCurrency(
                               card.noInterestPayment ?? card.currentBalance
                             )}
@@ -552,20 +552,20 @@ export function ExecutiveDashboard({
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+          <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
             <button
               type="button"
               onClick={() => onNavigateTab("cards")}
-              className="text-xs font-bold text-teal-400 hover:text-teal-300 transition"
+              className="text-xs font-bold text-teal-600 hover:text-teal-600 transition"
             >
               Ver detalle de corte y proyección MSI →
             </button>
             <button
               type="button"
               onClick={() => onNavigateTab("loans")}
-              className="inline-flex items-center gap-1 text-xs font-bold text-slate-300 hover:text-white transition"
+              className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
             >
-              <Landmark className="h-3.5 w-3.5 text-rose-400" />
+              <Landmark className="h-3.5 w-3.5 text-rose-600" />
               <span>Ver Préstamos</span>
             </button>
           </div>

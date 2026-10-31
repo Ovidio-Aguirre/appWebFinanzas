@@ -29,25 +29,25 @@
 
 body {
   min-height: 100vh;
-  background-color: #070d1a;
+  background-color: #f4f7fb;
   background-image:
     radial-gradient(
-      ellipse 90% 55% at 15% -10%,
-      rgba(16, 185, 129, 0.35),
-      transparent 60%
-    ),
-    radial-gradient(
-      ellipse 80% 55% at 90% 0%,
-      rgba(99, 102, 241, 0.25),
+      ellipse 80% 50% at 10% -10%,
+      rgba(16, 185, 129, 0.16),
       transparent 55%
     ),
     radial-gradient(
-      ellipse 70% 50% at 50% 110%,
-      rgba(20, 184, 166, 0.22),
-      transparent 55%
+      ellipse 70% 50% at 95% 0%,
+      rgba(99, 102, 241, 0.12),
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 60% 45% at 50% 110%,
+      rgba(20, 184, 166, 0.12),
+      transparent 50%
     );
   background-attachment: fixed;
-  color: #f1f5f9;
+  color: #0f172a;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-tap-highlight-color: transparent;
 }
@@ -61,13 +61,13 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 9999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
   background-clip: content-box;
 }
 

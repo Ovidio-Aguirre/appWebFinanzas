@@ -32,37 +32,37 @@ const TRANSACTION_TYPE_LABELS: Record<
 > = {
   PURCHASE: {
     label: "Compra",
-    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    badgeClass: "bg-rose-100 text-rose-600 border-rose-300",
     sign: "-",
   },
   BILL_PAYMENT: {
     label: "Servicio",
-    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    badgeClass: "bg-amber-100 text-amber-600 border-amber-300",
     sign: "-",
   },
   CARD_PAYMENT: {
     label: "Pago TC",
-    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    badgeClass: "bg-sky-100 text-sky-600 border-sky-300",
     sign: "↔",
   },
   LOAN_PAYMENT: {
     label: "Cuota Préstamo",
-    badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+    badgeClass: "bg-indigo-100 text-indigo-600 border-indigo-300",
     sign: "↔",
   },
   SALARY_INCOME: {
     label: "Salario",
-    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    badgeClass: "bg-emerald-100 text-emerald-600 border-emerald-300",
     sign: "+",
   },
   REMITTANCE_INCOME: {
     label: "Remesa",
-    badgeClass: "bg-teal-500/15 text-teal-300 border-teal-500/30",
+    badgeClass: "bg-teal-100 text-teal-600 border-teal-300",
     sign: "+",
   },
   TRANSFER: {
     label: "Transferencia",
-    badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+    badgeClass: "bg-purple-100 text-purple-600 border-purple-300",
     sign: "↔",
   },
 };
@@ -104,15 +104,15 @@ export function TransactionsLedger({
   return (
     <div className="space-y-4">
       {/* Barra superior de filtros y botón de captura rápida */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por comercio, categoría o cuenta..."
-            className="w-full rounded-xl border border-white/10 bg-slate-950/55 pl-10 pr-4 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+            className="w-full rounded-xl border border-slate-200 bg-white/75 pl-10 pr-4 py-2 text-xs text-slate-900 focus:border-teal-500 focus:outline-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ export function TransactionsLedger({
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-700 focus:border-teal-500 focus:outline-none"
           >
             <option value="ALL">Todos los tipos ({transactions.length})</option>
             <option value="PURCHASE">Compras</option>
@@ -144,13 +144,13 @@ export function TransactionsLedger({
       </div>
 
       {/* Lista de Movimientos */}
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden">
+      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="p-10 text-center text-sm text-slate-400">
+          <div className="p-10 text-center text-sm text-slate-500">
             No se encontraron movimientos con los filtros seleccionados.
           </div>
         ) : (
-          <div className="divide-y divide-slate-800/80">
+          <div className="divide-y divide-slate-200">
             {filtered.map((tx) => {
               const meta = TRANSACTION_TYPE_LABELS[tx.transactionType];
               const isPositive = meta.sign === "+";
@@ -159,16 +159,16 @@ export function TransactionsLedger({
               return (
                 <div
                   key={tx.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-slate-800/30 transition"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 hover:bg-slate-100 transition"
                 >
                   <div className="flex items-start gap-3">
                     <div
                       className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${
                         isPositive
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                          ? "bg-emerald-50 border-emerald-300 text-emerald-600"
                           : isNeutral
-                          ? "bg-sky-500/10 border-sky-500/30 text-sky-400"
-                          : "bg-rose-500/10 border-rose-500/30 text-rose-400"
+                          ? "bg-sky-50 border-sky-300 text-sky-600"
+                          : "bg-rose-50 border-rose-300 text-rose-600"
                       }`}
                     >
                       {isPositive ? (
@@ -182,7 +182,7 @@ export function TransactionsLedger({
 
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-sm font-semibold text-white">
+                        <span className="text-sm font-semibold text-slate-900">
                           {tx.title}
                         </span>
                         <span
@@ -191,16 +191,16 @@ export function TransactionsLedger({
                           {meta.label}
                         </span>
                         {tx.installmentsCount > 1 && (
-                          <span className="inline-flex items-center rounded-md bg-indigo-500/20 border border-indigo-500/30 px-2 py-0.5 text-[10px] font-semibold text-indigo-300">
+                          <span className="inline-flex items-center rounded-md bg-indigo-100 border border-indigo-300 px-2 py-0.5 text-[10px] font-semibold text-indigo-600">
                             {tx.currentInstallment}/{tx.installmentsCount} MSI
                           </span>
                         )}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
                         <span>{formatShortDate(tx.date)}</span>
                         <span>•</span>
-                        <span className="text-slate-300 font-medium">
+                        <span className="text-slate-600 font-medium">
                           {tx.accountName}
                           {tx.destinationAccountName
                             ? ` → ${tx.destinationAccountName}`
@@ -212,12 +212,12 @@ export function TransactionsLedger({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200">
                     {tx.receiptUrl && (
                       <button
                         type="button"
                         onClick={() => setActiveReceipt(tx)}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 px-2.5 py-1 text-xs font-medium text-teal-300 transition"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-teal-300 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 text-xs font-medium text-teal-600 transition"
                       >
                         <Eye className="h-3.5 w-3.5" />
                         <span>Ver Ticket</span>
@@ -235,13 +235,13 @@ export function TransactionsLedger({
                       }
                       className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition ${
                         tx.isReconciled
-                          ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
-                          : "border-slate-700 bg-slate-800/60 text-slate-400 hover:text-slate-200"
+                          ? "border-emerald-300 bg-emerald-50 text-emerald-600"
+                          : "border-slate-300 bg-slate-100 text-slate-500 hover:text-slate-700"
                       }`}
                     >
                       {tx.isReconciled ? (
                         <>
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                           <span className="hidden md:inline">Conciliado</span>
                         </>
                       ) : (
@@ -255,10 +255,10 @@ export function TransactionsLedger({
                     <div
                       className={`text-right text-sm font-bold tabular-nums min-w-[95px] ${
                         isPositive
-                          ? "text-emerald-400"
+                          ? "text-emerald-600"
                           : isNeutral
-                          ? "text-sky-300"
-                          : "text-rose-400"
+                          ? "text-sky-600"
+                          : "text-rose-600"
                       }`}
                     >
                       {meta.sign}
@@ -275,19 +275,19 @@ export function TransactionsLedger({
       {/* Modal Visor de Ticket / Comprobante Digitalizado */}
       {activeReceipt && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/85 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
-                <FileCheck2 className="h-5 w-5 text-teal-400" />
+                <FileCheck2 className="h-5 w-5 text-teal-600" />
                 <div>
-                  <h3 className="text-sm font-bold text-white">
+                  <h3 className="text-sm font-bold text-slate-900">
                     Comprobante Digitalizado
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     {activeReceipt.title} •{" "}
                     {formatCurrency(activeReceipt.amount)}
                   </p>
@@ -296,13 +296,13 @@ export function TransactionsLedger({
               <button
                 type="button"
                 onClick={() => setActiveReceipt(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="flex justify-center rounded-xl bg-slate-950 p-3 border border-white/10">
+            <div className="flex justify-center rounded-xl bg-white p-3 border border-slate-200">
               <img
                 src={activeReceipt.receiptUrl ?? ""}
                 alt={`Comprobante de ${activeReceipt.title}`}
@@ -310,7 +310,7 @@ export function TransactionsLedger({
               />
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-xs text-slate-500">
               <span>Cuenta: {activeReceipt.accountName}</span>
               <span>Fecha: {formatShortDate(activeReceipt.date)}</span>
             </div>

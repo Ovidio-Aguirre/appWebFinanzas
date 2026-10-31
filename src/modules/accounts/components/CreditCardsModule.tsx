@@ -96,13 +96,13 @@ export function CreditCardsModule({
   return (
     <div className="space-y-6">
       {/* Encabezado y resumen de cuentas líquidas + botón de alta */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <CreditCard className="h-5 w-5 text-teal-400" />
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <CreditCard className="h-5 w-5 text-teal-600" />
             Dashboard de Tarjetas de Crédito y Liquidez
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Control de fecha de corte, fecha límite de pago, pago para no generar intereses y proyección MSI
           </p>
         </div>
@@ -147,11 +147,11 @@ export function CreditCardsModule({
           return (
             <div
               key={card.id}
-              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden shadow-xl flex flex-col justify-between"
+              className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xl flex flex-col justify-between"
             >
               {/* Banner Visual de la Tarjeta */}
               <div
-                className="relative p-5 border-b border-white/5 overflow-hidden"
+                className="relative p-5 border-b border-slate-200 overflow-hidden"
                 style={{
                   background: `linear-gradient(135deg, ${card.color}40 0%, rgba(15,23,42,0.92) 55%, rgba(15,23,42,0.97) 100%)`,
                 }}
@@ -162,13 +162,13 @@ export function CreditCardsModule({
                 />
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-teal-400">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-teal-600">
                       {card.institution || "Banca Patrimonial"}
                     </span>
-                    <h3 className="text-lg font-bold text-white mt-0.5">
+                    <h3 className="text-lg font-bold text-slate-900 mt-0.5">
                       {card.name}{" "}
                       {card.lastFourDigits && (
-                        <span className="text-xs font-mono text-slate-400 ml-1">
+                        <span className="text-xs font-mono text-slate-500 ml-1">
                           •••• {card.lastFourDigits}
                         </span>
                       )}
@@ -178,10 +178,10 @@ export function CreditCardsModule({
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold border ${
                       utilizationPercent > 70
-                        ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                        ? "bg-rose-100 text-rose-600 border-rose-300"
                         : utilizationPercent > 35
-                        ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-                        : "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                        ? "bg-amber-100 text-amber-600 border-amber-300"
+                        : "bg-emerald-100 text-emerald-600 border-emerald-300"
                     }`}
                   >
                     Uso: {utilizationPercent}%
@@ -191,14 +191,14 @@ export function CreditCardsModule({
                 {/* Saldo Consumido vs Línea Disponible */}
                 <div className="grid grid-cols-2 gap-4 mt-5">
                   <div>
-                    <p className="text-xs text-slate-400">Saldo Consumido</p>
-                    <p className="text-xl font-extrabold text-rose-400 tabular-nums">
+                    <p className="text-xs text-slate-500">Saldo Consumido</p>
+                    <p className="text-xl font-extrabold text-rose-600 tabular-nums">
                       {formatCurrency(consumed, card.currency)}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-slate-400">Línea Disponible</p>
-                    <p className="text-xl font-extrabold text-emerald-400 tabular-nums">
+                    <p className="text-xs text-slate-500">Línea Disponible</p>
+                    <p className="text-xl font-extrabold text-emerald-600 tabular-nums">
                       {formatCurrency(available, card.currency)}
                     </p>
                   </div>
@@ -206,7 +206,7 @@ export function CreditCardsModule({
 
                 {/* Barra de progreso de línea de crédito */}
                 <div className="mt-3 space-y-1.5">
-                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
+                  <div className="h-2.5 w-full rounded-full bg-white overflow-hidden border border-slate-200">
                     <div
                       className={`h-full transition-all duration-500 ${
                         utilizationPercent > 70
@@ -218,7 +218,7 @@ export function CreditCardsModule({
                       style={{ width: `${utilizationPercent}%` }}
                     />
                   </div>
-                  <div className="flex justify-between text-[11px] text-slate-400">
+                  <div className="flex justify-between text-[11px] text-slate-500">
                     <span>Límite Total: {formatCurrency(limit, card.currency)}</span>
                     <span>CAT / Tasa Anual: {card.interestRate ?? 28}%</span>
                   </div>
@@ -229,12 +229,12 @@ export function CreditCardsModule({
               <div className="p-5 space-y-4">
                 {/* Indicadores visuales de días restantes para Corte y Pago */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-white/10 bg-slate-950/55 p-3">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <CalendarClock className="h-4 w-4 text-sky-400" />
+                  <div className="rounded-xl border border-slate-200 bg-white/75 p-3">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <CalendarClock className="h-4 w-4 text-sky-600" />
                       <span>Fecha de Corte (Día {card.cutoffDay})</span>
                     </div>
-                    <p className="mt-1.5 text-sm font-bold text-white">
+                    <p className="mt-1.5 text-sm font-bold text-slate-900">
                       Faltan {cutoffInfo.daysRemaining} días
                     </p>
                     <p className="text-[11px] text-slate-500">
@@ -245,31 +245,31 @@ export function CreditCardsModule({
                   <div
                     className={`rounded-xl border p-3 ${
                       isDueSoon
-                        ? "border-amber-500/40 bg-amber-500/10"
-                        : "border-white/10 bg-slate-950/55"
+                        ? "border-amber-300 bg-amber-50"
+                        : "border-slate-200 bg-white/75"
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-600">
                       <AlertTriangle
                         className={`h-4 w-4 ${
-                          isDueSoon ? "text-amber-400" : "text-teal-400"
+                          isDueSoon ? "text-amber-600" : "text-teal-600"
                         }`}
                       />
                       <span>Límite de Pago (Día {card.paymentDueDay})</span>
                     </div>
-                    <p className="mt-1.5 text-sm font-bold text-white">
+                    <p className="mt-1.5 text-sm font-bold text-slate-900">
                       Faltan {dueInfo.daysRemaining} días
                     </p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[11px] text-slate-500">
                       Vence: {formatShortDate(dueInfo.nextDate)}
                     </p>
                   </div>
                 </div>
 
                 {/* Alerta de "Pago para no generar intereses" */}
-                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="rounded-xl border border-amber-300 bg-amber-50 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-start gap-2.5">
-                    <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                    <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
                       <p className="text-xs font-bold text-amber-200">
                         Pago para no generar intereses:{" "}
@@ -277,7 +277,7 @@ export function CreditCardsModule({
                           {formatCurrency(noInterestAmount, card.currency)}
                         </span>
                       </p>
-                      <p className="text-[11px] text-amber-300/80">
+                      <p className="text-[11px] text-amber-600/80">
                         Pago mínimo exigido:{" "}
                         {formatCurrency(
                           card.minimumPayment ?? consumed * 0.1,
@@ -300,13 +300,13 @@ export function CreditCardsModule({
                 </div>
 
                 {/* Proyección de Cuotas Pendientes Asociadas a la Tarjeta */}
-                <div className="rounded-xl border border-white/10 bg-slate-950/50 p-3.5 space-y-2">
+                <div className="rounded-xl border border-slate-200 bg-slate-100 p-3.5 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                      <Layers className="h-4 w-4 text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                      <Layers className="h-4 w-4 text-indigo-600" />
                       Proyección de Cuotas / MSI en esta Tarjeta
                     </span>
-                    <span className="text-xs font-bold text-indigo-300">
+                    <span className="text-xs font-bold text-indigo-600">
                       {formatCurrency(monthlyInstallmentProjection)} / mes
                     </span>
                   </div>
@@ -324,19 +324,19 @@ export function CreditCardsModule({
                         return (
                           <div
                             key={tx.id}
-                            className="flex items-center justify-between text-xs bg-slate-900/90 rounded-lg px-3 py-2 border border-white/10"
+                            className="flex items-center justify-between text-xs bg-white rounded-lg px-3 py-2 border border-slate-200"
                           >
                             <div>
-                              <p className="font-medium text-slate-200">
+                              <p className="font-medium text-slate-700">
                                 {tx.title}
                               </p>
-                              <p className="text-[11px] text-slate-400">
+                              <p className="text-[11px] text-slate-500">
                                 Cuota {tx.currentInstallment} de{" "}
                                 {tx.installmentsCount} ({remainingMonths}{" "}
                                 restantes)
                               </p>
                             </div>
-                            <span className="font-semibold text-indigo-300 tabular-nums">
+                            <span className="font-semibold text-indigo-600 tabular-nums">
                               {formatCurrency(monthlyQuota)}/mes
                             </span>
                           </div>
@@ -352,25 +352,25 @@ export function CreditCardsModule({
       </div>
 
       {/* Cuentas de Efectivo, Débito y Ahorro */}
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Wallet className="h-4 w-4 text-emerald-400" />
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4">
+        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <Wallet className="h-4 w-4 text-emerald-600" />
           Cuentas Líquidas (Efectivo, Débito y Ahorro)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {liquidAccounts.map((acc) => (
             <div
               key={acc.id}
-              className="rounded-xl border border-white/10 bg-slate-950/55 p-4 flex items-center justify-between"
+              className="rounded-xl border border-slate-200 bg-white/75 p-4 flex items-center justify-between"
             >
               <div>
                 <span
                   className={`text-[10px] font-bold uppercase tracking-wider ${
                     acc.type === "CASH"
-                      ? "text-emerald-400"
+                      ? "text-emerald-600"
                       : acc.type === "DEBIT"
-                      ? "text-sky-400"
-                      : "text-teal-400"
+                      ? "text-sky-600"
+                      : "text-teal-600"
                   }`}
                 >
                   {acc.type === "CASH"
@@ -379,19 +379,19 @@ export function CreditCardsModule({
                     ? "Cuenta Débito"
                     : "Cuenta de Ahorro"}
                 </span>
-                <p className="text-sm font-bold text-white mt-0.5">
+                <p className="text-sm font-bold text-slate-900 mt-0.5">
                   {acc.name}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   {acc.institution || "Disponible inmediato"}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-base font-extrabold text-emerald-400 tabular-nums">
+                <p className="text-base font-extrabold text-emerald-600 tabular-nums">
                   {formatCurrency(acc.currentBalance, acc.currency)}
                 </p>
-                <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-400" /> Activa
+                <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-600" /> Activa
                 </span>
               </div>
             </div>
@@ -402,22 +402,22 @@ export function CreditCardsModule({
       {/* Modal para Crear Nueva Tarjeta o Cuenta */}
       {showNewAccountModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-teal-400" />
-                <h3 className="text-base font-bold text-white">
+                <Sparkles className="h-5 w-5 text-teal-600" />
+                <h3 className="text-base font-bold text-slate-900">
                   Registrar Nueva Tarjeta o Cuenta
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewAccountModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -429,12 +429,12 @@ export function CreditCardsModule({
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Tipo de Cuenta *
                   </label>
                   <select
                     {...register("type")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   >
                     <option value="CREDIT_CARD">Tarjeta de Crédito</option>
                     <option value="DEBIT">Cuenta de Débito / Nómina</option>
@@ -443,17 +443,17 @@ export function CreditCardsModule({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Nombre de la Cuenta *
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Mastercard Black"
                     {...register("name")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                   {errors.name && (
-                    <p className="text-[11px] text-rose-400 mt-1">
+                    <p className="text-[11px] text-rose-600 mt-1">
                       {errors.name.message}
                     </p>
                   )}
@@ -462,19 +462,19 @@ export function CreditCardsModule({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Institución Bancaria
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. BBVA / BAC / Citi"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     {watchedAccountType === "CREDIT_CARD"
                       ? "Saldo Consumido Actual (Deuda) *"
                       : "Saldo Disponible Inicial *"}
@@ -483,48 +483,48 @@ export function CreditCardsModule({
                     type="number"
                     step="0.01"
                     {...register("currentBalance")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
               </div>
 
               {watchedAccountType === "CREDIT_CARD" && (
-                <div className="rounded-xl border border-white/10 bg-slate-950/55 p-4 space-y-3">
-                  <p className="text-xs font-semibold text-teal-400">
+                <div className="rounded-xl border border-slate-200 bg-white/75 p-4 space-y-3">
+                  <p className="text-xs font-semibold text-teal-600">
                     Parámetros de Línea de Crédito y Fechas
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] text-slate-400 mb-1">
+                      <label className="block text-[11px] text-slate-500 mb-1">
                         Límite de Crédito (USD) *
                       </label>
                       <input
                         type="number"
                         step="0.01"
                         {...register("creditLimit")}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900"
                       />
                       {errors.creditLimit && (
-                        <p className="text-[11px] text-rose-400 mt-0.5">
+                        <p className="text-[11px] text-rose-600 mt-0.5">
                           {errors.creditLimit.message}
                         </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-slate-400 mb-1">
+                      <label className="block text-[11px] text-slate-500 mb-1">
                         Tasa de Interés Anual (%)
                       </label>
                       <input
                         type="number"
                         step="0.1"
                         {...register("interestRate")}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-slate-400 mb-1">
+                      <label className="block text-[11px] text-slate-500 mb-1">
                         Día de Corte (1-31) *
                       </label>
                       <input
@@ -532,12 +532,12 @@ export function CreditCardsModule({
                         min={1}
                         max={31}
                         {...register("cutoffDay")}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-slate-400 mb-1">
+                      <label className="block text-[11px] text-slate-500 mb-1">
                         Día Límite de Pago (1-31) *
                       </label>
                       <input
@@ -545,18 +545,18 @@ export function CreditCardsModule({
                         min={1}
                         max={31}
                         {...register("paymentDueDay")}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-white"
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900"
                       />
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowNewAccountModal(false)}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300"
+                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
                 >
                   Cancelar
                 </button>

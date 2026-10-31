@@ -70,8 +70,8 @@ export function PwaRegistrationAndBanner() {
       <span
         className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${
           isOnline
-            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-            : "bg-amber-500/15 text-amber-300 border-amber-500/30"
+            ? "bg-emerald-50 text-emerald-600 border-emerald-500/20"
+            : "bg-amber-100 text-amber-600 border-amber-300"
         }`}
         title={
           isOnline
@@ -96,7 +96,7 @@ export function PwaRegistrationAndBanner() {
         <button
           type="button"
           onClick={handleInstallClick}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600/20 hover:bg-teal-600/30 border border-teal-500/30 px-2.5 py-1 text-xs font-semibold text-teal-300 transition"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600/20 hover:bg-teal-600/30 border border-teal-300 px-2.5 py-1 text-xs font-semibold text-teal-600 transition"
         >
           <Download className="h-3.5 w-3.5" />
           <span>Instalar App</span>

@@ -100,24 +100,24 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
   return (
     <div className="space-y-6">
       {/* Barra superior: Selector de cuenta de pago para cuotas y alta de préstamo */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Landmark className="h-5 w-5 text-teal-400" />
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Landmark className="h-5 w-5 text-teal-600" />
             Financiamientos a Plazo Fijo y Tabla de Amortización
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Cada pago de cuota descuenta el capital del pasivo total y genera la transacción contable ACID
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Pagar cuotas desde:</span>
+            <span className="text-xs text-slate-500">Pagar cuotas desde:</span>
             <select
               value={selectedOriginAccountId}
               onChange={(e) => setSelectedOriginAccountId(e.target.value)}
-              className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+              className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
             >
               {liquidAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -151,23 +151,23 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
         return (
           <div
             key={loan.id}
-            className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden shadow-xl"
+            className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xl"
           >
             {/* Cabecera del Préstamo */}
-            <div className="p-5 border-b border-white/10 bg-gradient-to-r from-slate-900 to-slate-800/70 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="p-5 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-md bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-300">
+                  <span className="rounded-md bg-rose-100 border border-rose-300 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-600">
                     Pasivo Amortizable
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-500">
                     {loan.institution || "Entidad Financiera"}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mt-1">
+                <h3 className="text-lg font-bold text-slate-900 mt-1">
                   {loan.name}
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5">
                   Monto Inicial: {formatCurrency(loan.originalPrincipal)} • Tasa
                   Anual: {loan.interestRate}% • Plazo: {loan.termMonths} meses
                 </p>
@@ -175,23 +175,23 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
 
               <div className="flex flex-wrap items-center gap-6">
                 <div>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-500">
                     Saldo Pasivo Pendiente
                   </span>
-                  <p className="text-xl font-extrabold text-rose-400 tabular-nums">
+                  <p className="text-xl font-extrabold text-rose-600 tabular-nums">
                     {formatCurrency(loan.currentBalance, loan.currency)}
                   </p>
                 </div>
 
                 <div className="min-w-[160px]">
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-400">Avance de Cuotas</span>
-                    <span className="font-bold text-teal-400">
+                    <span className="text-slate-500">Avance de Cuotas</span>
+                    <span className="font-bold text-teal-600">
                       {paidCount}/{loan.installments.length} ({progressPercent}
                       %)
                     </span>
                   </div>
-                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
+                  <div className="h-2.5 w-full rounded-full bg-white overflow-hidden border border-slate-200">
                     <div
                       className="h-full bg-teal-500 transition-all duration-500"
                       style={{ width: `${progressPercent}%` }}
@@ -205,7 +205,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-white/10 bg-slate-950/45 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  <tr className="border-b border-slate-200 bg-slate-100 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                     <th className="py-3 px-4"># Cuota</th>
                     <th className="py-3 px-4">Vencimiento</th>
                     <th className="py-3 px-4 text-right">Cuota Total</th>
@@ -216,7 +216,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     <th className="py-3 px-4 text-right">Acción</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/70 text-xs">
+                <tbody className="divide-y divide-slate-200 text-xs">
                   {loan.installments.map((inst) => {
                     const isPaid = inst.status === "PAID";
                     const isThisPaying =
@@ -227,8 +227,8 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                         key={inst.id}
                         className={`transition ${
                           isPaid
-                            ? "bg-emerald-950/10 text-slate-400"
-                            : "hover:bg-slate-800/40 text-slate-200"
+                            ? "bg-emerald-950/10 text-slate-500"
+                            : "hover:bg-slate-100 text-slate-700"
                         }`}
                       >
                         <td className="py-3 px-4 font-bold">
@@ -238,25 +238,25 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                         <td className="py-3 px-4">
                           {formatShortDate(inst.dueDate)}
                         </td>
-                        <td className="py-3 px-4 text-right font-bold text-white tabular-nums">
+                        <td className="py-3 px-4 text-right font-bold text-slate-900 tabular-nums">
                           {formatCurrency(inst.amount)}
                         </td>
-                        <td className="py-3 px-4 text-right text-emerald-400 font-medium tabular-nums">
+                        <td className="py-3 px-4 text-right text-emerald-600 font-medium tabular-nums">
                           {formatCurrency(inst.capitalAmount)}
                         </td>
-                        <td className="py-3 px-4 text-right text-amber-400 tabular-nums">
+                        <td className="py-3 px-4 text-right text-amber-600 tabular-nums">
                           {formatCurrency(inst.interestAmount)}
                         </td>
-                        <td className="py-3 px-4 text-right text-slate-300 tabular-nums">
+                        <td className="py-3 px-4 text-right text-slate-600 tabular-nums">
                           {formatCurrency(inst.remainingBalance)}
                         </td>
                         <td className="py-3 px-4 text-center">
                           {isPaid ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">
                               <CheckCircle2 className="h-3 w-3" /> Pagada
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 border border-amber-300 px-2.5 py-0.5 text-[11px] font-semibold text-amber-600">
                               <Clock className="h-3 w-3" /> Pendiente
                             </span>
                           )}
@@ -271,7 +271,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                               type="button"
                               disabled={isPending}
                               onClick={() => handlePayInstallment(inst.id)}
-                              className="inline-flex items-center gap-1.5 rounded-lg bg-teal-500/20 hover:bg-teal-500 hover:text-slate-950 border border-teal-500/40 px-3 py-1.5 text-xs font-bold text-teal-300 transition"
+                              className="inline-flex items-center gap-1.5 rounded-lg bg-teal-100 hover:bg-teal-500 hover:text-slate-950 border border-teal-300 px-3 py-1.5 text-xs font-bold text-teal-600 transition"
                             >
                               {isThisPaying && (
                                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -293,22 +293,22 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
       {/* Modal para Registrar Nuevo Préstamo con Amortización */}
       {showNewLoanModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-teal-400" />
-                <h3 className="text-base font-bold text-white">
+                <Calculator className="h-5 w-5 text-teal-600" />
+                <h3 className="text-base font-bold text-slate-900">
                   Nuevo Financiamiento con Tabla de Amortización
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewLoanModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -317,62 +317,62 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
             <form onSubmit={handleSubmit(onSubmitNewLoan)} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Nombre del Préstamo *
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Crédito Automotriz / Hipotecario"
                     {...register("name")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                   {errors.name && (
-                    <p className="text-[11px] text-rose-400 mt-1">
+                    <p className="text-[11px] text-rose-600 mt-1">
                       {errors.name.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Institución Financiera
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Banco Agrícola / BAC"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Monto Inicial (USD) *
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...register("principalAmount")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Tasa Anual (%) *
                   </label>
                   <input
                     type="number"
                     step="0.1"
                     {...register("annualInterestRate")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 mb-1">
                     Plazo (Meses) *
                   </label>
                   <input
@@ -380,27 +380,27 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     min={1}
                     max={360}
                     {...register("termMonths")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-slate-600 mb-1">
                   Fecha de Primera Cuota *
                 </label>
                 <input
                   type="date"
                   {...register("firstDueDate")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowNewLoanModal(false)}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300"
+                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
                 >
                   Cancelar
                 </button>

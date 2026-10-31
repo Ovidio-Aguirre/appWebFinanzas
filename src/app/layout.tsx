@@ -44,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="dark">
+    <html lang="es">
       <body
         className={`${inter.variable} ${jakarta.variable} font-sans antialiased selection:bg-teal-500/30 selection:text-teal-100`}
       >
@@ -52,7 +52,7 @@ export default function RootLayout({
         <Toaster
           position="top-right"
           richColors
-          theme="dark"
+          theme="light"
           closeButton
           toastOptions={{
             classNames: {
