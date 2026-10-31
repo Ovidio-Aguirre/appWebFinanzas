@@ -10,7 +10,9 @@ import {
   Plus,
   Receipt,
   ShieldCheck,
+  LogOut,
 } from "lucide-react";
+import { logoutAction } from "@/server/actions/auth.actions";
 import type { FinancialWorkspaceSnapshot } from "@/server/actions/finance.actions";
 import type { TransactionTypeValue } from "@/modules/transactions/schemas";
 import { PwaRegistrationAndBanner } from "@/components/pwa/PwaRegistrationAndBanner";
@@ -115,6 +117,16 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
               <span className="hidden sm:inline">Captura Rápida</span>
               <span className="sm:hidden">Registrar</span>
             </button>
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                title="Cerrar sesión"
+                aria-label="Cerrar sesión"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-100"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </form>
           </div>
         </div>
 
