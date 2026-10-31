@@ -1,6 +1,13 @@
 import { prisma } from "@/lib/prisma";
 
-export const DEFAULT_USER_EMAIL = "usuario@finanzapro.app";
+/**
+ * Usuario único de la app. Configurable por variable de entorno para no
+ * dejar el email hardcodeado. Para un despliegue real, reemplazar todo el
+ * mecanismo de usuario fijo por una sesión real (Auth.js / Clerk), ver
+ * `requireUser()` en `src/lib/auth.ts`.
+ */
+export const DEFAULT_USER_EMAIL =
+  process.env.SINGLE_USER_EMAIL ?? "usuario@finanzapro.app";
 
 /**
  * Garantiza que exista un usuario base en la base de datos.

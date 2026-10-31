@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { startOfMonth, endOfMonth } from "date-fns";
-import { ensureUserExists } from "@/lib/prisma/bootstrap";
+import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { toErrorMessage } from "@/lib/errors";
 import {
@@ -103,7 +103,7 @@ export interface FinancialWorkspaceSnapshot {
  * Carga todo el estado financiero normalizado para el Dashboard y los 6 módulos.
  */
 export async function getFinancialWorkspaceData(): Promise<FinancialWorkspaceSnapshot> {
-  const user = await ensureUserExists();
+  const user = await requireUser();
 
   const [accounts, categoriesRaw, transactions, recurringRules, loans, savingsGoals] =
     await Promise.all([
@@ -211,7 +211,7 @@ export async function createQuickTransactionAction(
       return { success: false, message: firstError };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const created = await recordTransactionACID(user.id, parsed.data);
 
     revalidatePath("/");
@@ -235,7 +235,7 @@ export async function toggleReconciledAction(
   isReconciled: boolean
 ): Promise<ActionResult> {
   try {
-    const user = await ensureUserExists();
+    const user = await requireUser();
     await toggleTransactionReconciledInDb(user.id, transactionId, isReconciled);
     revalidatePath("/");
     return {
@@ -268,7 +268,7 @@ export async function createAccountAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const created = await createAccountInDb(user.id, parsed.data);
     revalidatePath("/");
 
@@ -303,7 +303,7 @@ export async function createRecurringRuleAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const created = await createRecurringRuleInDb(user.id, parsed.data);
     revalidatePath("/");
 
@@ -328,7 +328,7 @@ export async function executeRecurringRuleAction(
   ruleId: string
 ): Promise<ActionResult<{ nextExecutionDate: string }>> {
   try {
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const result = await executeRecurringRuleACID(user.id, ruleId);
     revalidatePath("/");
     return {
@@ -350,7 +350,7 @@ export async function toggleRecurringAutoPostAction(
   autoPost: boolean
 ): Promise<ActionResult> {
   try {
-    const user = await ensureUserExists();
+    const user = await requireUser();
     await toggleRecurringRuleAutoPostInDb(user.id, ruleId, autoPost);
     revalidatePath("/");
     return {
@@ -384,7 +384,7 @@ export async function createLoanWithScheduleAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const created = await createLoanWithScheduleACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -418,7 +418,7 @@ export async function payLoanInstallmentAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     await payLoanInstallmentACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -452,7 +452,7 @@ export async function createSavingsGoalAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     const created = await createSavingsGoalACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -486,7 +486,7 @@ export async function contributeToSavingsGoalAction(
       };
     }
 
-    const user = await ensureUserExists();
+    const user = await requireUser();
     await contributeToSavingsGoalACID(user.id, parsed.data);
     revalidatePath("/");
 

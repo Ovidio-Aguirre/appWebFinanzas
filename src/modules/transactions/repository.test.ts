@@ -29,7 +29,6 @@ function makeTx(
     currentInstallment: 1,
     isRecurring: false,
     isReconciled: true,
-    ...overrides,
   };
 }
 
