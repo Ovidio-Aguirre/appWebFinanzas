@@ -1,6 +1,5 @@
-const CACHE_NAME = "finanzapro-pwa-v2";
+const CACHE_NAME = "finanzapro-pwa-v3";
 const STATIC_ASSETS = [
-  "/",
   "/manifest.json",
   "/icons/icon-192.svg",
   "/icons/icon-512.svg",
@@ -33,7 +32,19 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Stale-while-revalidate for pages and static assets
+  // Documentos y navegaciones NO se cachean: contienen datos financieros privados.
+  const isDocument =
+    request.mode === "navigate" ||
+    request.destination === "document" ||
+    (request.headers.get("accept") || "").includes("text/html");
+
+  if (isDocument) {
+    // Network-first: sin caché de documentos.
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Assets estáticos: stale-while-revalidate.
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request)
@@ -44,9 +55,9 @@ self.addEventListener("fetch", (event) => {
             networkResponse.type === "basic"
           ) {
             const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(request, responseClone));
           }
           return networkResponse;
         })

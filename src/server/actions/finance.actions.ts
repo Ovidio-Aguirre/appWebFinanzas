@@ -166,7 +166,6 @@ export async function createCategoryAction(
       };
     }
 
-    const user = await ensureUserExists();
     const created = await prisma.category.create({
       data: {
         name: parsed.data.name,
