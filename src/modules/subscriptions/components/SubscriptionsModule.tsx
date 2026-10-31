@@ -206,7 +206,7 @@ export function SubscriptionsModule({
     <div className="space-y-6">
       {/* Encabezado y métricas del cronograma mensual */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
           <span className="text-xs font-medium text-slate-400">
             Suscripciones y Cargos Fijos / Mes
           </span>
@@ -218,7 +218,7 @@ export function SubscriptionsModule({
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
           <span className="text-xs font-medium text-slate-400">
             Ingresos Recurrentes / Mes (Nómina + Remesas)
           </span>
@@ -230,7 +230,7 @@ export function SubscriptionsModule({
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/75 p-5 flex flex-col justify-between">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 flex flex-col justify-between">
           <div>
             <span className="text-xs font-medium text-slate-400">
               Programación Automática
@@ -252,8 +252,8 @@ export function SubscriptionsModule({
       </div>
 
       {/* Cronograma / Calendario Mensual Ordenado por Próxima Fecha de Ejecución */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/75 overflow-hidden">
-        <div className="border-b border-slate-800 px-5 py-4 flex items-center justify-between">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden">
+        <div className="border-b border-white/10 px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-teal-400" />
             <div>
@@ -286,7 +286,7 @@ export function SubscriptionsModule({
                     className={`flex flex-col items-center justify-center h-12 w-12 rounded-xl border text-center shrink-0 ${
                       isSoon || isDueTodayOrPast
                         ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-                        : "border-slate-800 bg-slate-950 text-slate-300"
+                        : "border-white/10 bg-slate-950 text-slate-300"
                     }`}
                   >
                     <span className="text-[10px] uppercase font-bold">
@@ -335,7 +335,7 @@ export function SubscriptionsModule({
                 </div>
 
                 {/* Controles: Switch Autoregistro, Monto y Botón Confirmar Ejecución */}
-                <div className="flex flex-wrap items-center justify-between lg:justify-end gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-800/60">
+                <div className="flex flex-wrap items-center justify-between lg:justify-end gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-white/10">
                   <button
                     type="button"
                     disabled={isPending}
@@ -343,7 +343,7 @@ export function SubscriptionsModule({
                     className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition ${
                       rule.autoPost
                         ? "border-teal-500/30 bg-teal-500/10 text-teal-300"
-                        : "border-white/10 bg-slate-950/70 text-slate-400"
+                        : "border-white/10 bg-slate-950/55 text-slate-400"
                     }`}
                   >
                     {rule.autoPost ? (
@@ -395,8 +395,8 @@ export function SubscriptionsModule({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <Repeat className="h-5 w-5 text-teal-400" />
                 <h3 className="text-base font-bold text-white">
@@ -420,7 +420,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("ruleType")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   >
                     <option value="SUBSCRIPTION">
                       Suscripción / servicio recurrente
@@ -443,7 +443,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("frequency")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   >
                     <option value="BIWEEKLY">Quincenal (Cada 15 días)</option>
                     <option value="MONTHLY">Mensual</option>
@@ -462,7 +462,7 @@ export function SubscriptionsModule({
                     type="text"
                     placeholder="Ej. Netflix, Gym, Salario..."
                     {...register("title")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                   {errors.title && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -479,7 +479,7 @@ export function SubscriptionsModule({
                     type="number"
                     step="0.01"
                     {...register("amount")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                   {errors.amount && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -496,7 +496,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("accountId")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
@@ -536,7 +536,7 @@ export function SubscriptionsModule({
                         placeholder="Nombre de la categoría"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                        className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
                       />
                       <button
                         type="submit"
@@ -549,7 +549,7 @@ export function SubscriptionsModule({
                   ) : (
                     <select
                       {...register("categoryId")}
-                      className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                      className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
                     >
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
@@ -574,7 +574,7 @@ export function SubscriptionsModule({
                   <input
                     type="date"
                     {...register("startDate")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -585,7 +585,7 @@ export function SubscriptionsModule({
                   <input
                     type="date"
                     {...register("nextExecutionDate")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -594,14 +594,14 @@ export function SubscriptionsModule({
                 <input
                   type="checkbox"
                   {...register("autoPost")}
-                  className="h-4 w-4 rounded border-white/10 bg-slate-950/70 text-teal-500"
+                  className="h-4 w-4 rounded border-white/10 bg-slate-950/55 text-teal-500"
                 />
                 <span>
                   Habilitar autoregistro automático al llegar la fecha programada
                 </span>
               </label>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}

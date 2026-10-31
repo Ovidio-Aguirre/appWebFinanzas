@@ -296,9 +296,9 @@ export function QuickCaptureModal({
       aria-modal="true"
       aria-labelledby="quick-capture-title"
     >
-      <div className="w-full max-w-xl rounded-t-3xl sm:rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div className="w-full max-w-xl rounded-t-3xl sm:rounded-2xl bg-slate-900 border border-white/10 shadow-2xl max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-800 bg-slate-900/95 px-5 py-4 backdrop-blur">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-slate-900/95 px-5 py-4 backdrop-blur">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/30">
               <Sparkles className="h-5 w-5" />
@@ -338,7 +338,7 @@ export function QuickCaptureModal({
                 className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-semibold transition ${
                   actionMode === "EXPENSE"
                     ? "border-rose-500/60 bg-rose-500/15 text-rose-200 shadow-sm"
-                    : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+                    : "border-white/10 bg-slate-950/45 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <Receipt className="h-4 w-4 text-rose-400 shrink-0" />
@@ -351,7 +351,7 @@ export function QuickCaptureModal({
                 className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-semibold transition ${
                   actionMode === "DEBT_PAYMENT"
                     ? "border-sky-500/60 bg-sky-500/15 text-sky-200 shadow-sm"
-                    : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+                    : "border-white/10 bg-slate-950/45 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <ArrowRightLeft className="h-4 w-4 text-sky-400 shrink-0" />
@@ -364,7 +364,7 @@ export function QuickCaptureModal({
                 className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-semibold transition ${
                   actionMode === "INCOME"
                     ? "border-emerald-500/60 bg-emerald-500/15 text-emerald-200 shadow-sm"
-                    : "border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700"
+                    : "border-white/10 bg-slate-950/45 text-slate-400 hover:border-slate-700"
                 }`}
               >
                 <ArrowDownLeft className="h-4 w-4 text-emerald-400 shrink-0" />
@@ -381,7 +381,7 @@ export function QuickCaptureModal({
               </label>
               <select
                 {...register("transactionType")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               >
                 {actionMode === "EXPENSE" && (
                   <>
@@ -414,7 +414,7 @@ export function QuickCaptureModal({
                 step="0.01"
                 placeholder="0.00"
                 {...register("amount")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm font-semibold text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm font-semibold text-white focus:border-teal-500 focus:outline-none"
               />
               {errors.amount && (
                 <p className="mt-1 text-xs text-rose-400">
@@ -440,7 +440,7 @@ export function QuickCaptureModal({
                     : "Ej. Salario, Remesa Familiar..."
                 }
                 {...register("title")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               />
               {errors.title && (
                 <p className="mt-1 text-xs text-rose-400">
@@ -456,7 +456,7 @@ export function QuickCaptureModal({
               <input
                 type="date"
                 {...register("date")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               />
             </div>
           </div>
@@ -471,7 +471,7 @@ export function QuickCaptureModal({
               </label>
               <select
                 {...register("accountId")}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               >
                 {(actionMode === "EXPENSE"
                   ? expenseOriginAccounts
@@ -502,7 +502,7 @@ export function QuickCaptureModal({
                 </label>
                 <select
                   {...register("destinationAccountId")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
                 >
                   <option value="">Selecciona destino...</option>
                   {debtAndTargetAccounts.map((acc) => (
@@ -553,7 +553,7 @@ export function QuickCaptureModal({
                       placeholder="Nombre de la categoría"
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
-                      className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-white focus:border-teal-500 focus:outline-none"
+                      className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-sm text-white focus:border-teal-500 focus:outline-none"
                     />
                     <button
                       type="submit"
@@ -566,7 +566,7 @@ export function QuickCaptureModal({
                 ) : (
                   <select
                     {...register("categoryId")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
                   >
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
@@ -596,7 +596,7 @@ export function QuickCaptureModal({
                 </div>
                 <select
                   {...register("msiTransactionId")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
                 >
                   <option value="">
                     Pago general (sin asignar cuota específica)
@@ -641,7 +641,7 @@ export function QuickCaptureModal({
             )}
 
           {/* Subida de Ticket / Factura con Compresión Automática en el Cliente */}
-          <div className="rounded-xl border border-dashed border-white/10 bg-slate-950/70/60 p-4">
+          <div className="rounded-xl border border-dashed border-white/10 bg-slate-950/55/60 p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                 <Camera className="h-4 w-4 text-teal-400" />
@@ -653,7 +653,7 @@ export function QuickCaptureModal({
             </div>
 
             {!compressedReceipt ? (
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900/60 py-4 px-3 hover:border-teal-500/40 hover:bg-slate-900 transition">
+              <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-white/10 bg-slate-900/60 py-4 px-3 hover:border-teal-500/40 hover:bg-slate-900 transition">
                 {isCompressing ? (
                   <div className="flex items-center gap-2 text-xs text-teal-300">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -715,20 +715,20 @@ export function QuickCaptureModal({
               type="text"
               placeholder="Nota adicional o folio de referencia (opcional)..."
               {...register("description")}
-              className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3.5 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
             />
             <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
               <input
                 type="checkbox"
                 {...register("isReconciled")}
-                className="h-4 w-4 rounded border-white/10 bg-slate-950/70 text-teal-500 focus:ring-teal-500"
+                className="h-4 w-4 rounded border-white/10 bg-slate-950/55 text-teal-500 focus:ring-teal-500"
               />
               <span>Conciliado con estado de cuenta bancario</span>
             </label>
           </div>
 
           {/* Botones de acción */}
-          <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
             <button
               type="button"
               onClick={onClose}

@@ -71,7 +71,7 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("PURCHASE")}
-          className="group flex items-center justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-rose-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-rose-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400">
@@ -89,7 +89,7 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("CARD_PAYMENT")}
-          className="group flex items-center justify-between rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-sky-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-sky-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
@@ -112,7 +112,7 @@ export function ExecutiveDashboard({
               title: "Remesa Recibida",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-emerald-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-emerald-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
@@ -136,7 +136,7 @@ export function ExecutiveDashboard({
               title: "Pago de Nómina",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-teal-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-white/[0.03] to-white/[0.01] p-4 text-left hover:border-teal-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-teal-400">
@@ -184,8 +184,8 @@ export function ExecutiveDashboard({
           </div>
 
           {/* Desglose de la Ecuación Patrimonial */}
-          <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-4 border-t border-slate-800/80">
-            <div className="rounded-xl bg-slate-950/60 border border-slate-800 p-2.5">
+          <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-4 border-t border-white/10">
+            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
               <span className="text-[10px] uppercase text-slate-400 block">
                 Efectivo
               </span>
@@ -194,7 +194,7 @@ export function ExecutiveDashboard({
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/60 border border-slate-800 p-2.5">
+            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
               <span className="text-[10px] uppercase text-slate-400 block">
                 Débito
               </span>
@@ -203,7 +203,7 @@ export function ExecutiveDashboard({
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/60 border border-slate-800 p-2.5">
+            <div className="rounded-xl bg-slate-950/45 border border-white/10 p-2.5">
               <span className="text-[10px] uppercase text-slate-400 block">
                 Bóvedas
               </span>
@@ -212,7 +212,7 @@ export function ExecutiveDashboard({
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/60 border border-rose-950/60 p-2.5">
+            <div className="rounded-xl bg-slate-950/45 border border-rose-950/60 p-2.5">
               <span className="text-[10px] uppercase text-slate-400 block">
                 Deuda TC
               </span>
@@ -221,7 +221,7 @@ export function ExecutiveDashboard({
               </span>
             </div>
 
-            <div className="rounded-xl bg-slate-950/60 border border-rose-950/60 p-2.5 col-span-2 sm:col-span-1">
+            <div className="rounded-xl bg-slate-950/45 border border-rose-950/60 p-2.5 col-span-2 sm:col-span-1">
               <span className="text-[10px] uppercase text-slate-400 block">
                 Préstamos
               </span>
@@ -233,7 +233,7 @@ export function ExecutiveDashboard({
         </div>
 
         {/* Flujo de Caja del Mes en Curso (5 columnas) */}
-        <div className="lg:col-span-5 rounded-2xl border border-slate-800 bg-slate-900/80 p-6 shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-5 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -261,7 +261,7 @@ export function ExecutiveDashboard({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-slate-800">
+          <div className="grid grid-cols-2 gap-3 mt-5 pt-4 border-t border-white/10">
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3">
               <div className="flex items-center gap-1.5 text-xs text-emerald-300">
                 <ArrowDownLeft className="h-4 w-4" />
@@ -286,7 +286,7 @@ export function ExecutiveDashboard({
       </div>
 
       {/* Disponible por Cuenta (Liquidez detallada) */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 shadow-xl">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 shadow-xl">
         <div className="flex items-center gap-2 mb-4">
           <Wallet className="h-4 w-4 text-emerald-400" />
           <h3 className="text-sm font-bold text-white">
@@ -300,7 +300,7 @@ export function ExecutiveDashboard({
           {liquidAccounts.map((acc) => (
             <div
               key={acc.id}
-              className="rounded-xl border border-slate-800 bg-slate-950/60 p-3.5 flex items-center justify-between gap-3"
+              className="rounded-xl border border-white/10 bg-slate-950/45 p-3.5 flex items-center justify-between gap-3"
             >
               <div className="min-w-0">
                 <span
@@ -338,7 +338,7 @@ export function ExecutiveDashboard({
       {/* Gráficos: Desglose de Gastos por Categoría & Estado de Utilización de Crédito */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Gráfico de Desglose de Gastos por Categoría */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-6 shadow-xl">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl">
           <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-2">
               <PieChart className="h-5 w-5 text-teal-400" />
@@ -441,7 +441,7 @@ export function ExecutiveDashboard({
         </div>
 
         {/* Estado de Utilización de Crédito y Alertas de Corte/Pago */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-6 shadow-xl flex flex-col justify-between">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -470,7 +470,7 @@ export function ExecutiveDashboard({
             </div>
 
             {/* Barra Global de Uso de Crédito */}
-            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 mb-4">
+            <div className="rounded-xl border border-white/10 bg-slate-950/45 p-4 mb-4">
               <div className="flex justify-between text-xs mb-1.5">
                 <span className="text-slate-400">
                   Deuda Total TC:{" "}
@@ -485,7 +485,7 @@ export function ExecutiveDashboard({
                   </strong>
                 </span>
               </div>
-              <div className="h-3 w-full rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+              <div className="h-3 w-full rounded-full bg-slate-900 overflow-hidden border border-white/10">
                 <div
                   className="h-full bg-gradient-to-r from-teal-500 via-sky-500 to-rose-500 transition-all duration-500"
                   style={{
@@ -508,7 +508,7 @@ export function ExecutiveDashboard({
                 return (
                   <div
                     key={card.id}
-                    className="rounded-xl border border-slate-800 bg-slate-950/50 p-3.5 flex items-center justify-between gap-4"
+                    className="rounded-xl border border-white/10 bg-slate-950/50 p-3.5 flex items-center justify-between gap-4"
                   >
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center justify-between">
@@ -552,7 +552,7 @@ export function ExecutiveDashboard({
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
             <button
               type="button"
               onClick={() => onNavigateTab("cards")}

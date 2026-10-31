@@ -100,7 +100,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
   return (
     <div className="space-y-6">
       {/* Barra superior: Selector de cuenta de pago para cuotas y alta de préstamo */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/75 p-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
             <Landmark className="h-5 w-5 text-teal-400" />
@@ -117,7 +117,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
             <select
               value={selectedOriginAccountId}
               onChange={(e) => setSelectedOriginAccountId(e.target.value)}
-              className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+              className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
             >
               {liquidAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -151,10 +151,10 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
         return (
           <div
             key={loan.id}
-            className="rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl"
+            className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden shadow-xl"
           >
             {/* Cabecera del Préstamo */}
-            <div className="p-5 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800/70 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="p-5 border-b border-white/10 bg-gradient-to-r from-slate-900 to-slate-800/70 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="rounded-md bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-300">
@@ -191,7 +191,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                       %)
                     </span>
                   </div>
-                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-slate-800">
+                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
                     <div
                       className="h-full bg-teal-500 transition-all duration-500"
                       style={{ width: `${progressPercent}%` }}
@@ -205,7 +205,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/60 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  <tr className="border-b border-white/10 bg-slate-950/45 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     <th className="py-3 px-4"># Cuota</th>
                     <th className="py-3 px-4">Vencimiento</th>
                     <th className="py-3 px-4 text-right">Cuota Total</th>
@@ -297,8 +297,8 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <Calculator className="h-5 w-5 text-teal-400" />
                 <h3 className="text-base font-bold text-white">
@@ -324,7 +324,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="text"
                     placeholder="Ej. Crédito Automotriz / Hipotecario"
                     {...register("name")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                   {errors.name && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -341,7 +341,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="text"
                     placeholder="Ej. Banco Agrícola / BAC"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -355,7 +355,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="number"
                     step="0.01"
                     {...register("principalAmount")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -367,7 +367,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="number"
                     step="0.1"
                     {...register("annualInterestRate")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -380,7 +380,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     min={1}
                     max={360}
                     {...register("termMonths")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -392,11 +392,11 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                 <input
                   type="date"
                   {...register("firstDueDate")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowNewLoanModal(false)}

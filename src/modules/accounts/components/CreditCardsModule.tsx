@@ -96,7 +96,7 @@ export function CreditCardsModule({
   return (
     <div className="space-y-6">
       {/* Encabezado y resumen de cuentas líquidas + botón de alta */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
             <CreditCard className="h-5 w-5 text-teal-400" />
@@ -147,7 +147,7 @@ export function CreditCardsModule({
           return (
             <div
               key={card.id}
-              className="rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl flex flex-col justify-between"
+              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden shadow-xl flex flex-col justify-between"
             >
               {/* Banner Visual de la Tarjeta */}
               <div
@@ -206,7 +206,7 @@ export function CreditCardsModule({
 
                 {/* Barra de progreso de línea de crédito */}
                 <div className="mt-3 space-y-1.5">
-                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-slate-800">
+                  <div className="h-2.5 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
                     <div
                       className={`h-full transition-all duration-500 ${
                         utilizationPercent > 70
@@ -229,7 +229,7 @@ export function CreditCardsModule({
               <div className="p-5 space-y-4">
                 {/* Indicadores visuales de días restantes para Corte y Pago */}
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-3">
+                  <div className="rounded-xl border border-white/10 bg-slate-950/55 p-3">
                     <div className="flex items-center gap-1.5 text-xs text-slate-400">
                       <CalendarClock className="h-4 w-4 text-sky-400" />
                       <span>Fecha de Corte (Día {card.cutoffDay})</span>
@@ -246,7 +246,7 @@ export function CreditCardsModule({
                     className={`rounded-xl border p-3 ${
                       isDueSoon
                         ? "border-amber-500/40 bg-amber-500/10"
-                        : "border-slate-800 bg-slate-950/70"
+                        : "border-white/10 bg-slate-950/55"
                     }`}
                   >
                     <div className="flex items-center gap-1.5 text-xs text-slate-300">
@@ -300,7 +300,7 @@ export function CreditCardsModule({
                 </div>
 
                 {/* Proyección de Cuotas Pendientes Asociadas a la Tarjeta */}
-                <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-3.5 space-y-2">
+                <div className="rounded-xl border border-white/10 bg-slate-950/50 p-3.5 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                       <Layers className="h-4 w-4 text-indigo-400" />
@@ -324,7 +324,7 @@ export function CreditCardsModule({
                         return (
                           <div
                             key={tx.id}
-                            className="flex items-center justify-between text-xs bg-slate-900/90 rounded-lg px-3 py-2 border border-slate-800/80"
+                            className="flex items-center justify-between text-xs bg-slate-900/90 rounded-lg px-3 py-2 border border-white/10"
                           >
                             <div>
                               <p className="font-medium text-slate-200">
@@ -352,7 +352,7 @@ export function CreditCardsModule({
       </div>
 
       {/* Cuentas de Efectivo, Débito y Ahorro */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 space-y-4">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 space-y-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
           <Wallet className="h-4 w-4 text-emerald-400" />
           Cuentas Líquidas (Efectivo, Débito y Ahorro)
@@ -361,7 +361,7 @@ export function CreditCardsModule({
           {liquidAccounts.map((acc) => (
             <div
               key={acc.id}
-              className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 flex items-center justify-between"
+              className="rounded-xl border border-white/10 bg-slate-950/55 p-4 flex items-center justify-between"
             >
               <div>
                 <span
@@ -406,8 +406,8 @@ export function CreditCardsModule({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-teal-400" />
                 <h3 className="text-base font-bold text-white">
@@ -434,7 +434,7 @@ export function CreditCardsModule({
                   </label>
                   <select
                     {...register("type")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   >
                     <option value="CREDIT_CARD">Tarjeta de Crédito</option>
                     <option value="DEBIT">Cuenta de Débito / Nómina</option>
@@ -450,7 +450,7 @@ export function CreditCardsModule({
                     type="text"
                     placeholder="Ej. Mastercard Black"
                     {...register("name")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                   {errors.name && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -469,7 +469,7 @@ export function CreditCardsModule({
                     type="text"
                     placeholder="Ej. BBVA / BAC / Citi"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -483,13 +483,13 @@ export function CreditCardsModule({
                     type="number"
                     step="0.01"
                     {...register("currentBalance")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
 
               {watchedAccountType === "CREDIT_CARD" && (
-                <div className="rounded-xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
+                <div className="rounded-xl border border-white/10 bg-slate-950/55 p-4 space-y-3">
                   <p className="text-xs font-semibold text-teal-400">
                     Parámetros de Línea de Crédito y Fechas
                   </p>
@@ -552,7 +552,7 @@ export function CreditCardsModule({
                 </div>
               )}
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowNewAccountModal(false)}

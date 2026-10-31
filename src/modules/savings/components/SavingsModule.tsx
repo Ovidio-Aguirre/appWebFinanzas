@@ -110,7 +110,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
   return (
     <div className="space-y-6">
       {/* Resumen de Bóvedas de Ahorro */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/75 p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
             <PiggyBank className="h-5 w-5 text-teal-400" />
@@ -145,7 +145,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
           return (
             <div
               key={goal.id}
-              className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 flex flex-col justify-between space-y-5 shadow-lg"
+              className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-5 flex flex-col justify-between space-y-5 shadow-lg"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-2">
@@ -192,7 +192,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   </div>
 
                   {/* Barra de progreso porcentual */}
-                  <div className="mt-2 h-3 w-full rounded-full bg-slate-950 overflow-hidden border border-slate-800">
+                  <div className="mt-2 h-3 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
                     <div
                       className="h-full transition-all duration-500 rounded-full"
                       style={{
@@ -218,7 +218,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-800">
+              <div className="pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => openTransferModal(goal)}
@@ -249,8 +249,8 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <ArrowRightLeft className="h-5 w-5 text-teal-400" />
                 <div>
@@ -282,7 +282,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 </label>
                 <select
                   {...contributeForm.register("originAccountId")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2.5 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2.5 text-xs text-white"
                 >
                   {checkingAccounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -301,7 +301,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   type="number"
                   step="0.01"
                   {...contributeForm.register("amount")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2.5 text-sm font-bold text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2.5 text-sm font-bold text-white"
                 />
                 {contributeForm.formState.errors.amount && (
                   <p className="text-[11px] text-rose-400 mt-1">
@@ -317,11 +317,11 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 <input
                   type="text"
                   {...contributeForm.register("note")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setTransferGoal(null)}
@@ -352,8 +352,8 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-teal-400" />
                 <h3 className="text-base font-bold text-white">
@@ -381,7 +381,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   type="text"
                   placeholder="Ej. Mi meta de ahorro..."
                   {...createForm.register("name")}
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                 />
                 {createForm.formState.errors.name && (
                   <p className="text-[11px] text-rose-400 mt-1">
@@ -399,7 +399,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                     type="number"
                     step="0.01"
                     {...createForm.register("targetAmount")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -411,7 +411,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                     type="number"
                     step="0.01"
                     {...createForm.register("initialAmount")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -424,7 +424,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   <input
                     type="date"
                     {...createForm.register("deadline")}
-                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -435,12 +435,12 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   <input
                     type="color"
                     {...createForm.register("color")}
-                    className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/70 p-1 cursor-pointer"
+                    className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/55 p-1 cursor-pointer"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowNewGoalModal(false)}

@@ -104,7 +104,7 @@ export function TransactionsLedger({
   return (
     <div className="space-y-4">
       {/* Barra superior de filtros y botón de captura rápida */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-4">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
@@ -112,7 +112,7 @@ export function TransactionsLedger({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por comercio, categoría o cuenta..."
-            className="w-full rounded-xl border border-white/10 bg-slate-950/70 pl-10 pr-4 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+            className="w-full rounded-xl border border-white/10 bg-slate-950/55 pl-10 pr-4 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ export function TransactionsLedger({
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
           >
             <option value="ALL">Todos los tipos ({transactions.length})</option>
             <option value="PURCHASE">Compras</option>
@@ -144,7 +144,7 @@ export function TransactionsLedger({
       </div>
 
       {/* Lista de Movimientos */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 overflow-hidden">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl overflow-hidden">
         {filtered.length === 0 ? (
           <div className="p-10 text-center text-sm text-slate-400">
             No se encontraron movimientos con los filtros seleccionados.
@@ -212,7 +212,7 @@ export function TransactionsLedger({
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800/60">
+                  <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/10">
                     {tx.receiptUrl && (
                       <button
                         type="button"
@@ -279,8 +279,8 @@ export function TransactionsLedger({
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/90 backdrop-blur-xl p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <FileCheck2 className="h-5 w-5 text-teal-400" />
                 <div>
@@ -302,7 +302,7 @@ export function TransactionsLedger({
               </button>
             </div>
 
-            <div className="flex justify-center rounded-xl bg-slate-950 p-3 border border-slate-800">
+            <div className="flex justify-center rounded-xl bg-slate-950 p-3 border border-white/10">
               <img
                 src={activeReceipt.receiptUrl ?? ""}
                 alt={`Comprobante de ${activeReceipt.title}`}
