@@ -128,7 +128,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
         <button
           type="button"
           onClick={() => setShowNewGoalModal(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
         >
           <Plus className="h-4 w-4" />
           <span>Nueva Bóveda de Ahorro</span>
@@ -245,7 +245,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
       {/* Modal para Transferir Saldo desde Cuenta Corriente a Bóveda */}
       {transferGoal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -282,7 +282,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 </label>
                 <select
                   {...contributeForm.register("originAccountId")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2.5 text-xs text-white"
                 >
                   {checkingAccounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -301,7 +301,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   type="number"
                   step="0.01"
                   {...contributeForm.register("amount")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm font-bold text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2.5 text-sm font-bold text-white"
                 />
                 {contributeForm.formState.errors.amount && (
                   <p className="text-[11px] text-rose-400 mt-1">
@@ -317,7 +317,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 <input
                   type="text"
                   {...contributeForm.register("note")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                 />
               </div>
 
@@ -332,7 +332,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 <button
                   type="submit"
                   disabled={contributeForm.formState.isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   {contributeForm.formState.isSubmitting && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -348,7 +348,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
       {/* Modal para Crear Nueva Bóveda de Ahorro */}
       {showNewGoalModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -381,7 +381,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   type="text"
                   placeholder="Ej. Mi meta de ahorro..."
                   {...createForm.register("name")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                 />
                 {createForm.formState.errors.name && (
                   <p className="text-[11px] text-rose-400 mt-1">
@@ -399,7 +399,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                     type="number"
                     step="0.01"
                     {...createForm.register("targetAmount")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -411,7 +411,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                     type="number"
                     step="0.01"
                     {...createForm.register("initialAmount")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -424,7 +424,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   <input
                     type="date"
                     {...createForm.register("deadline")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -435,7 +435,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                   <input
                     type="color"
                     {...createForm.register("color")}
-                    className="h-9 w-full rounded-xl border border-slate-700 bg-slate-950 p-1 cursor-pointer"
+                    className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/70 p-1 cursor-pointer"
                   />
                 </div>
               </div>
@@ -451,7 +451,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 <button
                   type="submit"
                   disabled={createForm.formState.isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   {createForm.formState.isSubmitting && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

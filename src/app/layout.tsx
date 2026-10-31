@@ -1,6 +1,19 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "FinanzaPro PWA — Finanzas Personales, Tarjetas, Préstamos y Bóvedas",
@@ -32,13 +45,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="dark">
-      <body className="antialiased selection:bg-teal-500/30 selection:text-teal-200">
+      <body
+        className={`${inter.variable} ${jakarta.variable} font-sans antialiased selection:bg-teal-500/30 selection:text-teal-100`}
+      >
         {children}
         <Toaster
           position="top-right"
           richColors
           theme="dark"
           closeButton
+          toastOptions={{
+            classNames: {
+              toast: "font-sans",
+            },
+          }}
         />
       </body>
     </html>

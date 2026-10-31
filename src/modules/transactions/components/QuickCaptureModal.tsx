@@ -291,7 +291,7 @@ export function QuickCaptureModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/80 backdrop-blur-sm p-0 sm:p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-950/80 backdrop-blur-md p-0 sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="quick-capture-title"
@@ -381,7 +381,7 @@ export function QuickCaptureModal({
               </label>
               <select
                 {...register("transactionType")}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               >
                 {actionMode === "EXPENSE" && (
                   <>
@@ -414,7 +414,7 @@ export function QuickCaptureModal({
                 step="0.01"
                 placeholder="0.00"
                 {...register("amount")}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm font-semibold text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm font-semibold text-white focus:border-teal-500 focus:outline-none"
               />
               {errors.amount && (
                 <p className="mt-1 text-xs text-rose-400">
@@ -440,7 +440,7 @@ export function QuickCaptureModal({
                     : "Ej. Salario, Remesa Familiar..."
                 }
                 {...register("title")}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               />
               {errors.title && (
                 <p className="mt-1 text-xs text-rose-400">
@@ -456,7 +456,7 @@ export function QuickCaptureModal({
               <input
                 type="date"
                 {...register("date")}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               />
             </div>
           </div>
@@ -471,7 +471,7 @@ export function QuickCaptureModal({
               </label>
               <select
                 {...register("accountId")}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
               >
                 {(actionMode === "EXPENSE"
                   ? expenseOriginAccounts
@@ -502,7 +502,7 @@ export function QuickCaptureModal({
                 </label>
                 <select
                   {...register("destinationAccountId")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
                 >
                   <option value="">Selecciona destino...</option>
                   {debtAndTargetAccounts.map((acc) => (
@@ -553,7 +553,7 @@ export function QuickCaptureModal({
                       placeholder="Nombre de la categoría"
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
-                      className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-teal-500 focus:outline-none"
+                      className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-sm text-white focus:border-teal-500 focus:outline-none"
                     />
                     <button
                       type="submit"
@@ -566,7 +566,7 @@ export function QuickCaptureModal({
                 ) : (
                   <select
                     {...register("categoryId")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
                   >
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
@@ -596,7 +596,7 @@ export function QuickCaptureModal({
                 </div>
                 <select
                   {...register("msiTransactionId")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none"
                 >
                   <option value="">
                     Pago general (sin asignar cuota específica)
@@ -641,7 +641,7 @@ export function QuickCaptureModal({
             )}
 
           {/* Subida de Ticket / Factura con Compresión Automática en el Cliente */}
-          <div className="rounded-xl border border-dashed border-slate-700 bg-slate-950/60 p-4">
+          <div className="rounded-xl border border-dashed border-white/10 bg-slate-950/70/60 p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                 <Camera className="h-4 w-4 text-teal-400" />
@@ -715,13 +715,13 @@ export function QuickCaptureModal({
               type="text"
               placeholder="Nota adicional o folio de referencia (opcional)..."
               {...register("description")}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+              className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3.5 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
             />
             <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
               <input
                 type="checkbox"
                 {...register("isReconciled")}
-                className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500 focus:ring-teal-500"
+                className="h-4 w-4 rounded border-white/10 bg-slate-950/70 text-teal-500 focus:ring-teal-500"
               />
               <span>Conciliado con estado de cuenta bancario</span>
             </label>
@@ -739,7 +739,7 @@ export function QuickCaptureModal({
             <button
               type="submit"
               disabled={isSubmitting || isCompressing || isUploading}
-              className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 disabled:opacity-60 px-5 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-teal-500/20 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 disabled:opacity-60 px-5 py-2.5 text-xs font-bold text-slate-950 shadow-lg shadow-teal-500/20 transition"
             >
               {(isSubmitting || isUploading) && (
                 <Loader2 className="h-4 w-4 animate-spin" />

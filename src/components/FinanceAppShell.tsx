@@ -80,36 +80,36 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 pb-24 md:pb-12">
+    <div className="min-h-screen text-slate-100 pb-24 md:pb-12">
       {/* Top Navbar */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-white/5 bg-slate-950/70 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 text-slate-950 shadow-lg shadow-teal-500/20">
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 text-slate-950 shadow-lg shadow-teal-500/30 ring-1 ring-white/10">
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base font-black tracking-tight text-white">
+                <span className="font-display text-base font-bold tracking-tight text-white">
                   FinanzaPro
                 </span>
-                <span className="hidden sm:inline-block rounded-md bg-teal-500/15 border border-teal-500/30 px-1.5 py-0.5 text-[10px] font-bold uppercase text-teal-300">
-                  PWA v1.0
+                <span className="hidden sm:inline-block rounded-full bg-teal-500/10 border border-teal-500/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal-300">
+                  PWA
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                {initialData.user.name} • Portafolio Multicuenta ACID
+                {initialData.user.name} • Portafolio Multicuenta
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <PwaRegistrationAndBanner />
 
             <button
               type="button"
               onClick={() => handleOpenQuickCapture("PURCHASE")}
-              className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 px-3.5 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-teal-500/20 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 px-3.5 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-teal-500/25 transition-all hover:shadow-teal-500/40 hover:brightness-110 active:scale-[0.97]"
             >
               <Plus className="h-4 w-4" />
               <span className="hidden sm:inline">Captura Rápida</span>
@@ -119,7 +119,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
         </div>
 
         {/* Desktop Navigation Tabs */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 hidden md:flex items-center gap-1 border-t border-slate-900 pt-1">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 hidden md:flex items-center gap-1.5 pb-2.5">
           {NAVIGATION_TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -128,10 +128,10 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition ${
+                className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
                   isActive
-                    ? "border-teal-400 text-teal-300 bg-teal-500/5"
-                    : "border-transparent text-slate-400 hover:text-slate-200"
+                    ? "bg-teal-500/15 text-teal-300 ring-1 ring-teal-500/30 shadow-inner"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -195,7 +195,7 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
       {/* Barra de Navegación Inferior Mobile-First (PWA) */}
       <nav
         aria-label="Navegación móvil"
-        className="fixed bottom-0 inset-x-0 z-30 border-t border-slate-800 bg-slate-950/95 backdrop-blur-md md:hidden"
+        className="fixed bottom-0 inset-x-0 z-30 border-t border-white/5 bg-slate-950/80 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]"
       >
         <div className="grid grid-cols-6 h-16">
           {NAVIGATION_TABS.map((tab) => {
@@ -206,11 +206,17 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center justify-center gap-1 text-[10px] font-semibold transition ${
+                className={`flex flex-col items-center justify-center gap-1 text-[10px] font-semibold transition-colors ${
                   isActive ? "text-teal-400" : "text-slate-400"
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                <span
+                  className={`flex h-7 w-12 items-center justify-center rounded-full transition-colors ${
+                    isActive ? "bg-teal-500/15" : ""
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                </span>
                 <span className="truncate max-w-[56px]">{tab.label}</span>
               </button>
             );

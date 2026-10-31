@@ -71,7 +71,7 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("PURCHASE")}
-          className="group flex items-center justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-rose-500/60 transition shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-br from-rose-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-rose-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400">
@@ -89,7 +89,7 @@ export function ExecutiveDashboard({
         <button
           type="button"
           onClick={() => onOpenQuickCapture("CARD_PAYMENT")}
-          className="group flex items-center justify-between rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-sky-500/60 transition shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-sky-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
@@ -112,7 +112,7 @@ export function ExecutiveDashboard({
               title: "Remesa Recibida",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-emerald-500/60 transition shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-emerald-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">
@@ -136,7 +136,7 @@ export function ExecutiveDashboard({
               title: "Pago de Nómina",
             })
           }
-          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-teal-500/60 transition shadow-lg"
+          className="group flex items-center justify-between rounded-2xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 via-slate-900 to-slate-900 p-4 text-left hover:border-teal-500/60 transition-all hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 active:scale-[0.98] shadow-lg"
         >
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-teal-400">
@@ -169,7 +169,7 @@ export function ExecutiveDashboard({
 
             <div className="mt-4 flex items-baseline gap-3">
               <h2
-                className={`text-3xl sm:text-4xl font-black tracking-tight tabular-nums ${
+                className={`font-display text-4xl sm:text-5xl font-bold tracking-tight tabular-nums ${
                   netWorth.realLiquidNetWorth >= 0
                     ? "text-white"
                     : "text-rose-400"

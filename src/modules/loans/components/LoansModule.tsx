@@ -117,7 +117,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
             <select
               value={selectedOriginAccountId}
               onChange={(e) => setSelectedOriginAccountId(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+              className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
             >
               {liquidAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -130,7 +130,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
           <button
             type="button"
             onClick={() => setShowNewLoanModal(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
           >
             <Plus className="h-4 w-4" />
             <span>Registrar Préstamo</span>
@@ -293,7 +293,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
       {/* Modal para Registrar Nuevo Préstamo con Amortización */}
       {showNewLoanModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -324,7 +324,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="text"
                     placeholder="Ej. Crédito Automotriz / Hipotecario"
                     {...register("name")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                   {errors.name && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -341,7 +341,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="text"
                     placeholder="Ej. Banco Agrícola / BAC"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -355,7 +355,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="number"
                     step="0.01"
                     {...register("principalAmount")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -367,7 +367,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     type="number"
                     step="0.1"
                     {...register("annualInterestRate")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -380,7 +380,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     min={1}
                     max={360}
                     {...register("termMonths")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -392,7 +392,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                 <input
                   type="date"
                   {...register("firstDueDate")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                 />
               </div>
 
@@ -407,7 +407,7 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   {isSubmitting && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

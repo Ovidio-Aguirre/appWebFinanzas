@@ -243,7 +243,7 @@ export function SubscriptionsModule({
           <button
             type="button"
             onClick={() => setShowCreateModal(true)}
-            className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
+            className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
           >
             <Plus className="h-4 w-4" />
             <span>Nueva Suscripción / Ingreso Fijo</span>
@@ -343,7 +343,7 @@ export function SubscriptionsModule({
                     className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition ${
                       rule.autoPost
                         ? "border-teal-500/30 bg-teal-500/10 text-teal-300"
-                        : "border-slate-700 bg-slate-950 text-slate-400"
+                        : "border-white/10 bg-slate-950/70 text-slate-400"
                     }`}
                   >
                     {rule.autoPost ? (
@@ -391,7 +391,7 @@ export function SubscriptionsModule({
       {/* Modal para Registrar Regla Recurrente */}
       {showCreateModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -420,7 +420,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("ruleType")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   >
                     <option value="SUBSCRIPTION">
                       Suscripción / servicio recurrente
@@ -443,7 +443,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("frequency")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   >
                     <option value="BIWEEKLY">Quincenal (Cada 15 días)</option>
                     <option value="MONTHLY">Mensual</option>
@@ -462,7 +462,7 @@ export function SubscriptionsModule({
                     type="text"
                     placeholder="Ej. Netflix, Gym, Salario..."
                     {...register("title")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                   {errors.title && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -479,7 +479,7 @@ export function SubscriptionsModule({
                     type="number"
                     step="0.01"
                     {...register("amount")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                   {errors.amount && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -496,7 +496,7 @@ export function SubscriptionsModule({
                   </label>
                   <select
                     {...register("accountId")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
@@ -536,7 +536,7 @@ export function SubscriptionsModule({
                         placeholder="Nombre de la categoría"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                        className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
                       />
                       <button
                         type="submit"
@@ -549,7 +549,7 @@ export function SubscriptionsModule({
                   ) : (
                     <select
                       {...register("categoryId")}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                      className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
                     >
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
@@ -574,7 +574,7 @@ export function SubscriptionsModule({
                   <input
                     type="date"
                     {...register("startDate")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -585,7 +585,7 @@ export function SubscriptionsModule({
                   <input
                     type="date"
                     {...register("nextExecutionDate")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -594,7 +594,7 @@ export function SubscriptionsModule({
                 <input
                   type="checkbox"
                   {...register("autoPost")}
-                  className="h-4 w-4 rounded border-slate-700 bg-slate-950 text-teal-500"
+                  className="h-4 w-4 rounded border-white/10 bg-slate-950/70 text-teal-500"
                 />
                 <span>
                   Habilitar autoregistro automático al llegar la fecha programada
@@ -612,7 +612,7 @@ export function SubscriptionsModule({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

@@ -110,7 +110,7 @@ export function CreditCardsModule({
         <button
           type="button"
           onClick={() => setShowNewAccountModal(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition shadow-lg shadow-teal-500/15"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition shadow-lg shadow-teal-500/15"
         >
           <Plus className="h-4 w-4" />
           <span>Nueva Tarjeta / Cuenta</span>
@@ -150,7 +150,16 @@ export function CreditCardsModule({
               className="rounded-2xl border border-slate-800 bg-slate-900/80 overflow-hidden shadow-xl flex flex-col justify-between"
             >
               {/* Banner Visual de la Tarjeta */}
-              <div className="p-5 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 border-b border-slate-800">
+              <div
+                className="relative p-5 border-b border-white/5 overflow-hidden"
+                style={{
+                  background: `linear-gradient(135deg, ${card.color}40 0%, rgba(15,23,42,0.92) 55%, rgba(15,23,42,0.97) 100%)`,
+                }}
+              >
+                <div
+                  className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full opacity-20 blur-2xl"
+                  style={{ backgroundColor: card.color ?? "#0f766e" }}
+                />
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-teal-400">
@@ -393,7 +402,7 @@ export function CreditCardsModule({
       {/* Modal para Crear Nueva Tarjeta o Cuenta */}
       {showNewAccountModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
@@ -425,7 +434,7 @@ export function CreditCardsModule({
                   </label>
                   <select
                     {...register("type")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   >
                     <option value="CREDIT_CARD">Tarjeta de Crédito</option>
                     <option value="DEBIT">Cuenta de Débito / Nómina</option>
@@ -441,7 +450,7 @@ export function CreditCardsModule({
                     type="text"
                     placeholder="Ej. Mastercard Black"
                     {...register("name")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                   {errors.name && (
                     <p className="text-[11px] text-rose-400 mt-1">
@@ -460,7 +469,7 @@ export function CreditCardsModule({
                     type="text"
                     placeholder="Ej. BBVA / BAC / Citi"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
 
@@ -474,7 +483,7 @@ export function CreditCardsModule({
                     type="number"
                     step="0.01"
                     {...register("currentBalance")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
+                    className="w-full rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-white"
                   />
                 </div>
               </div>
@@ -554,7 +563,7 @@ export function CreditCardsModule({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
                 >
                   {isSubmitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   <span>Crear Cuenta</span>

@@ -112,7 +112,7 @@ export function TransactionsLedger({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por comercio, categoría o cuenta..."
-            className="w-full rounded-xl border border-slate-800 bg-slate-950 pl-10 pr-4 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+            className="w-full rounded-xl border border-white/10 bg-slate-950/70 pl-10 pr-4 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
           />
         </div>
 
@@ -120,7 +120,7 @@ export function TransactionsLedger({
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
+            className="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-xs text-slate-200 focus:border-teal-500 focus:outline-none"
           >
             <option value="ALL">Todos los tipos ({transactions.length})</option>
             <option value="PURCHASE">Compras</option>
@@ -135,7 +135,7 @@ export function TransactionsLedger({
           <button
             type="button"
             onClick={() => onOpenQuickCapture("PURCHASE")}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 px-3.5 py-2 text-xs font-bold text-slate-950 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-3.5 py-2 text-xs font-bold text-slate-950 transition"
           >
             <Plus className="h-4 w-4" />
             <span>Nuevo Movimiento</span>
@@ -275,7 +275,7 @@ export function TransactionsLedger({
       {/* Modal Visor de Ticket / Comprobante Digitalizado */}
       {activeReceipt && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
