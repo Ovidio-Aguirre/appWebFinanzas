@@ -262,6 +262,14 @@ export async function recordTransactionACID(
       input.transactionType === "CARD_PAYMENT" ||
       input.transactionType === "LOAN_PAYMENT"
     ) {
+      // Los pagos de préstamo se gestionan desde el módulo de Préstamos
+      // (payLoanInstallmentACID) para mantener la tabla de amortización en sincronía.
+      if (input.transactionType === "LOAN_PAYMENT") {
+        throw new DomainError(
+          "Los pagos de préstamo se realizan desde el módulo de Préstamos (cuotas)."
+        );
+      }
+
       if (!input.destinationAccountId) {
         throw new DomainError("Debes indicar la tarjeta o deuda a pagar.");
       }

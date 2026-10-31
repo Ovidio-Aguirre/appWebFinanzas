@@ -392,7 +392,6 @@ export function QuickCaptureModal({
                 {actionMode === "DEBT_PAYMENT" && (
                   <>
                     <option value="CARD_PAYMENT">Pago de Tarjeta de Crédito</option>
-                    <option value="LOAN_PAYMENT">Abono a Préstamo / Deuda</option>
                     <option value="TRANSFER">Transferencia entre Cuentas</option>
                   </>
                 )}
