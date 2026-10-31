@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
+import { requireUser } from "@/lib/auth";
 
 /**
  * Detecta el tipo de imagen real a partir de sus magic bytes.
@@ -41,6 +42,7 @@ function detectImageType(buffer: Buffer): string | null {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
+    await requireUser();
     const formData = await request.formData();
     const file = formData.get("file");
 

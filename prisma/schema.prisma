@@ -83,7 +83,6 @@ model User {
   recurringRules    RecurringRule[]
   savingsGoals      SavingsGoal[]
 
-  @@index([email])
 }
 
 model Account {
@@ -176,7 +175,6 @@ model Transaction {
   @@index([destinationAccountId])
   @@index([categoryId])
   @@index([transactionType])
-  @@index([date])
   @@index([msiTransactionId])
 }
 
