@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ensureDemoWorkspaceSeeded } from "@/lib/prisma/bootstrap";
+import { ensureUserExists } from "@/lib/prisma/bootstrap";
 import { prisma } from "@/lib/prisma";
 import {
   CreateAccountSchema,
@@ -15,6 +15,8 @@ import {
   type NetWorthBreakdown,
 } from "@/modules/accounts/repository";
 import {
+  CreateCategorySchema,
+  type CreateCategoryInput,
   QuickCaptureTransactionSchema,
   type QuickCaptureTransactionInput,
   type SerializedTransaction,
@@ -98,7 +100,7 @@ export interface FinancialWorkspaceSnapshot {
  * Carga todo el estado financiero normalizado para el Dashboard y los 6 módulos.
  */
 export async function getFinancialWorkspaceData(): Promise<FinancialWorkspaceSnapshot> {
-  const user = await ensureDemoWorkspaceSeeded();
+  const user = await ensureUserExists();
 
   const [accounts, categoriesRaw, transactions, recurringRules, loans, savingsGoals] =
     await Promise.all([
@@ -139,6 +141,55 @@ export async function getFinancialWorkspaceData(): Promise<FinancialWorkspaceSna
 }
 
 /**
+ * Crea una nueva categoría de gasto/ingreso para el usuario autenticado.
+ */
+export async function createCategoryAction(
+  rawInput: CreateCategoryInput
+): Promise<ActionResult<SerializedCategory>> {
+  try {
+    const parsed = CreateCategorySchema.safeParse(rawInput);
+    if (!parsed.success) {
+      return {
+        success: false,
+        message:
+          parsed.error.issues[0]?.message ?? "Datos de categoría inválidos",
+      };
+    }
+
+    const user = await ensureUserExists();
+    const created = await prisma.category.create({
+      data: {
+        name: parsed.data.name,
+        type: parsed.data.type,
+        icon: parsed.data.icon,
+        color: parsed.data.color,
+      },
+    });
+
+    revalidatePath("/");
+    return {
+      success: true,
+      message: `Categoría "${created.name}" creada exitosamente.`,
+      data: {
+        id: created.id,
+        name: created.name,
+        icon: created.icon,
+        color: created.color,
+        type: created.type,
+      },
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Error al crear la categoría.",
+    };
+  }
+}
+
+/**
  * Módulo A: Registra una compra, pago de tarjeta/cuota, ingreso o transferencia con ACID
  */
 export async function createQuickTransactionAction(
@@ -152,7 +203,7 @@ export async function createQuickTransactionAction(
       return { success: false, message: firstError };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const created = await recordTransactionACID(user.id, parsed.data);
 
     revalidatePath("/");
@@ -178,7 +229,7 @@ export async function toggleReconciledAction(
   isReconciled: boolean
 ): Promise<ActionResult> {
   try {
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     await toggleTransactionReconciledInDb(user.id, transactionId, isReconciled);
     revalidatePath("/");
     return {
@@ -213,7 +264,7 @@ export async function createAccountAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const created = await createAccountInDb(user.id, parsed.data);
     revalidatePath("/");
 
@@ -250,7 +301,7 @@ export async function createRecurringRuleAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const created = await createRecurringRuleInDb(user.id, parsed.data);
     revalidatePath("/");
 
@@ -277,7 +328,7 @@ export async function executeRecurringRuleAction(
   ruleId: string
 ): Promise<ActionResult<{ nextExecutionDate: string }>> {
   try {
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const result = await executeRecurringRuleACID(user.id, ruleId);
     revalidatePath("/");
     return {
@@ -301,7 +352,7 @@ export async function toggleRecurringAutoPostAction(
   autoPost: boolean
 ): Promise<ActionResult> {
   try {
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     await toggleRecurringRuleAutoPostInDb(user.id, ruleId, autoPost);
     revalidatePath("/");
     return {
@@ -337,7 +388,7 @@ export async function createLoanWithScheduleAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const created = await createLoanWithScheduleACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -373,7 +424,7 @@ export async function payLoanInstallmentAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     await payLoanInstallmentACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -409,7 +460,7 @@ export async function createSavingsGoalAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     const created = await createSavingsGoalACID(user.id, parsed.data);
     revalidatePath("/");
 
@@ -445,7 +496,7 @@ export async function contributeToSavingsGoalAction(
       };
     }
 
-    const user = await ensureDemoWorkspaceSeeded();
+    const user = await ensureUserExists();
     await contributeToSavingsGoalACID(user.id, parsed.data);
     revalidatePath("/");
 

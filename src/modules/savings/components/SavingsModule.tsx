@@ -379,7 +379,7 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
                 </label>
                 <input
                   type="text"
-                  placeholder="Ej. Fondo de Emergencia, Viaje, Inversión..."
+                  placeholder="Ej. Mi meta de ahorro..."
                   {...createForm.register("name")}
                   className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
                 />

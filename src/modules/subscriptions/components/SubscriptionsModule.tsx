@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { differenceInCalendarDays, startOfDay } from "date-fns";
 import { toast } from "sonner";
+import { CreateCategorySchema } from "@/modules/transactions/schemas";
 import {
   CreateRecurringRuleSchema,
   type CreateRecurringRuleInput,
@@ -27,6 +28,7 @@ import {
 import type { SerializedAccount } from "@/modules/accounts/schemas";
 import type { SerializedCategory } from "@/server/actions/finance.actions";
 import {
+  createCategoryAction,
   createRecurringRuleAction,
   executeRecurringRuleAction,
   toggleRecurringAutoPostAction,
@@ -80,6 +82,8 @@ export function SubscriptionsModule({
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [executingId, setExecutingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [creatingCategory, setCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   const today = startOfDay(new Date());
 
@@ -178,6 +182,26 @@ export function SubscriptionsModule({
     setShowCreateModal(false);
   };
 
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+
+    const result = await createCategoryAction({
+      name: newCategoryName.trim(),
+      type: "EXPENSE",
+      icon: "Tag",
+      color: "#0f766e",
+    });
+
+    if (result.success && result.data) {
+      toast.success(result.message);
+      setNewCategoryName("");
+      setCreatingCategory(false);
+    } else {
+      toast.error(result.message ?? "No se pudo crear la categoría.");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Encabezado y métricas del cronograma mensual */}
@@ -190,7 +214,7 @@ export function SubscriptionsModule({
             -{formatCurrency(monthlyExpenseTotal)}
           </p>
           <p className="text-[11px] text-slate-500 mt-1">
-            Netflix, Spotify, Cloud, Seguros y Servicios
+            Suscripciones y servicios recurrentes
           </p>
         </div>
 
@@ -364,7 +388,7 @@ export function SubscriptionsModule({
         </div>
       </div>
 
-      {/* Modal para Registrar Suscripción, Salario Quincenal o Remesa */}
+      {/* Modal para Registrar Regla Recurrente */}
       {showCreateModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
@@ -399,7 +423,7 @@ export function SubscriptionsModule({
                     className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
                   >
                     <option value="SUBSCRIPTION">
-                      Suscripción (Netflix, Spotify, Cloud, Seguro)
+                      Suscripción / servicio recurrente
                     </option>
                     <option value="PAYROLL">
                       Ingreso de Nómina / Salario Fijo
@@ -436,7 +460,7 @@ export function SubscriptionsModule({
                   </label>
                   <input
                     type="text"
-                    placeholder="Ej. ChatGPT Plus, Salario Quincenal..."
+                    placeholder="Ej. Netflix, Gym, Salario..."
                     {...register("title")}
                     className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
                   />
@@ -483,19 +507,62 @@ export function SubscriptionsModule({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Categoría *
-                  </label>
-                  <select
-                    {...register("categoryId")}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white"
-                  >
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex items-center gap-2 mb-1">
+                    <label className="text-xs font-medium text-slate-300 shrink-0">
+                      Categoría *
+                    </label>
+                    {creatingCategory ? (
+                      <button
+                        type="button"
+                        onClick={() => setCreatingCategory(false)}
+                        className="text-xs text-rose-400 hover:text-rose-300 underline"
+                      >
+                        Cancelar
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setCreatingCategory(true)}
+                        className="text-xs text-teal-400 hover:text-teal-300 underline flex items-center gap-1"
+                      >
+                        <span className="h-3 w-3">+</span> Nueva
+                      </button>
+                    )}
+                  </div>
+                  {creatingCategory ? (
+                    <form onSubmit={handleCreateCategory} className="flex flex-col gap-2">
+                      <input
+                        type="text"
+                        placeholder="Nombre de la categoría"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!newCategoryName.trim()}
+                        className="rounded-xl bg-teal-500 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-teal-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Crear
+                      </button>
+                    </form>
+                  ) : (
+                    <select
+                      {...register("categoryId")}
+                      className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-white focus:border-teal-500 focus:outline-none"
+                    >
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                  {errors.categoryId && (
+                    <p className="text-[11px] text-rose-400 mt-1">
+                      {errors.categoryId.message}
+                    </p>
+                  )}
                 </div>
               </div>
 

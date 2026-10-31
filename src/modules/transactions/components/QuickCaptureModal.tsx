@@ -24,7 +24,10 @@ import {
 } from "@/modules/transactions/schemas";
 import type { SerializedAccount } from "@/modules/accounts/schemas";
 import type { SerializedCategory } from "@/server/actions/finance.actions";
-import { createQuickTransactionAction } from "@/server/actions/finance.actions";
+import {
+  createCategoryAction,
+  createQuickTransactionAction,
+} from "@/server/actions/finance.actions";
 import {
   compressReceiptImageClient,
   uploadCompressedReceipt,
@@ -56,6 +59,8 @@ export function QuickCaptureModal({
     useState<CompressedReceiptResult | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [creatingCategory, setCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   const liquidAccounts = accounts.filter(
     (a) => a.type === "CASH" || a.type === "DEBIT" || a.type === "SAVINGS_VAULT"
@@ -222,6 +227,29 @@ export function QuickCaptureModal({
     }
   };
 
+  const handleCreateCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+
+    const actionModeType =
+      actionMode === "INCOME" ? "INCOME" : actionMode === "DEBT_PAYMENT" ? "TRANSFER" : "EXPENSE";
+
+    const result = await createCategoryAction({
+      name: newCategoryName.trim(),
+      type: actionModeType as "INCOME" | "EXPENSE" | "TRANSFER" | "INVESTMENT",
+      icon: "Tag",
+      color: "#0f766e",
+    });
+
+    if (result.success && result.data) {
+      toast.success(result.message);
+      setNewCategoryName("");
+      setCreatingCategory(false);
+    } else {
+      toast.error(result.message ?? "No se pudo crear la categoría.");
+    }
+  };
+
   if (!open) return null;
 
   const needsDestination =
@@ -374,10 +402,10 @@ export function QuickCaptureModal({
                 type="text"
                 placeholder={
                   actionMode === "EXPENSE"
-                    ? "Ej. Supermercado Selecto, Gasolinera, Farmacia..."
+                    ? "Ej. Supermercado, Gasolinera, Farmacia..."
                     : actionMode === "DEBT_PAYMENT"
-                    ? "Ej. Pago total para no generar intereses Visa..."
-                    : "Ej. Quincena Octubre / Remesa Familiar..."
+                    ? "Ej. Pago de tarjeta de crédito..."
+                    : "Ej. Salario, Remesa Familiar..."
                 }
                 {...register("title")}
                 className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
@@ -464,19 +492,57 @@ export function QuickCaptureModal({
               </div>
             ) : (
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                  Categoría Contable *
-                </label>
-                <select
-                  {...register("categoryId")}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
-                >
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <label className="text-xs font-medium text-slate-300 shrink-0">
+                    Categoría Contable *
+                  </label>
+                  {creatingCategory ? (
+                    <button
+                      type="button"
+                      onClick={() => setCreatingCategory(false)}
+                      className="text-xs text-rose-400 hover:text-rose-300 underline"
+                    >
+                      Cancelar
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setCreatingCategory(true)}
+                      className="text-xs text-teal-400 hover:text-teal-300 underline flex items-center gap-1"
+                    >
+                      <span className="h-3 w-3">+</span> Nueva
+                    </button>
+                  )}
+                </div>
+                {creatingCategory ? (
+                  <form onSubmit={handleCreateCategory} className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      placeholder="Nombre de la categoría"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-teal-500 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!newCategoryName.trim()}
+                      className="rounded-xl bg-teal-500 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-teal-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Crear
+                    </button>
+                  </form>
+                ) : (
+                  <select
+                    {...register("categoryId")}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-white focus:border-teal-500 focus:outline-none"
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
                 {errors.categoryId && (
                   <p className="mt-1 text-xs text-rose-400">
                     {errors.categoryId.message}

@@ -1,10 +1,10 @@
-import { ensureDemoWorkspaceSeeded } from "../src/lib/prisma/bootstrap";
+import { ensureUserExists } from "../src/lib/prisma/bootstrap";
 import { prisma } from "../src/lib/prisma";
 
 async function main() {
-  console.log("Inicializando datos financieros de demostración en PostgreSQL...");
-  const user = await ensureDemoWorkspaceSeeded();
-  console.log(`Workspace listo para: ${user.name} (${user.email})`);
+  console.log("Verificando usuario base en PostgreSQL...");
+  const user = await ensureUserExists();
+  console.log(`Usuario listo: ${user.name} (${user.email}) — sin datos de ejemplo precargados.`);
 }
 
 main()

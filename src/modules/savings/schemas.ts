@@ -3,7 +3,7 @@ import { z } from "zod";
 export const CreateSavingsGoalSchema = z.object({
   name: z
     .string()
-    .min(2, "Ingresa el nombre de la meta o bóveda (ej. Fondo de Emergencia)")
+    .min(2, "Ingresa el nombre de la meta o bóveda")
     .max(70, "Máximo 70 caracteres"),
   targetAmount: z.coerce
     .number()

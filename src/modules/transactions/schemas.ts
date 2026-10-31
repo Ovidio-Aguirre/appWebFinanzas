@@ -63,6 +63,15 @@ export type QuickCaptureTransactionInput = z.infer<
   typeof QuickCaptureTransactionSchema
 >;
 
+export const CreateCategorySchema = z.object({
+  name: z.string().min(2, "Mínimo 2 caracteres").max(50, "Máximo 50 caracteres"),
+  type: z.enum(["INCOME", "EXPENSE", "TRANSFER", "INVESTMENT"]),
+  icon: z.string().min(1, "Selecciona un ícono").max(30),
+  color: z.string().min(1, "Selecciona un color"),
+});
+
+export type CreateCategoryInput = z.infer<typeof CreateCategorySchema>;
+
 export interface SerializedTransaction {
   id: string;
   userId: string;
