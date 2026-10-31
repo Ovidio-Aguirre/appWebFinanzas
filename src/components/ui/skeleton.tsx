@@ -8,7 +8,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded-xl bg-slate-800/70 border border-slate-700/40",
+        "animate-pulse rounded-xl bg-slate-800/60 border border-white/5",
         className
       )}
       {...props}
@@ -18,7 +18,7 @@ export function Skeleton({
 
 export function WorkspaceSkeleton() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 space-y-6">
+    <div className="min-h-screen text-slate-100 p-4 md:p-8 space-y-6">
       <div className="flex items-center justify-between">
         <Skeleton className="h-10 w-56" />
         <Skeleton className="h-10 w-36" />
