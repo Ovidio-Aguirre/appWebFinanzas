@@ -47,7 +47,13 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
     (a) => a.type === "DEBIT" || a.type === "CASH"
   );
 
-  const totalSavedInGoals = savingsGoals.reduce(
+  const plainSavings = accounts.filter(
+    (a) =>
+      a.type === "SAVINGS_VAULT" &&
+      !savingsGoals.some((g) => g.vaultAccountId === a.id)
+  );
+
+  const totalSavedInGoals =savingsGoals.reduce(
     (acc, g) => acc + g.currentAmount,
     0
   );
@@ -111,175 +117,281 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
     setTransferGoal(null);
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Resumen de Bóvedas de Ahorro */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <PiggyBank className="h-5 w-5 text-teal-600" />
-            Bóvedas de Ahorro y Metas Patrimoniales
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Acumulado en alcancías virtuales:{" "}
-            <strong className="text-emerald-600">
-              {formatCurrency(totalSavedInGoals)}
-            </strong>{" "}
-            de {formatCurrency(totalTargetInGoals)} objetivo
-          </p>
-        </div>
+  const totalRemainingToTarget = Math.max(
+    0,
+    totalTargetInGoals - totalSavedInGoals
+  );
 
-        <button
-          type="button"
-          onClick={() => setShowNewGoalModal(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Nueva Bóveda de Ahorro</span>
-        </button>
+  return (
+    <div className="flex flex-col gap-4">
+      {/* 1. Ambient Hero Card (Idéntico a metas_y_presupuestos/code.html) */}
+      <div className="relative w-full overflow-hidden rounded-2xl bg-[#111622] p-5 shadow-xl border border-white/[0.08]">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-8 -left-8 w-36 h-36 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col gap-3.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex p-1.5 rounded-full bg-emerald-500/15 text-emerald-400">
+                <PiggyBank className="w-4 h-4" />
+              </span>
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Bolsillos de Ahorro
+              </span>
+            </div>
+            <span className="text-[11px] px-2.5 py-1 rounded-full bg-[#1b2233] text-emerald-400 font-bold flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              {savingsGoals.length} activos
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <span className="text-[34px] text-white font-extrabold tracking-tight leading-none tabular-nums">
+              {formatCurrency(totalSavedInGoals)}
+            </span>
+            <p className="text-xs text-slate-400 flex items-center gap-1 flex-wrap">
+              <span className="text-emerald-400 font-bold tabular-nums">
+                {formatCurrency(totalRemainingToTarget)}
+              </span>{" "}
+              para alcanzar la meta total conjunta (
+              {formatCurrency(totalTargetInGoals)})
+            </p>
+          </div>
+
+          <div className="pt-1 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowNewGoalModal(true)}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-full bg-emerald-500 text-[#070a10] text-xs font-extrabold shadow-lg shadow-emerald-500/25 hover:brightness-110 active:scale-[0.98] transition-all"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span>Crear nuevo bolsillo</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Tarjetas de Alcancías Virtuales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {savingsGoals.map((goal) => {
-          const remaining = Math.max(0, goal.targetAmount - goal.currentAmount);
-          const isCompleted =
-            goal.status === "COMPLETED" || goal.progressPercent >= 100;
+      {/* 1b. Ahorros simples: cuentas de ahorro sin meta ni objetivo */}
+      {plainSavings.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-sm font-bold text-white tracking-tight">
+              Mis ahorros
+            </h2>
+            <span className="text-xs font-semibold text-emerald-400 tabular-nums">
+              {formatCurrency(
+                plainSavings.reduce((s, a) => s + a.currentBalance, 0)
+              )}
+            </span>
+          </div>
+          <div className="rounded-2xl bg-[#111622] border border-white/[0.08] divide-y divide-white/[0.06]">
+            {plainSavings.map((a) => (
+              <div
+                key={a.id}
+                className="flex items-center justify-between gap-3 px-4 py-3.5"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <PiggyBank className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-white truncate">
+                      {a.name}
+                    </p>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {a.institution ?? "Ahorro"}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-base font-extrabold text-white tabular-nums shrink-0">
+                  {formatCurrency(a.currentBalance)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-          return (
-            <div
-              key={goal.id}
-              className="rounded-2xl border border-slate-200 bg-white p-5 flex flex-col justify-between space-y-5 shadow-lg"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
+      {/* 2. Active Goals Section (Idéntico a "Tus Bolsillos" de metas_y_presupuestos/code.html) */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-white tracking-tight">
+              Tus Bolsillos
+            </h2>
+            <span className="w-5 h-5 rounded-full bg-[#191f2e] text-slate-300 text-[11px] flex items-center justify-center font-bold">
+              {savingsGoals.length}
+            </span>
+          </div>
+          <span className="text-[11px] text-emerald-400 font-semibold">
+            Transferencia ACID
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {savingsGoals.map((goal) => {
+            const remaining = Math.max(
+              0,
+              goal.targetAmount - goal.currentAmount
+            );
+            const isCompleted =
+              goal.status === "COMPLETED" || goal.progressPercent >= 100;
+            const accentColor = goal.color || "#4edea3";
+
+            return (
+              <div
+                key={goal.id}
+                className="relative bg-[#0d121c] rounded-2xl p-4 flex flex-col gap-3.5 shadow-md border border-white/[0.06] overflow-hidden"
+              >
+                <div
+                  className="absolute top-0 right-0 w-28 h-28 rounded-full blur-2xl pointer-events-none opacity-15"
+                  style={{ backgroundColor: accentColor }}
+                />
+
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className="flex h-10 w-10 items-center justify-center rounded-xl border border-teal-300 bg-teal-100 text-teal-600"
+                      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border"
                       style={{
-                        borderColor: `${goal.color}55`,
-                        backgroundColor: `${goal.color}22`,
+                        backgroundColor: `${accentColor}20`,
+                        borderColor: `${accentColor}40`,
+                        color: accentColor,
                       }}
                     >
-                      <Target className="h-5 w-5" />
+                      <Target className="w-6 h-6" />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900">
-                        {goal.name}
-                      </h3>
-                      <p className="text-[11px] text-slate-500">
-                        {goal.vaultAccountName || "FinanzaPro Vault"}
-                      </p>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm text-white font-bold truncate">
+                          {goal.name}
+                        </h3>
+                        {isCompleted && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">
+                            Completado
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 text-slate-400 text-xs mt-0.5">
+                        <span className="truncate">
+                          {goal.vaultAccountName || "FinanzaPro Vault"}
+                        </span>
+                        {goal.deadline && (
+                          <>
+                            <span>•</span>
+                            <span className="inline-flex items-center gap-1 text-cyan-400 font-medium shrink-0">
+                              <Calendar className="w-3 h-3" />
+                              {formatShortDate(goal.deadline)}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-0.5">
-                  <span
-                    className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold border ${
-                      isCompleted
-                        ? "bg-emerald-100 text-emerald-600 border-emerald-300"
-                        : "bg-teal-100 text-teal-600 border-teal-300"
-                    }`}
-                  >
-                    {goal.progressPercent}%
-                  </span>
                   <RowActions
                     label={goal.name}
                     onEdit={() => setEditingGoal(goal)}
                     onDelete={() => setDeletingGoal(goal)}
                   />
-                  </div>
                 </div>
 
-                {/* Monto ahorrado vs objetivo */}
-                <div className="pt-2">
+                {/* Barra y Montos */}
+                <div className="flex flex-col gap-2 relative z-10">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-xl font-extrabold text-emerald-600 tabular-nums">
-                      {formatCurrency(goal.currentAmount)}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      de {formatCurrency(goal.targetAmount)}
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-lg text-white font-extrabold tabular-nums">
+                        {formatCurrency(goal.currentAmount)}
+                      </span>
+                      <span className="text-xs text-slate-400 tabular-nums">
+                        de {formatCurrency(goal.targetAmount)}
+                      </span>
+                    </div>
+                    <span
+                      className="text-xs font-extrabold tabular-nums"
+                      style={{ color: isCompleted ? "#4edea3" : accentColor }}
+                    >
+                      {goal.progressPercent}%
                     </span>
                   </div>
 
-                  {/* Barra de progreso porcentual */}
-                  <div className="mt-2 h-3 w-full rounded-full bg-white overflow-hidden border border-slate-200">
+                  <div className="w-full h-2 bg-[#1b2233] rounded-full overflow-hidden p-0.5 relative">
                     <div
-                      className="h-full transition-all duration-500 rounded-full"
+                      className="h-full rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(78,222,163,0.5)]"
                       style={{
-                        width: `${goal.progressPercent}%`,
-                        backgroundColor: isCompleted ? "#10b981" : goal.color,
+                        width: `${Math.min(100, goal.progressPercent)}%`,
+                        backgroundColor: isCompleted ? "#4edea3" : accentColor,
                       }}
                     />
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
-                  <span>
-                    {isCompleted
-                      ? "¡Meta completada!"
-                      : `Faltan ${formatCurrency(remaining)}`}
-                  </span>
-                  {goal.deadline && (
-                    <span className="inline-flex items-center gap-1">
-                      <Calendar className="h-3 w-3 text-slate-500" />
-                      {formatShortDate(goal.deadline)}
+                  <div className="flex items-center justify-between text-slate-400 text-[11px] pt-0.5">
+                    <span>
+                      {isCompleted ? (
+                        <strong className="text-emerald-400">
+                          ¡Objetivo alcanzado!
+                        </strong>
+                      ) : (
+                        <>
+                          Faltan{" "}
+                          <strong className="text-white font-semibold tabular-nums">
+                            {formatCurrency(remaining)}
+                          </strong>
+                        </>
+                      )}
                     </span>
-                  )}
+                    <span className="text-emerald-400/90 font-medium">
+                      Disponibilidad inmediata
+                    </span>
+                  </div>
+                </div>
+
+                {/* Footer con botón + Aportar */}
+                <div className="flex items-center justify-between pt-1 border-t border-white/[0.05] gap-2 relative z-10">
+                  <span className="text-slate-400 text-[11px] flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    Sin penalización por retiro
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => openTransferModal(goal)}
+                    className="flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-[#191f2e] hover:bg-emerald-500 text-emerald-400 hover:text-[#070a10] text-xs font-bold active:scale-95 transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <span>Aportar</span>
+                  </button>
                 </div>
               </div>
-
-              <div className="pt-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => openTransferModal(goal)}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 hover:bg-teal-500 hover:text-slate-950 border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 transition"
-                >
-                  {isCompleted ? (
-                    <>
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span>Agregar Aporte Extra</span>
-                    </>
-                  ) : (
-                    <>
-                      <ArrowRightLeft className="h-4 w-4" />
-                      <span>Transferir desde Cuenta Corriente</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
-      {/* Modal para Transferir Saldo desde Cuenta Corriente a Bóveda */}
+      {/* 3. Modal Bottom-Sheet para Aportar a Bóveda (Idéntico a #quickDepositSheet en metas_y_presupuestos/code.html) */}
       {transferGoal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <ArrowRightLeft className="h-5 w-5 text-teal-600" />
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Transferir a Bóveda: {transferGoal.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-500">
-                    Actual: {formatCurrency(transferGoal.currentAmount)} / Meta:{" "}
-                    {formatCurrency(transferGoal.targetAmount)}
-                  </p>
-                </div>
+          <div className="w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-white/[0.10] bg-[#131824] p-6 shadow-2xl space-y-4">
+            <div className="w-12 h-1.5 bg-white/15 rounded-full mx-auto mb-1 sm:hidden" />
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-extrabold text-white">
+                  Aportar a {transferGoal.name}
+                </h3>
+                <span className="text-xs text-slate-400 tabular-nums">
+                  Actual: {formatCurrency(transferGoal.currentAmount)} / Meta:{" "}
+                  {formatCurrency(transferGoal.targetAmount)}
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => setTransferGoal(null)}
-                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
+                className="w-8 h-8 rounded-full bg-[#1e2536] text-slate-400 flex items-center justify-center hover:text-white transition"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -287,13 +399,54 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
               onSubmit={contributeForm.handleSubmit(onSubmitContribute)}
               className="space-y-4"
             >
+              {/* Huge Centered Amount Display */}
+              <div className="flex flex-col items-center py-2 space-y-1 rounded-2xl bg-[#0b0f17] border border-white/[0.06]">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  Importe a depositar (USD)
+                </span>
+                <div className="flex items-center justify-center">
+                  <span className="text-2xl font-extrabold text-emerald-400 mr-1">
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    {...contributeForm.register("amount")}
+                    className="bg-transparent text-4xl font-extrabold text-white text-center w-44 focus:outline-none tabular-nums"
+                  />
+                </div>
+                {contributeForm.formState.errors.amount && (
+                  <p className="text-[11px] text-rose-400">
+                    {contributeForm.formState.errors.amount.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Quick Preset Chips (idéntico a metas_y_presupuestos/code.html) */}
+              <div className="flex justify-center gap-2">
+                {[25, 50, 100, 250].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() =>
+                      contributeForm.setValue("amount", val, {
+                        shouldValidate: true,
+                      })
+                    }
+                    className="px-3.5 py-1.5 rounded-full bg-[#1e2536] text-slate-200 text-xs font-bold hover:bg-emerald-500/20 hover:text-emerald-400 border border-white/[0.06] transition-all"
+                  >
+                    +${val}
+                  </button>
+                ))}
+              </div>
+
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">
-                  Cuenta Corriente / Débito de Origen *
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  Desde Cuenta Corriente / Débito *
                 </label>
                 <select
                   {...contributeForm.register("originAccountId")}
-                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2.5 text-xs text-slate-900"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0b0f17] px-3 py-2.5 text-xs text-white focus:border-emerald-500/60 focus:outline-none"
                 >
                   {checkingAccounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
@@ -305,52 +458,28 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">
-                  Monto a Transferir (USD) *
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  {...contributeForm.register("amount")}
-                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2.5 text-sm font-bold text-slate-900"
-                />
-                {contributeForm.formState.errors.amount && (
-                  <p className="text-[11px] text-rose-600 mt-1">
-                    {contributeForm.formState.errors.amount.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">
+                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Nota del Aporte
                 </label>
                 <input
                   type="text"
                   {...contributeForm.register("note")}
-                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0b0f17] px-3 py-2 text-xs text-white focus:border-emerald-500/60 focus:outline-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setTransferGoal(null)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={contributeForm.formState.isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
-                >
-                  {contributeForm.formState.isSubmitting && (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  )}
-                  <span>Confirmar Transferencia ACID</span>
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={contributeForm.formState.isSubmitting}
+                className="w-full py-3.5 rounded-xl bg-emerald-500 text-[#070a10] text-xs font-extrabold shadow-lg shadow-emerald-500/25 hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+              >
+                {contributeForm.formState.isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
+                <span>Confirmar Depósito</span>
+              </button>
             </form>
           </div>
         </div>
@@ -362,22 +491,24 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
 
       {showNewGoalModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-teal-600" />
-                <h3 className="text-base font-bold text-slate-900">
+          <div className="w-full max-w-md rounded-2xl border border-white/[0.10] bg-surface-container backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary border border-primary/25">
+                  <Sparkles className="h-4 w-4" />
+                </div>
+                <h3 className="text-base font-bold text-on-surface">
                   Crear Nueva Bóveda de Ahorro
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewGoalModal(false)}
-                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
+                className="rounded-xl p-1.5 text-outline hover:bg-surface-container-high hover:text-on-surface transition"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -388,17 +519,17 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
               className="space-y-4"
             >
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">
+                <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
                   Nombre de la Alcancía / Meta *
                 </label>
                 <input
                   type="text"
                   placeholder="Ej. Mi meta de ahorro..."
                   {...createForm.register("name")}
-                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                  className="w-full rounded-xl border border-white/[0.08] bg-surface-container-highest px-3 py-2 text-xs text-on-surface placeholder:text-outline focus:border-primary/60 focus:outline-none"
                 />
                 {createForm.formState.errors.name && (
-                  <p className="text-[11px] text-rose-600 mt-1">
+                  <p className="text-[11px] text-tertiary mt-1">
                     {createForm.formState.errors.name.message}
                   </p>
                 )}
@@ -406,66 +537,66 @@ export function SavingsModule({ savingsGoals, accounts }: SavingsModuleProps) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
                     Meta Objetivo (USD) *
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...createForm.register("targetAmount")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-highest px-3 py-2 text-xs text-on-surface tabular-nums focus:border-primary/60 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
                     Saldo Inicial (USD)
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...createForm.register("initialAmount")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-highest px-3 py-2 text-xs text-on-surface tabular-nums focus:border-primary/60 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
                     Fecha Meta (Opcional)
                   </label>
                   <input
                     type="date"
                     {...createForm.register("deadline")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-highest px-3 py-2 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-semibold text-on-surface-variant mb-1.5">
                     Color Identificador
                   </label>
                   <input
                     type="color"
                     {...createForm.register("color")}
-                    className="h-9 w-full rounded-xl border border-slate-200 bg-white/75 p-1 cursor-pointer"
+                    className="h-9 w-full rounded-xl border border-white/[0.08] bg-surface-container-highest p-1 cursor-pointer"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/[0.07]">
                 <button
                   type="button"
                   onClick={() => setShowNewGoalModal(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
+                  className="rounded-xl border border-white/[0.10] bg-surface-container-high hover:bg-surface-container-highest px-4 py-2 text-xs font-semibold text-on-surface-variant transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={createForm.formState.isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-primary to-primary-container hover:brightness-110 px-4 py-2 text-xs font-extrabold text-on-primary shadow-lg shadow-primary/20 transition"
                 >
                   {createForm.formState.isSubmitting && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

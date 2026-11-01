@@ -1,4 +1,4 @@
-const CACHE_NAME = "finanzapro-pwa-v3";
+const CACHE_NAME = "finanzapro-pwa-v4";
 const STATIC_ASSETS = [
   "/manifest.json",
   "/icons/icon-192.svg",
@@ -44,7 +44,14 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Assets estáticos: stale-while-revalidate.
+  // Solo se cachean assets realmente estáticos. Todo lo demás (datos RSC,
+  // /api/*, comprobantes) va directo a red para no mostrar datos viejos.
+  const cacheable =
+    url.pathname.startsWith("/_next/static/") ||
+    url.pathname.startsWith("/icons/") ||
+    url.pathname === "/manifest.json";
+  if (!cacheable) return;
+
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       const fetchPromise = fetch(request)

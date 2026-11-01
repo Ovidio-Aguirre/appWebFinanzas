@@ -212,11 +212,11 @@ function TransactionForm({
       <Field label="Nota (opcional)">
         <input className={inputCls} value={f.description} onChange={(e) => set("description", e.target.value)} maxLength={240} />
       </Field>
-      <label className="flex min-h-10 items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" className="h-4 w-4 accent-teal-600" checked={f.isReconciled} onChange={(e) => set("isReconciled", e.target.checked)} />
+      <label className="flex min-h-10 items-center gap-2 text-sm text-on-surface">
+        <input type="checkbox" className="h-4 w-4 accent-[#4edea3]" checked={f.isReconciled} onChange={(e) => set("isReconciled", e.target.checked)} />
         Conciliado con estado de cuenta
       </label>
-      <p className="rounded-lg bg-slate-50 p-2.5 text-[11px] text-slate-500">
+      <p className="rounded-xl bg-surface-container-low border border-white/[0.06] p-2.5 text-[11px] text-on-surface-variant">
         Al cambiar monto o cuentas, los saldos se corrigen automáticamente (se revierte el efecto anterior y se aplica el nuevo).
       </p>
       <SubmitButtons pending={pending} onClose={onClose} />
@@ -524,8 +524,8 @@ function RuleForm({
           <input className={inputCls} type="date" value={f.nextExecutionDate} onChange={(e) => set("nextExecutionDate", e.target.value)} required />
         </Field>
       </div>
-      <label className="flex min-h-10 items-center gap-2 text-sm text-slate-700">
-        <input type="checkbox" className="h-4 w-4 accent-teal-600" checked={f.autoPost} onChange={(e) => set("autoPost", e.target.checked)} />
+      <label className="flex min-h-10 items-center gap-2 text-sm text-on-surface">
+        <input type="checkbox" className="h-4 w-4 accent-[#4edea3]" checked={f.autoPost} onChange={(e) => set("autoPost", e.target.checked)} />
         Registro automático (marcar como conciliado al ejecutar)
       </label>
       <SubmitButtons pending={pending} onClose={onClose} />
@@ -626,7 +626,7 @@ function LoanForm({
         <input className={inputCls} value={f.institution} onChange={(e) => set("institution", e.target.value)} maxLength={60} />
       </Field>
       {paid && (
-        <p className="rounded-lg bg-amber-50 p-2.5 text-[11px] text-amber-700">
+        <p className="rounded-xl bg-amber-500/15 border border-amber-500/30 p-2.5 text-[11px] text-amber-300">
           Ya hay cuotas pagadas: solo se pueden cambiar el nombre y la institución.
         </p>
       )}
@@ -837,16 +837,16 @@ export function CategoriesManager({
           <Plus className="h-4 w-4" /> Nueva categoría
         </button>
         {categories.length === 0 && (
-          <p className="py-6 text-center text-sm text-slate-500">Aún no hay categorías.</p>
+          <p className="py-6 text-center text-sm text-on-surface-variant">Aún no hay categorías.</p>
         )}
-        <ul className="divide-y divide-slate-100">
+        <ul className="divide-y divide-white/[0.06]">
           {categories.map((c) => (
-            <li key={c.id} className="flex items-center justify-between gap-3 py-2">
+            <li key={c.id} className="flex items-center justify-between gap-3 py-2.5">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="h-3.5 w-3.5 shrink-0 rounded-full" style={{ backgroundColor: c.color }} aria-hidden />
+                <span className="h-3.5 w-3.5 shrink-0 rounded-full ring-2 ring-white/10" style={{ backgroundColor: c.color }} aria-hidden />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-slate-900">{c.name}</p>
-                  <p className="text-[11px] text-slate-500">{CATEGORY_TYPES[c.type]}</p>
+                  <p className="truncate text-sm font-semibold text-on-surface">{c.name}</p>
+                  <p className="text-[11px] text-on-surface-variant">{CATEGORY_TYPES[c.type]}</p>
                 </div>
               </div>
               <RowActions label={c.name} onEdit={() => setEditing(c)} onDelete={() => setDeleting(c)} />

@@ -33,6 +33,12 @@ export function PwaRegistrationAndBanner() {
     window.addEventListener("offline", handleOffline);
 
     if ("serviceWorker" in navigator) {
+      if (process.env.NODE_ENV === "development") {
+        // En desarrollo los chunks no tienen hash: un SW los dejaría viejos.
+        navigator.serviceWorker
+          .getRegistrations()
+          .then((regs) => regs.forEach((r) => r.unregister()));
+      } else
       navigator.serviceWorker
         .register("/sw-offline.js")
         .catch((err) => console.warn("SW registro informativo:", err));
@@ -68,10 +74,10 @@ export function PwaRegistrationAndBanner() {
   return (
     <div className="flex items-center gap-2">
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${
+        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold border ${
           isOnline
-            ? "bg-emerald-50 text-emerald-600 border-emerald-500/20"
-            : "bg-amber-100 text-amber-600 border-amber-300"
+            ? "bg-surface-container text-primary border-white/[0.08]"
+            : "bg-amber-500/15 text-amber-300 border-amber-500/30"
         }`}
         title={
           isOnline
@@ -81,7 +87,8 @@ export function PwaRegistrationAndBanner() {
       >
         {isOnline ? (
           <>
-            <Wifi className="h-3.5 w-3.5" />
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <Wifi className="h-3.5 w-3.5 sm:hidden" />
             <span className="hidden sm:inline">PWA Online</span>
           </>
         ) : (
@@ -97,7 +104,7 @@ export function PwaRegistrationAndBanner() {
           type="button"
           onClick={handleInstallClick}
           aria-label="Instalar la app"
-          className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600/20 hover:bg-teal-600/30 border border-teal-300 px-2.5 py-1 text-xs font-semibold text-teal-600 transition"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/30 px-2.5 py-1 text-xs font-semibold text-primary transition"
         >
           <Download className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">Instalar App</span>

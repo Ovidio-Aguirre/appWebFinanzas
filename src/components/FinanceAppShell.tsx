@@ -3,16 +3,18 @@
 import React, { useEffect, useState } from "react";
 import {
   CalendarClock,
+  Check,
   CreditCard,
+  Home,
   Landmark,
-  LayoutDashboard,
+  LogOut,
+  PieChart,
   PiggyBank,
   Plus,
-  Receipt,
-  ShieldCheck,
-  LogOut,
+  Search,
   Tags,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { logoutAction } from "@/server/actions/auth.actions";
 import { CategoriesManager } from "@/components/crud/EditDialogs";
 import type { FinancialWorkspaceSnapshot } from "@/server/actions/finance.actions";
@@ -31,12 +33,12 @@ interface FinanceAppShellProps {
 }
 
 const NAVIGATION_TABS = [
-  { id: "dashboard", label: "Dashboard", short: "Inicio", icon: LayoutDashboard },
-  { id: "transactions", label: "Movimientos", short: "Movs.", icon: Receipt },
-  { id: "cards", label: "Tarjetas y Cuentas", short: "Cuentas", icon: CreditCard },
-  { id: "subscriptions", label: "Recurrentes", short: "Fijos", icon: CalendarClock },
-  { id: "loans", label: "Préstamos", short: "Deudas", icon: Landmark },
-  { id: "savings", label: "Bóvedas", short: "Bóvedas", icon: PiggyBank },
+  { id: "dashboard", label: "Inicio", short: "Inicio", icon: Home },
+  { id: "cards", label: "Tarjetas", short: "Tarjetas", icon: CreditCard },
+  { id: "transactions", label: "Análisis", short: "Movs.", icon: PieChart },
+  { id: "savings", label: "Metas", short: "Metas", icon: PiggyBank },
+  { id: "subscriptions", label: "Fijos", short: "Fijos", icon: CalendarClock },
+  { id: "loans", label: "Deudas", short: "Deudas", icon: Landmark },
 ] as const;
 
 export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
@@ -57,6 +59,13 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
   const [defaultTitle, setDefaultTitle] = useState<string | undefined>(
     undefined
   );
+
+  const router = useRouter();
+  useEffect(() => {
+    const refresh = () => router.refresh();
+    window.addEventListener("fp:data-changed", refresh);
+    return () => window.removeEventListener("fp:data-changed", refresh);
+  }, [router]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -84,173 +93,197 @@ export function FinanceAppShell({ initialData }: FinanceAppShellProps) {
     setQuickCaptureOpen(true);
   };
 
+  const firstName = (initialData.user.name || "Usuario").split(" ")[0];
+  const initials = (initialData.user.name || "FP")
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="min-h-screen text-slate-900 pb-24 md:pb-12">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/75 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
-          <div className="flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 text-slate-950 shadow-lg shadow-teal-500/30 ring-1 ring-white/10">
-              <ShieldCheck className="h-6 w-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-display text-base font-bold tracking-tight text-slate-900">
-                  FinanzaPro
+    <div className="min-h-screen bg-[#070a10] text-slate-100 font-sans antialiased flex flex-col items-center selection:bg-emerald-500/20 selection:text-emerald-400">
+      {/* Contenedor Móvil Nativo (App Frame estilo Veltis Obsidian Emerald) */}
+      <div className="w-full max-w-[480px] min-h-screen bg-[#0b0f17] sm:border-x sm:border-white/[0.06] sm:shadow-[0_0_80px_rgba(0,0,0,0.85)] flex flex-col justify-between relative">
+        {/* Top Sticky Area: App Bar Header */}
+        <header className="sticky top-0 z-40 pt-safe bg-[#070a10]/85 backdrop-blur-xl border-b border-white/[0.05]">
+          <div className="px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              {/* User Avatar with Verified Badge */}
+              <button
+                type="button"
+                onClick={() => setActiveTab("dashboard")}
+                className="relative shrink-0 text-left"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500/30 via-[#151c2c] to-[#0b0f17] ring-2 ring-emerald-500/40 shadow-sm flex items-center justify-center text-xs font-extrabold text-emerald-300">
+                  {initials}
+                </div>
+                <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-[#070a10] rounded-full flex items-center justify-center">
+                  <Check className="w-2 h-2 text-[#070a10] stroke-[3.5]" />
                 </span>
-                <span className="hidden sm:inline-block rounded-full bg-teal-50 border border-teal-300 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal-600">
-                  PWA
-                </span>
+              </button>
+
+              <div className="flex flex-col min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h1 className="text-sm font-bold text-white tracking-tight truncate">
+                    Hola, {firstName} 👋
+                  </h1>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="hidden min-[420px]:inline text-[11px] text-slate-400 font-medium truncate">
+                    Cuenta verificada
+                  </span>
+                  <PwaRegistrationAndBanner />
+                </div>
               </div>
-              <p className="hidden text-[11px] text-slate-500 sm:block">
-                {initialData.user.name} • Portafolio Multicuenta
-              </p>
+            </div>
+
+            {/* Action Icons: Quick Add, Search, Categories, Logout */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleOpenQuickCapture("PURCHASE")}
+                title="Nuevo movimiento"
+                aria-label="Nuevo movimiento"
+                className="relative w-9 h-9 rounded-full bg-emerald-500 text-[#070a10] flex items-center justify-center shadow-md shadow-emerald-500/25 hover:brightness-110 active:scale-95 transition-all"
+              >
+                <Plus className="w-4 h-4 stroke-[2.75]" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("transactions")}
+                title="Buscar movimientos"
+                aria-label="Buscar movimientos"
+                className="w-9 h-9 rounded-full bg-[#101521] border border-white/[0.08] flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#151c2c] active:scale-95 transition-all"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCategoriesOpen(true)}
+                title="Categorías contables"
+                aria-label="Categorías contables"
+                className="relative w-9 h-9 rounded-full bg-[#101521] border border-white/[0.08] flex items-center justify-center text-slate-300 hover:text-white hover:bg-[#151c2c] active:scale-95 transition-all"
+              >
+                <Tags className="w-4 h-4" />
+                <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-emerald-400 ring-2 ring-[#070a10]" />
+              </button>
+
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  title="Cerrar sesión"
+                  aria-label="Cerrar sesión"
+                  className="w-9 h-9 rounded-full bg-[#101521] border border-white/[0.08] flex items-center justify-center text-slate-400 hover:text-rose-400 hover:bg-[#151c2c] active:scale-95 transition-all"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </form>
             </div>
           </div>
+        </header>
 
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-            <PwaRegistrationAndBanner />
+        {/* Main Scrollable App Content */}
+        <main className="flex-1 w-full px-4 pt-3 pb-28 flex flex-col gap-4">
+          {activeTab === "dashboard" && (
+            <ExecutiveDashboard
+              netWorth={initialData.netWorth}
+              monthlyCashflow={initialData.monthlyCashflow}
+              accounts={initialData.accounts}
+              transactions={initialData.transactions}
+              onOpenQuickCapture={handleOpenQuickCapture}
+              onNavigateTab={setActiveTab}
+              onOpenCategories={() => setCategoriesOpen(true)}
+            />
+          )}
 
-            <button
-              type="button"
-              onClick={() => handleOpenQuickCapture("PURCHASE")}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 px-3.5 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-teal-500/25 transition-all hover:shadow-teal-500/40 hover:brightness-110 active:scale-[0.97]"
-            >
-              <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">Captura Rápida</span>
-              <span className="sm:hidden">Registrar</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setCategoriesOpen(true)}
-              title="Administrar categorías"
-              aria-label="Administrar categorías"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
-            >
-              <Tags className="h-4 w-4" />
-            </button>
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                title="Cerrar sesión"
-                aria-label="Cerrar sesión"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-100"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </form>
+          {activeTab === "transactions" && (
+            <TransactionsLedger
+              transactions={initialData.transactions}
+              accounts={initialData.accounts}
+              categories={initialData.categories}
+              onOpenQuickCapture={handleOpenQuickCapture}
+            />
+          )}
+
+          {activeTab === "cards" && (
+            <CreditCardsModule
+              accounts={initialData.accounts}
+              transactions={initialData.transactions}
+              onOpenQuickCapture={handleOpenQuickCapture}
+            />
+          )}
+
+          {activeTab === "subscriptions" && (
+            <SubscriptionsModule
+              rules={initialData.recurringRules}
+              accounts={initialData.accounts}
+              categories={initialData.categories}
+            />
+          )}
+
+          {activeTab === "loans" && (
+            <LoansModule
+              loans={initialData.loans}
+              accounts={initialData.accounts}
+            />
+          )}
+
+          {activeTab === "savings" && (
+            <SavingsModule
+              savingsGoals={initialData.savingsGoals}
+              accounts={initialData.accounts}
+            />
+          )}
+        </main>
+
+        {/* Bottom Floating / Tab Navigation Bar (Always visible like a real native app) */}
+        <nav
+          aria-label="Navegación principal"
+          className="fixed bottom-0 left-0 right-0 z-40 pointer-events-none"
+        >
+          <div className="max-w-[480px] mx-auto bg-[#070a10]/92 backdrop-blur-xl border-t border-white/[0.07] pb-[env(safe-area-inset-bottom,6px)] shadow-[0_-8px_30px_rgba(0,0,0,0.6)] pointer-events-auto">
+            <div className="h-16 px-2 flex items-center justify-around">
+              {NAVIGATION_TABS.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`flex flex-col items-center justify-center min-w-[52px] py-1 gap-1 transition-all active:scale-95 ${
+                      isActive
+                        ? "text-emerald-400"
+                        : "text-slate-400 hover:text-slate-100"
+                    }`}
+                  >
+                    <div
+                      className={`flex h-7 w-10 items-center justify-center rounded-full transition-all ${
+                        isActive
+                          ? "bg-emerald-500/15 text-emerald-400"
+                          : ""
+                      }`}
+                    >
+                      <Icon className="w-[19px] h-[19px]" />
+                    </div>
+                    <span
+                      className={`text-[10px] tracking-tight ${
+                        isActive ? "font-bold text-emerald-400" : "font-medium"
+                      }`}
+                    >
+                      {tab.short}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-
-        {/* Desktop Navigation Tabs */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 hidden md:flex items-center gap-1.5 pb-2.5">
-          {NAVIGATION_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                aria-current={isActive ? "page" : undefined}
-                className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all ${
-                  isActive
-                    ? "bg-teal-100 text-teal-600 ring-1 ring-teal-500/30 shadow-inner"
-                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </header>
-
-      {/* Contenido Principal por Dominio */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
-        {activeTab === "dashboard" && (
-          <ExecutiveDashboard
-            netWorth={initialData.netWorth}
-            monthlyCashflow={initialData.monthlyCashflow}
-            accounts={initialData.accounts}
-            onOpenQuickCapture={handleOpenQuickCapture}
-            onNavigateTab={setActiveTab}
-          />
-        )}
-
-        {activeTab === "transactions" && (
-          <TransactionsLedger
-            transactions={initialData.transactions}
-            accounts={initialData.accounts}
-            categories={initialData.categories}
-            onOpenQuickCapture={handleOpenQuickCapture}
-          />
-        )}
-
-        {activeTab === "cards" && (
-          <CreditCardsModule
-            accounts={initialData.accounts}
-            transactions={initialData.transactions}
-            onOpenQuickCapture={handleOpenQuickCapture}
-          />
-        )}
-
-        {activeTab === "subscriptions" && (
-          <SubscriptionsModule
-            rules={initialData.recurringRules}
-            accounts={initialData.accounts}
-            categories={initialData.categories}
-          />
-        )}
-
-        {activeTab === "loans" && (
-          <LoansModule
-            loans={initialData.loans}
-            accounts={initialData.accounts}
-          />
-        )}
-
-        {activeTab === "savings" && (
-          <SavingsModule
-            savingsGoals={initialData.savingsGoals}
-            accounts={initialData.accounts}
-          />
-        )}
-      </main>
-
-      {/* Barra de Navegación Inferior Mobile-First (PWA) */}
-      <nav
-        aria-label="Navegación móvil"
-        className="fixed bottom-0 inset-x-0 z-30 border-t border-slate-200 bg-white/80 backdrop-blur-xl md:hidden pb-[env(safe-area-inset-bottom)]"
-      >
-        <div className="grid grid-cols-6 h-16">
-          {NAVIGATION_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
-                aria-current={isActive ? "page" : undefined}
-                className={`flex flex-col items-center justify-center gap-1 text-[10px] font-semibold transition-colors ${
-                  isActive ? "text-teal-600" : "text-slate-500"
-                }`}
-              >
-                <span
-                  className={`flex h-7 w-12 items-center justify-center rounded-full transition-colors ${
-                    isActive ? "bg-teal-100" : ""
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                </span>
-                <span className="truncate max-w-[56px]">{tab.short}</span>
-              </button>
-            );
-          })}
-        </div>
-      </nav>
+        </nav>
+      </div>
 
       <CategoriesManager
         open={categoriesOpen}

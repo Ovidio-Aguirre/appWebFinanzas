@@ -101,27 +101,44 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
     setShowNewLoanModal(false);
   };
 
+  const totalLoanDebt = loans.reduce((acc, l) => acc + l.currentBalance, 0);
+
   return (
-    <div className="space-y-6">
-      {/* Barra superior: Selector de cuenta de pago para cuotas y alta de préstamo */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <Landmark className="h-5 w-5 text-teal-600" />
-            Financiamientos a Plazo Fijo y Tabla de Amortización
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Cada pago de cuota descuenta el capital del pasivo total y genera la transacción contable ACID
-          </p>
+    <div className="flex flex-col gap-4">
+      {/* 1. Hero Card de Financiamientos y Préstamos (Estilo Banca Móvil) */}
+      <div className="relative overflow-hidden rounded-2xl bg-[#111622] border border-white/[0.08] p-5 shadow-xl flex flex-col gap-3.5">
+        <div className="absolute -top-12 -right-12 w-40 h-40 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex p-1.5 rounded-full bg-rose-500/15 text-rose-400">
+              <Landmark className="w-4 h-4" />
+            </span>
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Pasivos y Amortización
+            </span>
+          </div>
+          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#1b2233] text-rose-300 font-bold">
+            {loans.length} préstamos
+          </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">Pagar cuotas desde:</span>
+        <div className="relative z-10">
+          <span className="text-[11px] text-slate-400 block">
+            Saldo Pasivo Total Pendiente
+          </span>
+          <span className="text-3xl font-extrabold text-white tracking-tight tabular-nums">
+            {formatCurrency(totalLoanDebt)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/[0.06] relative z-10">
+          <div className="flex items-center gap-1.5 min-w-0 flex-1">
+            <span className="text-[11px] text-slate-400 shrink-0">Origen:</span>
             <select
               value={selectedOriginAccountId}
               onChange={(e) => setSelectedOriginAccountId(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+              className="w-full rounded-xl border border-white/[0.08] bg-[#0b0f17] px-2.5 py-1.5 text-xs font-semibold text-white focus:border-emerald-500/60 focus:outline-none"
             >
               {liquidAccounts.map((acc) => (
                 <option key={acc.id} value={acc.id}>
@@ -134,15 +151,15 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
           <button
             type="button"
             onClick={() => setShowNewLoanModal(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:brightness-110 active:scale-[0.98] px-3.5 py-2 text-xs font-extrabold text-[#070a10] shadow-md shadow-emerald-500/20 transition"
           >
-            <Plus className="h-4 w-4" />
-            <span>Registrar Préstamo</span>
+            <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+            <span>Nuevo</span>
           </button>
         </div>
       </div>
 
-      {/* Listado de Préstamos y su Tabla de Amortización */}
+      {/* 2. Tarjetas de Préstamo con Lista Nativa de Cuotas */}
       {loans.map((loan) => {
         const paidCount = loan.installments.filter(
           (i) => i.status === "PAID"
@@ -155,147 +172,140 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
         return (
           <div
             key={loan.id}
-            className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xl"
+            className="rounded-2xl border border-white/[0.08] bg-[#0d121c] overflow-hidden shadow-xl flex flex-col"
           >
             {/* Cabecera del Préstamo */}
-            <div className="p-5 border-b border-slate-200 bg-gradient-to-r from-white to-slate-50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded-md bg-rose-100 border border-rose-300 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-600">
-                    Pasivo Amortizable
-                  </span>
-                  <span className="text-xs text-slate-500">
-                    {loan.institution || "Entidad Financiera"}
-                  </span>
-                </div>
-                <div className="mt-1 flex items-center gap-1">
-                  <h3 className="text-lg font-bold text-slate-900">
+            <div className="p-4 border-b border-white/[0.06] bg-gradient-to-b from-[#141b29] to-[#0d121c] space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 text-[10px] font-bold uppercase text-rose-300">
+                      Amortizable
+                    </span>
+                    <span className="text-xs text-slate-400 truncate">
+                      {loan.institution || "Entidad Financiera"}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-extrabold text-white mt-1 truncate">
                     {loan.name}
                   </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Inicial: {formatCurrency(loan.originalPrincipal)} • Tasa{" "}
+                    {loan.interestRate}% • {loan.termMonths} meses
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1 shrink-0">
+                  <div className="text-right">
+                    <span className="text-[10px] text-slate-400 block">
+                      Pendiente
+                    </span>
+                    <span className="text-base font-extrabold text-rose-300 tabular-nums">
+                      {formatCurrency(loan.currentBalance, loan.currency)}
+                    </span>
+                  </div>
                   <RowActions
                     label={loan.name}
                     onEdit={() => setEditingLoan(loan)}
                     onDelete={() => setDeletingLoan(loan)}
                   />
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Monto Inicial: {formatCurrency(loan.originalPrincipal)} • Tasa
-                  Anual: {loan.interestRate}% • Plazo: {loan.termMonths} meses
-                </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-6">
-                <div>
-                  <span className="text-xs text-slate-500">
-                    Saldo Pasivo Pendiente
+              {/* Barra de progreso */}
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px]">
+                  <span className="text-slate-400">Avance de liquidación</span>
+                  <span className="font-bold text-emerald-400 tabular-nums">
+                    {paidCount}/{loan.installments.length} cuotas (
+                    {progressPercent}%)
                   </span>
-                  <p className="text-xl font-extrabold text-rose-600 tabular-nums">
-                    {formatCurrency(loan.currentBalance, loan.currency)}
-                  </p>
                 </div>
-
-                <div className="min-w-[160px]">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-500">Avance de Cuotas</span>
-                    <span className="font-bold text-teal-600">
-                      {paidCount}/{loan.installments.length} ({progressPercent}
-                      %)
-                    </span>
-                  </div>
-                  <div className="h-2.5 w-full rounded-full bg-white overflow-hidden border border-slate-200">
-                    <div
-                      className="h-full bg-teal-500 transition-all duration-500"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
+                <div className="h-2 w-full rounded-full bg-[#1b2233] overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full transition-all duration-500"
+                    style={{ width: `${progressPercent}%` }}
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Tabla Interactiva de Cuotas */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-100 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-                    <th className="py-3 px-4"># Cuota</th>
-                    <th className="py-3 px-4">Vencimiento</th>
-                    <th className="py-3 px-4 text-right">Cuota Total</th>
-                    <th className="py-3 px-4 text-right">Abono a Capital</th>
-                    <th className="py-3 px-4 text-right">Interés</th>
-                    <th className="py-3 px-4 text-right">Saldo Insoluto</th>
-                    <th className="py-3 px-4 text-center">Estado</th>
-                    <th className="py-3 px-4 text-right">Acción</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200 text-xs">
-                  {loan.installments.map((inst) => {
-                    const isPaid = inst.status === "PAID";
-                    const isThisPaying =
-                      isPending && payingInstallmentId === inst.id;
+            {/* Lista de Cuotas estilo App Móvil */}
+            <div className="divide-y divide-white/[0.05] max-h-[380px] overflow-y-auto">
+              {loan.installments.map((inst) => {
+                const isPaid = inst.status === "PAID";
+                const isThisPaying =
+                  isPending && payingInstallmentId === inst.id;
 
-                    return (
-                      <tr
-                        key={inst.id}
-                        className={`transition ${
-                          isPaid
-                            ? "bg-emerald-950/10 text-slate-500"
-                            : "hover:bg-slate-100 text-slate-700"
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-bold">
-                          Cuota {inst.installmentNumber} /{" "}
+                return (
+                  <div
+                    key={inst.id}
+                    className={`p-3.5 flex items-center justify-between gap-3 transition ${
+                      isPaid
+                        ? "bg-emerald-500/[0.03] opacity-75"
+                        : "hover:bg-[#131a28]"
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">
+                          Cuota {inst.installmentNumber}/
                           {inst.totalInstallments}
-                        </td>
-                        <td className="py-3 px-4">
-                          {formatShortDate(inst.dueDate)}
-                        </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900 tabular-nums">
-                          {formatCurrency(inst.amount)}
-                        </td>
-                        <td className="py-3 px-4 text-right text-emerald-600 font-medium tabular-nums">
-                          {formatCurrency(inst.capitalAmount)}
-                        </td>
-                        <td className="py-3 px-4 text-right text-amber-600 tabular-nums">
-                          {formatCurrency(inst.interestAmount)}
-                        </td>
-                        <td className="py-3 px-4 text-right text-slate-600 tabular-nums">
-                          {formatCurrency(inst.remainingBalance)}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          {isPaid ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">
-                              <CheckCircle2 className="h-3 w-3" /> Pagada
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 border border-amber-300 px-2.5 py-0.5 text-[11px] font-semibold text-amber-600">
-                              <Clock className="h-3 w-3" /> Pendiente
-                            </span>
+                        </span>
+                        <span className="text-[11px] text-slate-400">
+                          • {formatShortDate(inst.dueDate)}
+                        </span>
+                        {isPaid ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.2 text-[10px] font-bold text-emerald-400">
+                            <CheckCircle2 className="h-3 w-3" /> Pagada
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.2 text-[10px] font-bold text-amber-300">
+                            <Clock className="h-3 w-3" /> Pendiente
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2.5 text-[11px] text-slate-400 mt-1 tabular-nums">
+                        <span>
+                          Cap:{" "}
+                          <strong className="text-emerald-400">
+                            {formatCurrency(inst.capitalAmount)}
+                          </strong>
+                        </span>
+                        <span>•</span>
+                        <span>
+                          Int:{" "}
+                          <strong className="text-amber-300">
+                            {formatCurrency(inst.interestAmount)}
+                          </strong>
+                        </span>
+                        <span>•</span>
+                        <span>Resta: {formatCurrency(inst.remainingBalance)}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2.5 shrink-0">
+                      <span className="text-xs font-mono font-extrabold text-white tabular-nums">
+                        {formatCurrency(inst.amount)}
+                      </span>
+                      {!isPaid && (
+                        <button
+                          type="button"
+                          disabled={isPending}
+                          onClick={() => handlePayInstallment(inst.id)}
+                          className="inline-flex items-center gap-1 rounded-xl bg-emerald-500 hover:brightness-110 px-3 py-1.5 text-[11px] font-extrabold text-[#070a10] shadow-sm transition"
+                        >
+                          {isThisPaying && (
+                            <Loader2 className="h-3 w-3 animate-spin" />
                           )}
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          {isPaid ? (
-                            <span className="text-[11px] text-slate-500">
-                              Liquidada
-                            </span>
-                          ) : (
-                            <button
-                              type="button"
-                              disabled={isPending}
-                              onClick={() => handlePayInstallment(inst.id)}
-                              className="inline-flex items-center gap-1.5 rounded-lg bg-teal-100 hover:bg-teal-500 hover:text-slate-950 border border-teal-300 px-3 py-1.5 text-xs font-bold text-teal-600 transition"
-                            >
-                              {isThisPaying && (
-                                <Loader2 className="h-3 w-3 animate-spin" />
-                              )}
-                              <span>Pagar Cuota</span>
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <span>Pagar</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         );
@@ -307,86 +317,87 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
 
       {showNewLoanModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-surface-container-lowest/80 backdrop-blur-md p-0 sm:p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-white/[0.10] bg-surface-container backdrop-blur-xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-12 h-1.5 bg-surface-container-highest rounded-full mx-auto mb-3 sm:hidden" />
+            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-teal-600" />
-                <h3 className="text-base font-bold text-slate-900">
+                <Calculator className="h-5 w-5 text-primary" />
+                <h3 className="font-display text-base font-bold text-on-surface">
                   Nuevo Financiamiento con Tabla de Amortización
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowNewLoanModal(false)}
-                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
+                className="rounded-full p-1.5 bg-surface-container-high text-on-surface-variant hover:bg-surface-bright hover:text-on-surface"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmitNewLoan)} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Nombre del Préstamo *
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Crédito Automotriz / Hipotecario"
                     {...register("name")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface placeholder:text-outline focus:border-primary/60 focus:outline-none"
                   />
                   {errors.name && (
-                    <p className="text-[11px] text-rose-600 mt-1">
+                    <p className="text-[11px] text-tertiary mt-1">
                       {errors.name.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Institución Financiera
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Banco Agrícola / BAC"
                     {...register("institution")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface placeholder:text-outline focus:border-primary/60 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Monto Inicial (USD) *
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...register("principalAmount")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Tasa Anual (%) *
                   </label>
                   <input
                     type="number"
                     step="0.1"
                     {...register("annualInterestRate")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Plazo (Meses) *
                   </label>
                   <input
@@ -394,34 +405,34 @@ export function LoansModule({ loans, accounts }: LoansModuleProps) {
                     min={1}
                     max={360}
                     {...register("termMonths")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1">
+                <label className="block text-xs font-medium text-on-surface-variant mb-1">
                   Fecha de Primera Cuota *
                 </label>
                 <input
                   type="date"
                   {...register("firstDueDate")}
-                  className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                  className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setShowNewLoanModal(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
+                  className="rounded-xl border border-white/[0.1] bg-surface-container-high px-4 py-2 text-xs font-semibold text-on-surface hover:bg-surface-bright"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary hover:brightness-110 px-4 py-2 text-xs font-bold text-on-primary shadow-lg shadow-primary/25"
                 >
                   {isSubmitting && (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

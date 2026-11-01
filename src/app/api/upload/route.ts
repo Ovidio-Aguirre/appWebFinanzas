@@ -114,7 +114,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await writeFile(filePath, buffer);
 
     return NextResponse.json({
-      url: `/uploads/receipts/${uniqueName}`,
+      url: `/api/receipts/${uniqueName}`,
       provider: "local-vault",
     });
   } catch (error) {

@@ -51,3 +51,4 @@ public/uploads/receipts/*
 # pwa generated (next-pwa)
 public/sw.js
 public/swe-*.js
+.playwright-mcp/

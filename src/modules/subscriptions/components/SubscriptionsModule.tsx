@@ -34,7 +34,7 @@ import {
   toggleRecurringAutoPostAction,
 } from "@/server/actions/finance.actions";
 import { Pause } from "lucide-react";
-import { RowActions, runAction } from "@/components/ui/crud";
+import { RowActions, runAction, notifyDataChanged } from "@/components/ui/crud";
 import { setRecurringRuleActiveAction } from "@/server/actions/crud.actions";
 import { DeleteRuleDialog, EditRuleDialog } from "@/components/crud/EditDialogs";
 import {
@@ -63,22 +63,22 @@ const RULE_TYPE_LABELS: Record<
 > = {
   SUBSCRIPTION: {
     label: "Suscripción / Cargo",
-    badge: "bg-purple-100 text-purple-600 border-purple-300",
+    badge: "bg-purple-500/15 text-purple-300 border-purple-500/30",
     isIncome: false,
   },
   PAYROLL: {
     label: "Nómina / Salario",
-    badge: "bg-emerald-100 text-emerald-600 border-emerald-300",
+    badge: "bg-primary/15 text-primary border-primary/30",
     isIncome: true,
   },
   REMITTANCE: {
     label: "Remesa Periódica",
-    badge: "bg-teal-100 text-teal-600 border-teal-300",
+    badge: "bg-secondary/15 text-secondary border-secondary/30",
     isIncome: true,
   },
   FIXED_FINANCING_INSTALLMENT: {
     label: "Cuota Fija",
-    badge: "bg-rose-100 text-rose-600 border-rose-300",
+    badge: "bg-tertiary/15 text-tertiary border-tertiary/30",
     isIncome: false,
   },
 };
@@ -141,6 +141,7 @@ export function SubscriptionsModule({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CreateRecurringRuleInput>({
     resolver: zodResolver(CreateRecurringRuleSchema),
@@ -206,6 +207,8 @@ export function SubscriptionsModule({
 
     if (result.success && result.data) {
       toast.success(result.message);
+      setValue("categoryId", result.data.id);
+      notifyDataChanged();
       setNewCategoryName("");
       setCreatingCategory(false);
     } else {
@@ -214,93 +217,88 @@ export function SubscriptionsModule({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Encabezado y métricas del cronograma mensual */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="text-xs font-medium text-slate-500">
-            Suscripciones y Cargos Fijos / Mes
-          </span>
-          <p className="text-2xl font-extrabold text-rose-600 mt-1 tabular-nums">
-            -{formatCurrency(monthlyExpenseTotal)}
-          </p>
-          <p className="text-[11px] text-slate-500 mt-1">
-            Suscripciones y servicios recurrentes
-          </p>
-        </div>
+    <div className="flex flex-col gap-4">
+      {/* 1. Hero Card de Programación Recurrente (Estilo Banca Móvil Veltis) */}
+      <div className="relative overflow-hidden rounded-2xl bg-[#111622] border border-white/[0.08] p-5 shadow-xl flex flex-col gap-3.5">
+        <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="text-xs font-medium text-slate-500">
-            Ingresos Recurrentes / Mes (Nómina + Remesas)
-          </span>
-          <p className="text-2xl font-extrabold text-emerald-600 mt-1 tabular-nums">
-            +{formatCurrency(monthlyRecurringIncome)}
-          </p>
-          <p className="text-[11px] text-slate-500 mt-1">
-            Periodicidad quincenal y mensual configurada
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 flex flex-col justify-between">
-          <div>
-            <span className="text-xs font-medium text-slate-500">
-              Programación Automática
+        <div className="flex items-center justify-between relative z-10">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex p-1.5 rounded-full bg-emerald-500/15 text-emerald-400">
+              <CalendarDays className="w-4 h-4" />
             </span>
-            <p className="text-sm font-semibold text-slate-900 mt-1">
-              {rules.filter((r) => r.autoPost).length} de {rules.length} con
-              Autoregistro activo
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Pagos e Ingresos Fijos
+            </span>
+          </div>
+          <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#1b2233] text-emerald-400 font-bold">
+            {rules.filter((r) => r.autoPost).length}/{rules.length} Auto
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2.5 relative z-10">
+          <div className="rounded-xl bg-[#0b0f17] border border-white/[0.05] p-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Cargos Fijos / Mes
+            </span>
+            <p className="text-lg font-extrabold text-rose-300 tabular-nums mt-0.5">
+              -{formatCurrency(monthlyExpenseTotal)}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setShowCreateModal(true)}
-            className="mt-3 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2.5 text-xs font-bold text-slate-950 transition"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Nueva Suscripción / Ingreso Fijo</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Cronograma / Calendario Mensual Ordenado por Próxima Fecha de Ejecución */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden">
-        <div className="border-b border-slate-200 px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CalendarDays className="h-5 w-5 text-teal-600" />
-            <div>
-              <h3 className="text-base font-bold text-slate-900">
-                Cronograma Mensual de Cobros e Ingresos Programados
-              </h3>
-              <p className="text-xs text-slate-500">
-                Alertas preventivas de vencimiento y ejecución manual o automática
-              </p>
-            </div>
+          <div className="rounded-xl bg-[#0b0f17] border border-white/[0.05] p-3">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              Ingresos Fijos / Mes
+            </span>
+            <p className="text-lg font-extrabold text-emerald-400 tabular-nums mt-0.5">
+              +{formatCurrency(monthlyRecurringIncome)}
+            </p>
           </div>
         </div>
 
-        <div className="divide-y divide-slate-200">
-          {rules.map((rule) => {
-            const meta = RULE_TYPE_LABELS[rule.ruleType];
-            const nextDate = startOfDay(calendarDate(rule.nextExecutionDate));
-            const daysLeft = differenceInCalendarDays(nextDate, today);
-            const isSoon = daysLeft >= 0 && daysLeft <= 5;
-            const isDueTodayOrPast = daysLeft <= 0;
+        <button
+          type="button"
+          onClick={() => setShowCreateModal(true)}
+          className="relative z-10 w-full py-2.5 px-4 rounded-full bg-emerald-500 hover:brightness-110 active:scale-[0.98] text-xs font-extrabold text-[#070a10] shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all"
+        >
+          <Plus className="h-4 w-4 stroke-[2.5]" />
+          <span>Programar Suscripción o Ingreso</span>
+        </button>
+      </div>
 
-            return (
-              <div
-                key={rule.id}
-                className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 hover:bg-slate-100 transition"
-              >
-                <div className="flex items-start gap-3.5">
+      {/* 2. Lista de Reglas Recurrentes (Tarjetas Nativas Individuales) */}
+      <div className="flex flex-col gap-2.5">
+        <div className="flex items-center justify-between px-1">
+          <h3 className="text-sm font-bold text-white tracking-tight">
+            Cronograma Mensual ({rules.length})
+          </h3>
+          <span className="text-[11px] text-slate-400">
+            Ordenado por vencimiento
+          </span>
+        </div>
+
+        {rules.map((rule) => {
+          const meta = RULE_TYPE_LABELS[rule.ruleType];
+          const nextDate = startOfDay(calendarDate(rule.nextExecutionDate));
+          const daysLeft = differenceInCalendarDays(nextDate, today);
+          const isSoon = daysLeft >= 0 && daysLeft <= 5;
+          const isDueTodayOrPast = daysLeft <= 0;
+
+          return (
+            <div
+              key={rule.id}
+              className="rounded-2xl bg-[#0d121c] border border-white/[0.06] p-3.5 flex flex-col gap-3 shadow-md"
+            >
+              <div className="flex items-start justify-between gap-2.5">
+                <div className="flex items-center gap-3 min-w-0">
                   {/* Día en calendario visual */}
                   <div
-                    className={`flex flex-col items-center justify-center h-12 w-12 rounded-xl border text-center shrink-0 ${
+                    className={`flex flex-col items-center justify-center h-11 w-11 rounded-xl border text-center shrink-0 ${
                       isSoon || isDueTodayOrPast
-                        ? "border-amber-300 bg-amber-100 text-amber-600"
-                        : "border-slate-200 bg-white text-slate-600"
+                        ? "border-amber-500/35 bg-amber-500/15 text-amber-300"
+                        : "border-white/[0.08] bg-[#151c2c] text-white"
                     }`}
                   >
-                    <span className="text-[10px] uppercase font-bold">
+                    <span className="text-[9px] uppercase font-bold text-slate-400">
                       {new Intl.DateTimeFormat("es-MX", {
                         month: "short",
                       }).format(nextDate)}
@@ -310,107 +308,30 @@ export function SubscriptionsModule({
                     </span>
                   </div>
 
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-bold text-slate-900">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-xs font-bold text-white truncate">
                         {rule.title}
                       </span>
-                      <span
-                        className={`rounded-md border px-2 py-0.5 text-[10px] font-semibold ${meta.badge}`}
-                      >
-                        {meta.label}
-                      </span>
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+                      <span className="rounded bg-[#192132] px-1.5 py-0.2 text-[9px] font-bold text-slate-300">
                         {FREQUENCY_LABELS[rule.frequency]}
                       </span>
-                      {(isSoon || isDueTodayOrPast) && (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 border border-amber-300 px-2 py-0.5 text-[10px] font-bold text-amber-600">
-                          <BellRing className="h-3 w-3" />
-                          {daysLeft <= 0
-                            ? "Programado para hoy"
-                            : `En ${daysLeft} días`}
-                        </span>
-                      )}
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-                      <span>Cuenta: {rule.accountName}</span>
-                      <span>•</span>
-                      <span>Categoría: {rule.categoryName}</span>
-                      <span>•</span>
-                      <span>
-                        Próxima fecha: {formatShortDate(rule.nextExecutionDate)}
-                      </span>
-                    </div>
+                    <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                      {rule.accountName} • {rule.categoryName}
+                    </p>
                   </div>
                 </div>
 
-                {/* Controles: Switch Autoregistro, Monto y Botón Confirmar Ejecución */}
-                <div className="flex flex-wrap items-center justify-between lg:justify-end gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-200">
-                  <button
-                    type="button"
-                    disabled={isPending}
-                    onClick={() => handleToggleAutoPost(rule)}
-                    className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition ${
-                      rule.autoPost
-                        ? "border-teal-300 bg-teal-50 text-teal-600"
-                        : "border-slate-200 bg-white/75 text-slate-500"
-                    }`}
-                  >
-                    {rule.autoPost ? (
-                      <>
-                        <CheckCircle2 className="h-3.5 w-3.5 text-teal-600" />
-                        <span>Autoregistro Activo</span>
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="h-3.5 w-3.5" />
-                        <span>Manual</span>
-                      </>
-                    )}
-                  </button>
-
-                  <div
-                    className={`text-base font-extrabold tabular-nums min-w-[100px] text-right ${
-                      meta.isIncome ? "text-emerald-600" : "text-rose-600"
+                <div className="flex items-center gap-1 shrink-0">
+                  <span
+                    className={`text-sm font-mono font-extrabold tabular-nums ${
+                      meta.isIncome ? "text-emerald-400" : "text-slate-100"
                     }`}
                   >
                     {meta.isIncome ? "+" : "-"}
                     {formatCurrency(rule.amount)}
-                  </div>
-
-                  <button
-                    type="button"
-                    disabled={!rule.active || (isPending && executingId === rule.id)}
-                    onClick={() => handleConfirmExecution(rule.id)}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-slate-100 hover:bg-teal-500 hover:text-slate-950 border border-slate-200 px-3.5 py-2 text-xs font-bold text-slate-700 transition"
-                  >
-                    {isPending && executingId === rule.id ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Play className="h-3.5 w-3.5" />
-                    )}
-                    <span>Confirmar ejecución</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      void runAction(() =>
-                        setRecurringRuleActiveAction(rule.id, !rule.active)
-                      )
-                    }
-                    aria-label={rule.active ? `Pausar ${rule.title}` : `Reactivar ${rule.title}`}
-                    title={rule.active ? "Pausar" : "Reactivar"}
-                    className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 ${
-                      rule.active
-                        ? "text-slate-500 hover:bg-amber-50 hover:text-amber-600"
-                        : "bg-amber-100 text-amber-700"
-                    }`}
-                  >
-                    {rule.active ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                  </button>
-
+                  </span>
                   <RowActions
                     label={rule.title}
                     onEdit={() => setEditingRule(rule)}
@@ -418,9 +339,88 @@ export function SubscriptionsModule({
                   />
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              {/* Barra inferior de acciones de la regla */}
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/[0.05]">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => handleToggleAutoPost(rule)}
+                    className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-bold transition ${
+                      rule.autoPost
+                        ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
+                        : "border-white/[0.08] bg-[#151c2c] text-slate-400"
+                    }`}
+                  >
+                    {rule.autoPost ? (
+                      <>
+                        <CheckCircle2 className="h-3 w-3" />
+                        <span>Auto</span>
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="h-3 w-3" />
+                        <span>Manual</span>
+                      </>
+                    )}
+                  </button>
+
+                  {(isSoon || isDueTodayOrPast) && (
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-amber-500/15 border border-amber-500/30 px-2 py-1 text-[10px] font-bold text-amber-300">
+                      <BellRing className="h-3 w-3" />
+                      {daysLeft <= 0 ? "Hoy" : `${daysLeft}d`}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void runAction(() =>
+                        setRecurringRuleActiveAction(rule.id, !rule.active)
+                      )
+                    }
+                    aria-label={
+                      rule.active
+                        ? `Pausar ${rule.title}`
+                        : `Reactivar ${rule.title}`
+                    }
+                    title={rule.active ? "Pausar" : "Reactivar"}
+                    className={`inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/[0.06] transition ${
+                      rule.active
+                        ? "bg-[#151c2c] text-slate-400 hover:text-amber-300"
+                        : "bg-amber-500/20 text-amber-300"
+                    }`}
+                  >
+                    {rule.active ? (
+                      <Pause className="h-3.5 w-3.5" />
+                    ) : (
+                      <Play className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={
+                      !rule.active || (isPending && executingId === rule.id)
+                    }
+                    onClick={() => handleConfirmExecution(rule.id)}
+                    className="inline-flex items-center gap-1 rounded-lg bg-[#192132] hover:bg-emerald-500 text-emerald-400 hover:text-[#070a10] border border-emerald-500/25 px-3 py-1 text-[11px] font-bold transition"
+                  >
+                    {isPending && executingId === rule.id ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Play className="h-3 w-3" />
+                    )}
+                    <span>Ejecutar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <EditRuleDialog
@@ -434,36 +434,37 @@ export function SubscriptionsModule({
       {/* Modal para Registrar Regla Recurrente */}
       {showCreateModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-surface-container-lowest/80 backdrop-blur-md p-0 sm:p-4"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white backdrop-blur-xl p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
+          <div className="w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-white/[0.10] bg-surface-container backdrop-blur-xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="w-12 h-1.5 bg-surface-container-highest rounded-full mx-auto mb-3 sm:hidden" />
+            <div className="flex items-center justify-between border-b border-white/[0.06] pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <Repeat className="h-5 w-5 text-teal-600" />
-                <h3 className="text-base font-bold text-slate-900">
+                <Repeat className="h-5 w-5 text-primary" />
+                <h3 className="font-display text-base font-bold text-on-surface">
                   Programar Suscripción, Salario o Remesa
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="rounded-lg p-1 text-slate-500 hover:bg-slate-200 hover:text-slate-900"
+                className="rounded-full p-1.5 bg-surface-container-high text-on-surface-variant hover:bg-surface-bright hover:text-on-surface"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmitNewRule)} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Tipo de Regla Recurrente *
                   </label>
                   <select
                     {...register("ruleType")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   >
                     <option value="SUBSCRIPTION">
                       Suscripción / servicio recurrente
@@ -481,12 +482,12 @@ export function SubscriptionsModule({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Periodicidad *
                   </label>
                   <select
                     {...register("frequency")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   >
                     <option value="BIWEEKLY">Quincenal (Cada 15 días)</option>
                     <option value="MONTHLY">Mensual</option>
@@ -498,34 +499,34 @@ export function SubscriptionsModule({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Concepto / Servicio *
                   </label>
                   <input
                     type="text"
                     placeholder="Ej. Netflix, Gym, Salario..."
                     {...register("title")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface placeholder:text-outline focus:border-primary/60 focus:outline-none"
                   />
                   {errors.title && (
-                    <p className="text-[11px] text-rose-600 mt-1">
+                    <p className="text-[11px] text-tertiary mt-1">
                       {errors.title.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Monto (USD) *
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...register("amount")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                   {errors.amount && (
-                    <p className="text-[11px] text-rose-600 mt-1">
+                    <p className="text-[11px] text-tertiary mt-1">
                       {errors.amount.message}
                     </p>
                   )}
@@ -534,12 +535,12 @@ export function SubscriptionsModule({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Cuenta Asociada *
                   </label>
                   <select
                     {...register("accountId")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   >
                     {accounts.map((acc) => (
                       <option key={acc.id} value={acc.id}>
@@ -551,14 +552,14 @@ export function SubscriptionsModule({
 
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <label className="text-xs font-medium text-slate-600 shrink-0">
+                    <label className="text-xs font-medium text-on-surface-variant shrink-0">
                       Categoría *
                     </label>
                     {creatingCategory ? (
                       <button
                         type="button"
                         onClick={() => setCreatingCategory(false)}
-                        className="text-xs text-rose-600 hover:text-rose-600 underline"
+                        className="text-xs text-tertiary hover:underline"
                       >
                         Cancelar
                       </button>
@@ -566,7 +567,7 @@ export function SubscriptionsModule({
                       <button
                         type="button"
                         onClick={() => setCreatingCategory(true)}
-                        className="text-xs text-teal-600 hover:text-teal-600 underline flex items-center gap-1"
+                        className="text-xs text-primary hover:underline flex items-center gap-1"
                       >
                         <span className="h-3 w-3">+</span> Nueva
                       </button>
@@ -579,12 +580,12 @@ export function SubscriptionsModule({
                         placeholder="Nombre de la categoría"
                         value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900 focus:border-teal-500 focus:outline-none"
+                        className="rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2 text-xs text-on-surface placeholder:text-outline focus:border-primary/60 focus:outline-none"
                       />
                       <button
                         type="submit"
                         disabled={!newCategoryName.trim()}
-                        className="rounded-xl bg-teal-500 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-teal-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="rounded-xl bg-primary px-3 py-2 text-xs font-bold text-on-primary hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Crear
                       </button>
@@ -592,7 +593,7 @@ export function SubscriptionsModule({
                   ) : (
                     <select
                       {...register("categoryId")}
-                      className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900 focus:border-teal-500 focus:outline-none"
+                      className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                     >
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
@@ -602,7 +603,7 @@ export function SubscriptionsModule({
                     </select>
                   )}
                   {errors.categoryId && (
-                    <p className="text-[11px] text-rose-600 mt-1">
+                    <p className="text-[11px] text-tertiary mt-1">
                       {errors.categoryId.message}
                     </p>
                   )}
@@ -611,51 +612,51 @@ export function SubscriptionsModule({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Fecha de Inicio *
                   </label>
                   <input
                     type="date"
                     {...register("startDate")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-on-surface-variant mb-1">
                     Próximo Cobro / Abono *
                   </label>
                   <input
                     type="date"
                     {...register("nextExecutionDate")}
-                    className="w-full rounded-xl border border-slate-200 bg-white/75 px-3 py-2 text-xs text-slate-900"
+                    className="w-full rounded-xl border border-white/[0.08] bg-surface-container-low px-3 py-2.5 text-xs text-on-surface focus:border-primary/60 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-xs text-slate-600 pt-1 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-on-surface-variant pt-1 cursor-pointer">
                 <input
                   type="checkbox"
                   {...register("autoPost")}
-                  className="h-4 w-4 rounded border-slate-200 bg-white/75 text-teal-500"
+                  className="h-4 w-4 rounded border-white/20 bg-surface-container-low accent-[#4edea3]"
                 />
                 <span>
                   Habilitar autoregistro automático al llegar la fecha programada
                 </span>
               </label>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+              <div className="flex justify-end gap-2 pt-3 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600"
+                  className="rounded-xl border border-white/[0.1] bg-surface-container-high px-4 py-2 text-xs font-semibold text-on-surface hover:bg-surface-bright"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 hover:brightness-110 px-4 py-2 text-xs font-bold text-slate-950"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary hover:brightness-110 px-4 py-2 text-xs font-bold text-on-primary shadow-lg shadow-primary/25"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />

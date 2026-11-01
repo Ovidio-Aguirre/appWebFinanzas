@@ -2,11 +2,14 @@ import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
+  // Desactivado: el único service worker es public/sw-offline.js (dos SW en el
+  // mismo scope se pisaban y cacheaban datos viejos).
+  disable: true,
+  register: false,
   skipWaiting: true,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  // Sin caché agresivo de navegación: servía datos viejos tras crear registros.
+  cacheOnFrontEndNav: false,
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
 });
 
@@ -24,6 +27,12 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: "5mb",
     },
+  },
+  async rewrites() {
+    // Comprobantes ya guardados con la URL antigua.
+    return [
+      { source: "/uploads/receipts/:name", destination: "/api/receipts/:name" },
+    ];
   },
   async headers() {
     return [

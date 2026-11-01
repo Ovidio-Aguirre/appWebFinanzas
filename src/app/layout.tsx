@@ -32,10 +32,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0d9488",
+  themeColor: "#0f131d",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -44,19 +45,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" className="dark">
       <body
-        className={`${inter.variable} ${jakarta.variable} font-sans antialiased selection:bg-teal-500/30 selection:text-teal-100`}
+        className={`${inter.variable} ${jakarta.variable} bg-surface text-on-surface font-sans antialiased selection:bg-primary/25 selection:text-primary`}
       >
         {children}
         <Toaster
           position="top-right"
           richColors
-          theme="light"
+          theme="dark"
           closeButton
           toastOptions={{
             classNames: {
-              toast: "font-sans",
+              toast: "font-sans bg-surface-container-high border border-white/10 text-on-surface shadow-2xl",
             },
           }}
         />
